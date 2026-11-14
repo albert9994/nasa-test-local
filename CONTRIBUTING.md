@@ -10,7 +10,7 @@
 ## De ce nu branch-uri per persoană (`albert`, `ion` etc.)
 Un branch care trăiește tot weekendul strânge sute de modificări. La final, toți încearcă să facă merge în același timp și apar conflicte
 în exact orele în care nu ai timp. Cu branch-uri scurte per task, conflictele sunt mici și se rezolvă pe loc.
-Branch-urile vechi `albert` și `ion` sunt goale. Albert le poate șterge.
+Branch-urile vechi `albert` și `ion` sunt goale. Albert le poate șterge (vezi [docs/setup/ADMIN_SETUP.md](docs/setup/ADMIN_SETUP.md)).
 
 ## De ce nu direct pe `main`
 Un singur commit greșit (de exemplu WASM-ul care nu mai compilează) blochează alte 4 persoane. PR-ul + CI-ul îl prind înainte.
