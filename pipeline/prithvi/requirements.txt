@@ -1,0 +1,15 @@
+numpy
+scipy
+scikit-learn
+rasterio
+pyproj
+shapely
+requests
+pystac-client
+planetary-computer
+huggingface_hub
+torch
+einops
+timm
+pyyaml
+ruff
