@@ -28,3 +28,10 @@ pnpm --filter web test && pnpm --filter web typecheck && pnpm --filter web build
 
 `public/data/mock/farms/*.json` are real data (NASA POWER 2001–2025, SoilGrids, MODIS NDVI) for Iowa, Kansas and the Bărăgan,
 cached by the old prototype. They follow C1, so the real packs can replace them 1:1.
+
+## Light site (O6) and generated assets
+- Routes: `/` (landing story), `/demo` (lite demo), `/farm/[id]` (iowa, kansas, baragan), `/sponsors`. The full app is `/app`.
+- 3D (React Three Fiber): `components/three/corn-field.tsx` (instanced corn field that dries out as you scroll),
+  `climate-ridge.tsx` (25 years of NASA POWER Tmax as terrain), `globe.tsx` (Blue Marble + Black Marble with farm pins).
+- `pnpm --filter web assets` rebuilds `public/models/*.glb`, `public/brand`, `public/bg`, `public/icons` (procedural, from `scripts/assets/`).
+- `scripts/assets/fetch-nasa.sh` re-downloads the NASA GIBS imagery in `public/textures` and `public/images` (public domain).
