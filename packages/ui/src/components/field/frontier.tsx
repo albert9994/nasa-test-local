@@ -70,9 +70,9 @@ function Heatmap({ fr, tol, t2050, p2050 }: { fr: FrontierResult; tol: number; t
         {/* markers */}
         <g>
           <circle cx={todayX} cy={todayY} r={9} fill="var(--surface)" stroke="var(--primary)" strokeWidth={3} />
-          <text x={todayX + 14} y={todayY - 12} fontSize={11} fontWeight={600} fill="var(--primary)" stroke="var(--surface)" strokeWidth={3} paintOrder="stroke">{t("analysis.risk_today")}</text>
+          <text x={todayX + 13} y={todayY + 22} fontSize={11} fontWeight={600} fill="var(--primary)" stroke="var(--surface)" strokeWidth={3} paintOrder="stroke">{t("analysis.risk_today")}</text>
           <path d={`M${x50} ${y50 - 11}l10 10l-10 10l-10 -10z`} fill="var(--surface)" stroke="var(--data)" strokeWidth={3} />
-          <text x={x50 + 14} y={y50 + 22} fontSize={11} fontWeight={600} fill="var(--data)" stroke="var(--surface)" strokeWidth={3} paintOrder="stroke">{t("analysis.risk_2050")}</text>
+          <text x={x50 + 13} y={y50 - 14} fontSize={11} fontWeight={600} fill="var(--data)" stroke="var(--surface)" strokeWidth={3} paintOrder="stroke">{t("analysis.risk_2050")}</text>
         </g>
         {/* axes */}
         {fr.dTs.map((v, c) => (c % 2 === 0 ? <text key={`x${c}`} x={LEFT + c * CELL + CELL / 2} y={TOP + nR * CELL + 16} textAnchor="middle" fontSize={11} fill="var(--fg-muted)">{`+${f.num(v, 1)}`}</text> : null))}
@@ -133,8 +133,8 @@ export function FrontierPanel() {
       {!fr ? (
         <div className="space-y-3"><Spinner label={t("analysis.risk_loading")} /><Skeleton className="h-72" /></div>
       ) : (
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,18rem)]">
-          <div className="overflow-x-auto"><div className="min-w-[420px]"><Heatmap fr={fr} tol={tol} t2050={p.dT} p2050={Math.abs(p.dP)} /></div></div>
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-5 @3xl:grid-cols-[minmax(0,1fr)_minmax(0,18rem)]">
+          <div className="relative overflow-x-auto"><div className="min-w-[360px]"><Heatmap fr={fr} tol={tol} t2050={p.dT} p2050={Math.abs(p.dP)} /></div></div>
           <TippingSentences fr={fr} />
         </div>
       )}

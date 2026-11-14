@@ -26,7 +26,7 @@ export function StressTab() {
         <Segmented<"farmer" | "expert"> label={t("analysis.stress_mode")} value={mode} onChange={setMode}
           options={[{ value: "farmer", label: t("analysis.stress_mode_farmer") }, { value: "expert", label: t("analysis.stress_mode_expert") }]} />
       </div>
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-4 @5xl:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
         <InputsPanel />
         <div className="flex min-w-0 flex-col gap-4" data-tour="stress-results">
           <p className="rounded-xl bg-primary-soft px-3 py-2 text-sm text-primary" aria-live="polite">

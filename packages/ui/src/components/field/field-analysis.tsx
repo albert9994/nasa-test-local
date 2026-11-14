@@ -37,7 +37,7 @@ export function FieldAnalysis({ className, tabs: only }: { className?: string; /
   return (
     <div className={cn("flex min-w-0 flex-col gap-4", className)} data-tour="field-analysis">
       <Tabs tabs={defs} value={active} onChange={setTab} label={t("analysis.tabs_label")} idPrefix={prefix} />
-      <div role="tabpanel" id={`${prefix}-panel-${active}`} aria-labelledby={`${prefix}-tab-${active}`} tabIndex={0} className="min-w-0 focus-visible:outline-offset-4" aria-busy={loading}>
+      <div role="tabpanel" id={`${prefix}-panel-${active}`} aria-labelledby={`${prefix}-tab-${active}`} tabIndex={0} className="@container min-w-0 focus-visible:outline-offset-4" aria-busy={loading}>
         {!pack && !loading ? (
           <p className="rounded-[var(--radius)] border border-dashed border-line-strong p-6 text-sm text-fg-muted">{t("analysis.empty")}</p>
         ) : active === "overview" ? <OverviewTab />

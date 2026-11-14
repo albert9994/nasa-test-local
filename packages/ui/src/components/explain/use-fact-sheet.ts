@@ -7,6 +7,12 @@ import { pickKey } from "@/components/field/numbers";
 import { useT } from "@/lib/i18n";
 import { useApp } from "@/lib/store/app";
 
+const SOIL: Record<string, string> = { "clay loam": "clay_loam", "sandy loam": "sandy_loam", "silty clay loam": "silty_clay_loam", loam: "loam", "loam (default)": "default_loam" };
+function localSoil(s: string, t: ReturnType<typeof useT>) {
+  const k = SOIL[s];
+  return k ? t(k === "default_loam" ? "farm.default_loam" : `farm.t_${k}`) : s;
+}
+
 export function useFactSheet() {
   const t = useT();
   const names = useNames();
@@ -27,6 +33,7 @@ export function useFactSheet() {
     return {
       ...fact,
       rotation: names.rotation(rotation),
+      farm: { ...fact.farm, soil: localSoil(fact.farm.soil, t) },
       alternatives: fact.alternatives.map((a, i) => ({
         ...a,
         label: picks[i] ? t(`analysis.pick_${pickKey(picks[i].label)}`) : a.label,

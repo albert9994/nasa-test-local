@@ -21,7 +21,7 @@ export const explain = {
     // report
     r_title: "Climate-risk report for the field", r_subtitle: "Prepared with FieldShift, for a bank, APIA or AFIR file",
     r_prepared: "Prepared on {date}", r_farm: "Farm", r_field: "Field", r_location: "Location", r_soil: "Soil", r_climate: "Climate (history)",
-    r_rotation: "Current rotation", r_rule: "Bad-year rule",
+    r_rotation: "Current rotation", r_rule: "Bad-year rule", r_rule_text: "Income below {thr} per ha; 1 bad year in {tol} accepted",
     r_summary: "Summary", r_margin: "Adaptation margin",
     r_margin_over: "Already over the limit today.", r_margin_value: "Rotation holds up to {dT} of warming and {rain} less rain (moderate scenario: safe until about {year}).",
     r_numbers: "Key numbers", r_bad_years: "Bad years in the record", r_mean: "Average income per ha", r_worst: "Worst year", r_score: "FieldShift Score", r_soil_score: "Soil score",
@@ -56,7 +56,7 @@ export const explain = {
 
     r_title: "Raport de risc climatic pentru parcelă", r_subtitle: "Pregătit cu FieldShift, pentru un dosar la bancă, APIA sau AFIR",
     r_prepared: "Întocmit la {date}", r_farm: "Ferma", r_field: "Parcela", r_location: "Locație", r_soil: "Sol", r_climate: "Clima (istoric)",
-    r_rotation: "Rotația actuală", r_rule: "Regula anului prost",
+    r_rotation: "Rotația actuală", r_rule: "Regula anului prost", r_rule_text: "Venit sub {thr} pe ha; se acceptă 1 an prost din {tol}",
     r_summary: "Rezumat", r_margin: "Marja de adaptare",
     r_margin_over: "Deja peste limită azi.", r_margin_value: "Rotația rezistă până la {dT} de încălzire și {rain} mai puțină ploaie (scenariu moderat: în siguranță până spre {year}).",
     r_numbers: "Cifre-cheie", r_bad_years: "Ani proști în istoric", r_mean: "Venit mediu pe ha", r_worst: "Cel mai slab an", r_score: "Scor FieldShift", r_soil_score: "Scor sol",

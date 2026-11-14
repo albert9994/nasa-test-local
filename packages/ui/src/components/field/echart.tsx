@@ -3,11 +3,12 @@
 import { BarChart, CustomChart, LineChart } from "echarts/charts";
 import { GridComponent, MarkLineComponent, TooltipComponent } from "echarts/components";
 import * as echarts from "echarts/core";
+import { LegacyGridContainLabel } from "echarts/features";
 import { CanvasRenderer } from "echarts/renderers";
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-echarts.use([BarChart, CustomChart, LineChart, GridComponent, TooltipComponent, MarkLineComponent, CanvasRenderer]);
+echarts.use([BarChart, CustomChart, LineChart, GridComponent, TooltipComponent, MarkLineComponent, LegacyGridContainLabel, CanvasRenderer]);
 
 export interface Tokens {
   fg: string; muted: string; line: string; surface: string; primary: string; leaf: string; heat: string; data: string; water: string; warn: string; danger: string; ok: string;

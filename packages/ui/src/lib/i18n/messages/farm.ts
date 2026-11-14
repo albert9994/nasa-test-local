@@ -5,7 +5,7 @@ export const farm = {
     theme_dark: "Switch to dark mode", theme_light: "Switch to light mode", currency: "Currency",
     coords: "Coordinates", elevation: "Elevation", slope: "Slope", soil: "Soil", mean_temp: "Mean temperature", annual_rain: "Annual rain", years_data: "Years of data",
     na: "n/a", none: "none", default_loam: "default loam", sand: "sand", clay: "clay",
-    t_clay: "clay", t_sandy_clay_loam: "sandy clay loam", t_clay_loam: "clay loam", t_sandy_loam: "sandy loam", t_silt_loam: "silt loam", t_loam: "loam",
+    t_clay: "clay", t_sandy_clay_loam: "sandy clay loam", t_clay_loam: "clay loam", t_sandy_loam: "sandy loam", t_silt_loam: "silt loam", t_loam: "loam", t_silty_clay_loam: "silty clay loam",
     sources: "Data sources",
   },
   ro: {
@@ -13,7 +13,7 @@ export const farm = {
     theme_dark: "Treci la tema întunecată", theme_light: "Treci la tema luminoasă", currency: "Monedă",
     coords: "Coordonate", elevation: "Altitudine", slope: "Pantă", soil: "Sol", mean_temp: "Temperatura medie", annual_rain: "Ploaie pe an", years_data: "Ani de date",
     na: "n/d", none: "niciunul", default_loam: "lut (implicit)", sand: "nisip", clay: "argilă",
-    t_clay: "argilă", t_sandy_clay_loam: "lut argilo-nisipos", t_clay_loam: "lut argilos", t_sandy_loam: "lut nisipos", t_silt_loam: "lut prăfos", t_loam: "lut",
+    t_clay: "argilă", t_sandy_clay_loam: "lut argilo-nisipos", t_clay_loam: "lut argilos", t_sandy_loam: "lut nisipos", t_silt_loam: "lut prăfos", t_loam: "lut", t_silty_clay_loam: "lut argilo-prăfos",
     sources: "Surse de date",
   },
 };

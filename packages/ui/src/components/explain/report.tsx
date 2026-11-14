@@ -91,7 +91,7 @@ export function ReportSheet() {
           <Row k={t("explain.r_soil")} v={fact.farm.soil} />
           <Row k={t("explain.r_climate")} v={`${fact.farm.climate}, ${first}–${last}`} />
           <Row k={t("explain.r_rotation")} v={names.rotation(rotation)} />
-          <Row k={t("explain.r_rule")} v={t("inputs.bad_below") + ` ${f.money(opts.failNet)}/ha; ` + t("inputs.tolerate") + ` ${Math.round(1 / opts.failShare)}`} />
+          <Row k={t("explain.r_rule")} v={t("explain.r_rule_text", { thr: f.money(opts.failNet), tol: Math.round(1 / opts.failShare) })} />
         </dl>
       </Section>
 

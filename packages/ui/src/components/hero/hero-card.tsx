@@ -100,7 +100,7 @@ export function HeroCard() {
       </div>
 
       <div className="mt-2 flex flex-wrap items-baseline gap-x-8 gap-y-1">
-        <p className="display num text-5xl sm:text-6xl">
+        <p className="display text-5xl tabular-nums sm:text-6xl">
           {tText ?? <Counter value={margin.dT} format={(v) => f.warm(v)} />}
         </p>
         {!margin.already && (

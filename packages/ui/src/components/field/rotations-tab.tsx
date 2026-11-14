@@ -111,9 +111,9 @@ export function RotationsTab() {
     <div className="flex flex-col gap-4">
       <Panel title={t("analysis.rot_title")} sub={t("analysis.rot_intro")} tour="rotation-cards" aside={computing ? <Spinner label={t("analysis.rot_loading")} /> : null}>
         {!base ? (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"><Skeleton className="h-96" /><Skeleton className="h-96" /><Skeleton className="h-96" /><Skeleton className="h-96" /></div>
+          <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @6xl:grid-cols-4"><Skeleton className="h-96" /><Skeleton className="h-96" /><Skeleton className="h-96" /><Skeleton className="h-96" /></div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @6xl:grid-cols-4">
             {cards.map((c) => (
               <RotationCard key={c.id} c={c} baseMean={base.meanNet} adopted={same(c.rot, rotation)} onAdopt={() => setRotation(c.rot)} />
             ))}

@@ -145,7 +145,7 @@ export function FuturesTab() {
             <span className="flex items-center gap-1">{t("analysis.fut_reserve")} ({currency}/ha)<Hint text={t("glossary.ruin")} /></span>
             <input type="number" inputMode="decimal" min={0} step={50} className={`${inputCls} num w-32 text-fg`} value={fromUsd(currency, cashReserve)} onChange={(e) => setCashReserve(toUsd(currency, +e.target.value || 0))} />
           </label>
-          {mock && <p className="rounded-full bg-warn-soft px-3 py-1 text-xs text-warn">{t("common.illustrative")}: {t("analysis.fut_mock")}</p>}
+          {mock && <p className="rounded-full bg-warn-soft px-3 py-1 text-xs text-warn">{t("analysis.fut_mock")}</p>}
         </div>
         {busy && <div className="mt-3"><Spinner label={t("analysis.fut_running", { paths: f.num(PATHS) })} /></div>}
         {error && <p role="alert" className="mt-3 text-sm text-danger">{t("analysis.fut_error")}</p>}
@@ -155,7 +155,7 @@ export function FuturesTab() {
         <div className="grid gap-4 lg:grid-cols-2"><Skeleton className="h-80" /><Skeleton className="h-80" /></div>
       ) : (
         <div className={busy ? "pointer-events-none opacity-60 transition-opacity" : "transition-opacity"} aria-busy={busy}>
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
+          <div className="grid grid-cols-1 gap-4 @4xl:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
             <div className="flex min-w-0 flex-col gap-4">
               <Panel title={t("analysis.fan_title", { paths: f.num(PATHS) })} tour="fan-chart"
                 aside={<span className="flex items-center gap-3 text-xs text-fg-muted"><span className="flex items-center gap-1"><i className="h-0.5 w-4 bg-data" />{t("analysis.fan_p50")}<Hint text={t("analysis.gl_median")} /></span><span className="flex items-center gap-1"><i className="size-3 rounded-sm bg-data-soft" />{t("analysis.fan_band")}<Hint text={t("analysis.gl_p10p90")} /></span></span>}>

@@ -5,7 +5,7 @@ import { AttentionList } from "./attention-list";
 
 export function OverviewTab() {
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 @3xl:grid-cols-2">
       <div className="flex min-w-0 flex-col gap-4">
         <HeroCard />
         <AttentionList />
