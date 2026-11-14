@@ -1,6 +1,7 @@
-// The single place that decides which engine answers. Today: the TypeScript mock (runs on real NASA POWER data).
-// When Albert's WASM build lands (A6/A8), add a `wasm` engine here (inside a Web Worker via Comlink, O1)
-// and switch the default; the UI does not change because every engine implements the same `Engine` interface (C3).
+// The single place that decides which engine answers. In the browser the engine lives in a Web Worker (Comlink, O1) and
+// is the Rust engine compiled to WASM (`wasm.ts`, loaded inside the worker); if the WASM cannot load, the worker falls
+// back to the TypeScript mock (runs on real NASA POWER data). Every engine implements the same `Engine` interface (C3),
+// so the UI does not change. `getEngine().kind` says which one answers ("wasm" | "mock" | "server").
 import { mockEngine } from "./mock";
 import type { Engine } from "./types";
 
@@ -14,6 +15,7 @@ export function setEngine(e: Engine) {
 }
 
 export type EngineVia = "main thread" | "web worker";
+export { createWasmEngine } from "./wasm";
 let via: EngineVia = "main thread";
 export function engineVia(): EngineVia {
   return via;

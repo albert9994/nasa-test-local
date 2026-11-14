@@ -1,6 +1,8 @@
 packages:
   - "apps/*"
   - "packages/*"
+  # wasm-pack output (git-ignored, has its own package.json): a build artifact, not a workspace project
+  - "!packages/engine-wasm"
 
 allowBuilds:
   sharp: false

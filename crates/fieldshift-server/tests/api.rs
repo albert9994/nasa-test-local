@@ -135,3 +135,37 @@ async fn unknown_farm_is_404_and_traversal_is_rejected() {
     .await;
     assert_eq!(s, StatusCode::BAD_REQUEST);
 }
+
+#[tokio::test]
+async fn validate_reports_per_crop_statistics() {
+    let (s, b) = call(
+        "POST",
+        "/api/validate",
+        json!({ "farmId": "iowa", "observed": { "crops": { "maize": { "years": { "2010": 11.0, "2011": 10.6, "2012": 6.9, "2013": 10.9 }, "bogus": { "years": {} } } } } }),
+    )
+    .await;
+    assert_eq!(s, StatusCode::OK, "{b}");
+    let v: Value = serde_json::from_str(&b).unwrap();
+    assert_eq!(v["maize"]["n"], 4);
+    assert!(v["maize"]["rmse"].as_f64().unwrap() > 0.0);
+    assert!(v["maize"]["r"].is_number() && v["maize"]["bias"].is_number());
+    // no observed data and no validation file on disk: a clear 404, never invented numbers
+    let (s, _) = call("POST", "/api/validate", json!({ "farmId": "iowa" })).await;
+    assert_eq!(s, StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn quant_accepts_inline_c11_params_and_new_fields() {
+    let (s, b) = call(
+        "POST",
+        "/api/stress",
+        json!({ "farmId": "iowa", "rotation": rot(), "opts": {}, "kind": "quant",
+                "params": { "paths": 60, "debtService": 200, "livingCost": 100, "sensitivity": true,
+                            "quantParams": { "crops": { "maize": { "priceMean": 150, "vol": 0.3 } }, "inputs": { "jumpProb": 0.1 } } } }),
+    )
+    .await;
+    assert_eq!(s, StatusCode::OK, "{b}");
+    let v: Value = serde_json::from_str(&b).unwrap();
+    assert_eq!(v[0]["sensitivity"].as_array().unwrap().len(), 3);
+    assert!(v[0]["mcSe"]["meanAnnual"].is_number());
+}

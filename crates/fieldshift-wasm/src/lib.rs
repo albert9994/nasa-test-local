@@ -6,7 +6,7 @@
 
 use fieldshift_core::explain::{build_fact_sheet, FactSheet};
 use fieldshift_core::optimize::{optimize, pick_three, PickResult, RankedRotation};
-use fieldshift_core::quant::{quant_simulate, QuantConfig, QuantResult};
+use fieldshift_core::quant::{quant_simulate, QuantConfig, QuantModel, QuantResult};
 use fieldshift_core::rotation::{simulate_rotation, RotationResult};
 use fieldshift_core::score::{compute_score, LlmAdjustment, ScoreResult};
 use fieldshift_core::season::{simulate_season, SeasonResult};
@@ -14,6 +14,7 @@ use fieldshift_core::stress::{
     adaptation_margin, frontier, margin_year, market_shock, FrontierResult, MarginResult,
     MarginYearResult, MarketShockParams,
 };
+use fieldshift_core::validate::{validate, CropValidation, ObservedYields};
 use fieldshift_core::{
     prepare_farm, Constraints, EngineError, FarmPack, PreparedFarm, RotationStep, ScenarioPoint,
     SimOptions, Weights,
@@ -203,18 +204,42 @@ pub fn market_shock_js(
     out(&r)
 }
 
+/// `quantParams` (C11 `quant_params.json` as an object) is optional; literature defaults otherwise.
 #[wasm_bindgen(js_name = quantSimulate)]
 pub fn quant_simulate_js(
     handle: u32,
     rots: JsValue,
     opts: JsValue,
     params: JsValue,
+    quant_params: JsValue,
 ) -> Result<JsValue, JsError> {
     let f = farm(handle)?;
     let rots: Vec<Vec<RotationStep>> = de(rots, "rotations")?;
     let opts: SimOptions = de(opts, "opts")?;
     let params: QuantConfig = de(params, "quant params")?;
-    let r: Vec<QuantResult> = core(quant_simulate(&f, &rots, &opts, &params, None))?;
+    let model: Option<QuantModel> = if quant_params.is_undefined() || quant_params.is_null() {
+        None
+    } else {
+        let v: serde_json::Value = de(quant_params, "C11 quant parameters")?;
+        Some(core(QuantModel::from_json(&v.to_string()))?)
+    };
+    let r: Vec<QuantResult> = core(quant_simulate(&f, &rots, &opts, &params, model.as_ref()))?;
+    out(&r)
+}
+
+/// Calibration report: simulated vs observed county yields (C5 shape `{ crops: { maize: { years: {..} } } }`),
+/// `{ crop: { n, r, rmse, bias, calib, pairs } }`. Never changes the farm's calibration.
+#[wasm_bindgen(js_name = validate)]
+pub fn validate_js(handle: u32, observed: JsValue, opts: JsValue) -> Result<JsValue, JsError> {
+    let f = farm(handle)?;
+    let observed: ObservedYields = de(observed, "observed yields")?;
+    let opts: SimOptions = if opts.is_undefined() || opts.is_null() {
+        SimOptions::default()
+    } else {
+        de(opts, "opts")?
+    };
+    let r: std::collections::BTreeMap<String, CropValidation> =
+        core(validate(&f, &observed, &opts))?;
     out(&r)
 }
 

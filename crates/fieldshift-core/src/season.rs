@@ -1,4 +1,7 @@
+use crate::co2;
 use crate::crops::{season_crop, SeasonCrop};
+use crate::et0::et0_day;
+pub use crate::et0::hargreaves_et0;
 use crate::{round1, round2, PreparedFarm, Result, SimOptions, WeatherYear};
 use serde::{Deserialize, Serialize};
 
@@ -112,22 +115,34 @@ pub fn simulate_season_ctx(
 ) -> SeasonResult {
     let canonical = crop.id;
     let year = wy.year;
+    // southern hemisphere: the growing season sits in the second half of the calendar year
+    let south_off: usize = if farm.meta.lat < 0.0 { 182 } else { 0 };
     // Handle managed fallow fast path
     if canonical == "fallow" {
         let mut rain_sum = 0.0_f64;
         let mut runoff_sum = 0.0_f64;
         let mut eta_sum = 0.0_f64;
         let mut etp_sum = 0.0_f64;
-        let p_mult = (1.0 + opts.d_p).max(0.0);
         let max_taw = farm.soil.taw_mm_per_m * 1.2;
         let mut sw = (ctx.initial_fill * max_taw).clamp(15.0, max_taw);
 
-        for d in 90..240.min(wy.days()) {
-            let tmax = wy.tmax[d] + opts.d_t;
-            let tmin = wy.tmin[d] + opts.d_t;
-            let prcp = wy.prcp[d] * p_mult;
-            let rad = wy.rad[d];
-            let et0 = hargreaves_et0(tmax, tmin, rad);
+        let fallow_start = 90 + south_off;
+        for d in fallow_start..(240 + south_off).min(wy.span_days()) {
+            let w = wy.day(d);
+            let m = wy.month(d);
+            let dt = opts.d_t_month(m);
+            let (tmax, tmin) = (w.tmax + dt, w.tmin + dt);
+            let prcp = w.prcp * opts.p_mult_month(m);
+            let et0 = et0_day(
+                tmax,
+                tmin,
+                w.rad,
+                w.rh,
+                w.wind,
+                farm.meta.lat,
+                farm.meta.elev,
+                doy_of(wy, d),
+            );
             let etc = et0 * crop.kc_mid;
             let ro = scs_runoff(prcp, farm.soil.cn2);
             let infil = (prcp - ro).max(0.0);
@@ -143,8 +158,8 @@ pub fn simulate_season_ctx(
         return SeasonResult {
             crop: canonical.to_string(),
             year,
-            sow: 90,
-            harvest: 240,
+            sow: 90 + south_off,
+            harvest: 240 + south_off,
             yield_t_ha: 0.0,
             net: round1(-cost),
             matured: true,
@@ -166,7 +181,7 @@ pub fn simulate_season_ctx(
             },
             trace: if trace {
                 Some(SeasonTrace {
-                    idx: vec![90, 165, 240],
+                    idx: vec![90 + south_off, 165 + south_off, 240 + south_off],
                     fill: vec![
                         round2(ctx.initial_fill),
                         round2(((sw / max_taw) + ctx.initial_fill) * 0.5),
@@ -186,20 +201,24 @@ pub fn simulate_season_ctx(
         };
     }
 
-    let southern_shift: isize = if farm.meta.lat < 0.0 { 182 } else { 0 };
+    let southern_shift = south_off as isize;
     let sow_shift = opts.sow_shift as isize + southern_shift;
+    let co2_ppm = opts.co2();
+    let etc_co2 = co2::etc_factor(canonical, co2_ppm);
 
-    // 1. Determine sowing day-of-year (0-indexed internally, 1-indexed in output)
-    let n_days = wy.days();
+    // 1. Determine sowing day-of-year (0-indexed internally, 1-indexed in output). Southern-hemisphere seasons run
+    //    past 31 December into the next calendar year (`WeatherYear::head`).
+    let n_days = wy.span_days();
     let sow_idx = if crop.winter {
-        // Winter crop starts in early spring after overwintering (or autumn DOY shifted to spring active window)
-        // We simulate the active spring-summer growth + autumn establishment water balance
-        let base_spring_doy = (55 + sow_shift).clamp(25, 110) as usize;
+        // Winter crop: autumn sowing is in the previous season; we simulate the active growth after the cold season
+        // (late Feb in the north, late Aug in the south) plus the autumn-established water balance.
+        let lo = 25 + southern_shift;
+        let base_spring_doy = (55 + sow_shift).clamp(lo, 110 + southern_shift) as usize;
         base_spring_doy.min(n_days.saturating_sub(60))
     } else {
-        let start_doy = ((crop.sow_start_doy as isize + sow_shift).clamp(15, 300) as usize)
+        let start_doy = ((crop.sow_start_doy as isize + sow_shift).clamp(15, 340) as usize)
             .min(n_days.saturating_sub(45));
-        let end_doy = ((crop.sow_end_doy as isize + sow_shift).clamp(start_doy as isize + 5, 320)
+        let end_doy = ((crop.sow_end_doy as isize + sow_shift).clamp(start_doy as isize + 5, 360)
             as usize)
             .min(n_days.saturating_sub(30));
 
@@ -210,7 +229,8 @@ pub fn simulate_season_ctx(
             let mut t_sum = 0.0_f64;
             let mut count = 0.0_f64;
             for k in w_start..=d {
-                let tmean = 0.5 * (wy.tmax[k] + wy.tmin[k]) + opts.d_t;
+                let w = wy.day(k);
+                let tmean = 0.5 * (w.tmax + w.tmin) + opts.d_t_month(wy.month(k));
                 t_sum += tmean;
                 count += 1.0;
             }
@@ -246,7 +266,6 @@ pub fn simulate_season_ctx(
         crop.gdd_maturity * maturity_mult
     };
 
-    let p_mult = (1.0 + opts.d_p).max(0.0);
     let mut gdd_accum = 0.0_f64;
     let mut irr_remaining = opts.irrig_cap.max(0.0);
 
@@ -274,7 +293,7 @@ pub fn simulate_season_ctx(
     } else {
         crop.max_season_days
     };
-    let end_limit = (sow_idx + max_days).min(n_days - 1);
+    let end_limit = (sow_idx + max_days).min(n_days.saturating_sub(1));
 
     let mut trace_idx = Vec::new();
     let mut trace_fill = Vec::new();
@@ -294,11 +313,13 @@ pub fn simulate_season_ctx(
     let mut matured = false;
 
     for d in sow_idx..=end_limit {
-        let tmax = wy.tmax[d] + opts.d_t;
-        let tmin = wy.tmin[d] + opts.d_t;
+        let w = wy.day(d);
+        let month = wy.month(d);
+        let dt = opts.d_t_month(month);
+        let tmax = w.tmax + dt;
+        let tmin = w.tmin + dt;
         let tmean = 0.5 * (tmax + tmin);
-        let prcp = wy.prcp[d] * p_mult;
-        let rad = wy.rad[d];
+        let prcp = w.prcp * opts.p_mult_month(month);
 
         // GDD accumulation: max(0, min(Tmean, Tupper) - Tbase)
         let daily_gdd = (tmean.min(crop.t_upper) - crop.t_base).max(0.0);
@@ -352,9 +373,19 @@ pub fn simulate_season_ctx(
             crop.kc_mid + f * (crop.kc_end - crop.kc_mid)
         };
 
-        // Reference ET0 (Hargreaves with NASA POWER solar radiation) & ETc
-        let et0 = hargreaves_et0(tmax, tmin, rad);
-        let etc = (et0 * kc).max(0.05);
+        // Reference ET0: FAO-56 Penman-Monteith from POWER T, RH, wind, radiation (Hargreaves if RH/wind are missing);
+        // CO2 closes stomata, which lowers the transpiration demand (co2.rs)
+        let et0 = et0_day(
+            tmax,
+            tmin,
+            w.rad,
+            w.rh,
+            w.wind,
+            farm.meta.lat,
+            farm.meta.elev,
+            doy_of(wy, d),
+        );
+        let etc = (et0 * kc * etc_co2).max(0.05);
 
         // Rain -> SCS Curve Number runoff -> infiltration
         let ro = scs_runoff(prcp, farm.soil.cn2);
@@ -504,6 +535,7 @@ pub fn simulate_season_ctx(
         * f_frost
         * f_duration
         * ctx.rotation_factor
+        * co2::yield_factor(canonical, co2_ppm)
         * calib)
         .max(0.0);
 
@@ -559,19 +591,15 @@ pub fn simulate_season_ctx(
     }
 }
 
-/// Hargreaves reference evapotranspiration ET0 (mm/day) incorporating NASA POWER solar radiation.
+/// 1-based day of the calendar year of season day `d` (continues at 1 in the next year).
 #[inline]
-pub fn hargreaves_et0(tmax: f64, tmin: f64, rad_mj_m2_d: f64) -> f64 {
-    let tmean = 0.5 * (tmax + tmin);
-    if tmean <= -5.0 {
-        return 0.0;
+fn doy_of(wy: &WeatherYear, d: usize) -> usize {
+    let n = wy.days();
+    if d < n {
+        d + 1
+    } else {
+        d - n + 1
     }
-    let td = (tmax - tmin).max(2.0);
-    // Latent heat of vaporization ~2.45 MJ/kg converts MJ/m2/d to equivalent mm/d
-    let rad_equiv_mm = (rad_mj_m2_d.max(2.0)) * 0.408;
-    // Radiation-calibrated Hargreaves-Samani formulation
-    let et0 = 0.0102 * (tmean + 17.8).max(0.0) * rad_equiv_mm * (td / 12.0).sqrt();
-    et0.clamp(0.1, 10.5)
 }
 
 /// SCS Curve Number surface runoff (mm/day) from daily rainfall (mm) and CN2.
