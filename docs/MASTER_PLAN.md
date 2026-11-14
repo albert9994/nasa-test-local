@@ -55,6 +55,7 @@ Target awards: *Best Use of Science*, *Best Use of Data*, *Global Impact*.
 - [ ] P1 **Quant engine**: Monte Carlo futures 2026–2050 (weather bootstrap × CMIP6, mean-reverting correlated prices, cost jumps) → fan chart, VaR/CVaR, ruin probability, margin-year distribution
 - [ ] P1 Market shock (price ±30 %, inputs +40 %) + budget/equipment constraints in the optimizer
 - [ ] P2 Risk–return frontier (rotations as a portfolio, mean-CVaR)
+- [ ] P1 **FieldShift Score**: simulator + quant + Rhai agronomy rules + data signals + bounded LLM adjustment (±10) → score 0–100, confidence, waterfall
 
 ### Data (Luca + Moldo + Albert)
 - [ ] P0 NASA POWER daily packs for demo farms
@@ -67,7 +68,7 @@ Target awards: *Best Use of Science*, *Best Use of Data*, *Global Impact*.
 ### App + light site + AI explanations (Octa + Ionut; LLM endpoint Albert, prompts Luca)
 - [ ] P0 Map + farm selection; inputs; hero margin; year-by-year chart
 - [ ] P1 Compare cards, frontier heatmap, drought replay, live click anywhere
-- [ ] P1 Validation + data-provenance panel, LLM-written plan, light site (Astro) with instant WASM demo
+- [ ] P1 Validation + data-provenance panel, LLM-written plan, light site (Next.js static pages + Three.js hero) with instant WASM demo
 - [ ] P1 "Explain this" (LLM streams a plain-language explanation from the engine's fact sheet; template fallback)
 - [ ] P2 Chat "what if…" where the LLM calls the Rust simulator as a tool
 - [ ] P2 Share link, "why?" tooltips, field polygon, i18n, offline/PWA

@@ -5,31 +5,32 @@ Each contract names a **mock**, so whoever consumes the data can start before it
 
 | ID | What | Producer → consumers | Mock |
 |---|---|---|---|
-| C1 | Farm pack = layers merged by `build_packs.py` | Luca (+ Moldo, Albert layers) → Albert, Octa, Ionut | `web/data/mock/tiny_pack.json` (Luca, 15 min) |
+| C1 | Farm pack = layers merged by `build_packs.py` | Luca (+ Moldo, Albert layers) → Albert, Octa, Ionut | `apps/web/public/data/mock/tiny_pack.json` (Luca, 15 min) |
 | C2 | Rotation + options objects | Albert defines → everyone | shapes only |
 | C3 | Engine API (Rust crate → WASM + server) | Albert (`season/rotation`) + Ionut (`stress/optimize`) + Moldo (`crops/soil_health`) → Octa, Ionut, Luca | Rust stub compiled to WASM with fake numbers (Albert, A6) |
-| C4 | Climate scenarios layer | Luca → Ionut, Albert, Luca (deck) | `web/data/mock/scenarios.json` (Luca) |
+| C4 | Climate scenarios layer | Luca → Ionut, Albert, Luca (deck) | `apps/web/public/data/mock/scenarios.json` (Luca) |
 | C5 | County yields | Moldo → Luca, Moldo | — |
-| C6 | Validation summary | Luca → Ionut, Albert, Luca (deck) | `web/data/mock/summary.json` (Luca) |
+| C6 | Validation summary | Luca → Ionut, Albert, Luca (deck) | `apps/web/public/data/mock/summary.json` (Luca) |
 | C7 | AppEEARS layers (stretch) | Moldo (M11) → Albert (engine), Octa (badges) | — |
 | C8 | Farm presets + economics | Moldo → Luca (packs), Albert (engine defaults) | — |
-| C9 | Server API (Axum) | Albert → Octa | fixed JSON files in `web/data/mock/api/` (Albert, 15 min) |
+| C9 | Server API (Axum) | Albert → Octa | fixed JSON files in `apps/web/public/data/mock/api/` (Albert, 15 min) |
 | C11 | Quant parameters (`data/quant_params.json`) | Moldo (M12) → Ionut (I6) | literature defaults inside `quant.rs` |
-| C10 | LLM fact sheet + `/api/explain` | Albert (fact sheet in Rust) + Luca (prompt, fallback texts) → Octa (UI) | `web/data/mock/api/explain.json` |
+| C12 | FieldShift Score (`/api/score`) | Ionut (`score.rs`, rules runner) + Moldo (rules) + Albert (LLM adjust) → Octa | `apps/web/public/data/mock/api/score.json` |
+| C10 | LLM fact sheet + `/api/explain` | Albert (fact sheet in Rust) + Luca (prompt, fallback texts) → Octa (UI) | `apps/web/public/data/mock/api/explain.json` |
 
 ---
 
 ## C1 · Farm pack, built from layers (no two people write the same file)
 Each producer writes **one layer file per farm**:
 ```
-web/data/layers/<farmId>/meta.json        ← Moldo (from pipeline/presets.json, C8)
-web/data/layers/<farmId>/weather.json     ← Luca (NASA POWER)
-web/data/layers/<farmId>/soil.json        ← Luca (SoilGrids)
-web/data/layers/<farmId>/ndvi.json        ← Moldo (MODIS)
-web/data/layers/<farmId>/scenarios.json   ← Luca (NEX-GDDP-CMIP6, C4)
-web/data/layers/<farmId>/appeears.json    ← Moldo, stretch M11 (SMAP, ECOSTRESS, slope, C7)
+apps/web/public/data/layers/<farmId>/meta.json        ← Moldo (from pipeline/presets.json, C8)
+apps/web/public/data/layers/<farmId>/weather.json     ← Luca (NASA POWER)
+apps/web/public/data/layers/<farmId>/soil.json        ← Luca (SoilGrids)
+apps/web/public/data/layers/<farmId>/ndvi.json        ← Moldo (MODIS)
+apps/web/public/data/layers/<farmId>/scenarios.json   ← Luca (NEX-GDDP-CMIP6, C4)
+apps/web/public/data/layers/<farmId>/appeears.json    ← Moldo, stretch M11 (SMAP, ECOSTRESS, slope, C7)
 ```
-`python3 pipeline/build_packs.py` (Luca) merges whatever layers exist into `web/data/farms/<farmId>.json` and writes `index.json`.
+`python3 pipeline/build_packs.py` (Luca) merges whatever layers exist into `apps/web/public/data/farms/<farmId>.json` and writes `index.json`.
 **Anyone may run it** after adding a layer. Missing layers are simply absent keys, and the app must cope.
 
 Merged pack:
@@ -120,14 +121,14 @@ fs.factSheet(farmHandle, rotation, opts, picks) → C10 fact sheet
   "ssp585": { … } }
 ```
 
-## C5 · County yields (`web/data/validation/<farm>.json`)
+## C5 · County yields (`apps/web/public/data/validation/<farm>.json`)
 ```json
 { "farm": "iowa", "region": "Story County, IA", "source": "USDA NASS Quick Stats", "url": "…",
   "crops": { "maize": { "unit": "t/ha", "years": { "2002": 10.9 } } } }
 ```
 Corn bu/ac × 0.0628 = t/ha; soybean/wheat bu/ac × 0.0673.
 
-## C6 · Validation summary (`web/data/validation/summary.json`)
+## C6 · Validation summary (`apps/web/public/data/validation/summary.json`)
 ```json
 { "iowa": { "maize": { "n": 24, "r": 0.71, "rmse": 1.2, "bias": -0.1, "calib": 1.12, "pairs": [[2002, 10.9, 10.1]] },
             "ndvi": { "n": 24, "r": 0.57 } } }
@@ -194,3 +195,19 @@ Rules (Luca writes the prompt in `prompts/explain_*.md`):
 - `vol`: annual volatility of log price; `reversion`: Ornstein–Uhlenbeck speed (per year); `yieldCorr`: correlation of price with the regional yield shock (negative = natural hedge).
 - Weather paths reuse real seasons (block bootstrap) shifted along `scenarios.<ssp>.series`, sampling between p10 and p90 per path.
 - These are **scenario probabilities, not forecasts**; the UI and the LLM must say so.
+
+## C12 · FieldShift Score (`POST /api/score` → JSON)
+```json
+{ "rotation": "winter wheat → sorghum → pea",
+  "score": 78, "confidence": "medium",
+  "subscores": { "climate": 85, "financialRisk": 72, "profit": 64, "soil": 70, "water": 80, "feasibility": 95 },
+  "weights": { "climate": 0.3, "financialRisk": 0.25, "profit": 0.25, "soil": 0.1, "water": 0.05, "feasibility": 0.05 },
+  "base": 76,
+  "rules": [ { "id": "legume_before_cereal", "delta": 3, "reason": "pea leaves nitrogen for the next wheat" } ],
+  "excludedBy": null,
+  "llm": { "delta": -1, "reason": "farmer reports compacted soil; first-year sorghum may lag", "confidence": "medium" },
+  "waterfall": [ ["base", 76], ["rules", 3], ["llm", -1], ["final", 78] ] }
+```
+- Combines: simulator (climate, profit, water), quant (financial risk), rules (feasibility, soil bonuses), data signals (confidence), LLM (bounded ±10).
+- Rules are Rhai scripts: `fn apply(rot, farm, profile) -> #{ exclude: bool, delta: int, reason: string }`.
+- The LLM adjustment is schema-validated; out of range or invalid → `delta: 0`.

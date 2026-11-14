@@ -7,7 +7,7 @@
 | **Moldo** | Agronomy: the practical side (crops, rotations, economics, equipment, "does this make sense to a farmer?") | NDVI + yield data, soil health, **quant price/yield parameters** | `M1…` | [MOLDO.md](MOLDO.md) |
 | **Luca** | Data pipeline (weather, soil, climate projections) + validation numbers | Story: persona, copy, **LLM prompts**, deck | `LU1…` | [LUCA.md](LUCA.md) |
 | **Ionut** | **Rust** stress test, optimizer and **quant engine** (Monte Carlo futures + risk metrics) + charts + design system | Validation panel, video graphics | `I1…` | [IONUT.md](IONUT.md) |
-| **Octa** | Frontend lead: full app (WASM in the browser), **light site** (Astro), AI-explanation UI, replay, live click, deploy | **The video** | `O1…` | [OCTA.md](OCTA.md) |
+| **Octa** | Frontend lead: full app (WASM in the browser), **light site** (Next.js static pages + Three.js hero), AI-explanation UI, replay, live click, deploy | **The video** | `O1…` | [OCTA.md](OCTA.md) |
 
 Nobody does "one thing". Everyone works in **2–3 workstreams**, always paired with someone:
 
@@ -15,8 +15,9 @@ Nobody does "one thing". Everyone works in **2–3 workstreams**, always paired 
 |---|---|---|---|
 | **Engine** (Rust: simulation, stress, quant) | Albert | Moldo (agronomy + quant params), Ionut (stress/optimizer/quant) | `crates/` |
 | **AI explanations** (LLM via our API) | Albert (server) | Luca (prompts), Octa (UI), Moldo (reviews answers) | `/api/explain`, `prompts/` |
-| **Data** (NASA pipelines) | Luca | Moldo (NDVI, yields, farm presets), Albert (AppEEARS) | `pipeline/`, `web/data/` |
-| **App + light site** (frontend) | Octa | Ionut (charts, design system, cards, frontier, panels) | `web/`, `site/` |
+| **Data** (NASA pipelines) | Luca | Moldo (NDVI, yields, farm presets), Albert (AppEEARS) | `pipeline/`, `apps/web/public/data/` |
+| **App + light site** (Next.js + React + Three.js) | Octa | Ionut (charts, design system, cards, frontier, panels) | `apps/web/`, `packages/ui/` |
+| **FieldShift Score** (simulator + quant + rules + data + LLM) | Ionut | Moldo (rules), Albert (LLM adjust), Octa (score card) | `score.rs`, `rules/`, `/api/score` |
 | **Story** (pitch, deck, video) | Luca (deck) · Octa (video) | Ionut (design), Moldo (farmer realism), Albert (pitch) | deck, video, copy |
 | **Integration + submission** | Albert | Octa (backup merger) | `main`, checkpoints, submission |
 
@@ -76,7 +77,7 @@ A checkpoint **passes** when every item is done, or Albert explicitly accepts th
 ### CP1 · T+3 · "Foundations"
 - [ ] A4 AppEEARS requests **submitted** (queue takes hours)
 - [ ] A5 [02_CONTRACTS.md](02_CONTRACTS.md) signed off
-- [ ] A1 Rust → WASM "hello" runs in everyone's browser · A6 Rust stub built to `web/pkg` (Ionut and Octa build on it)
+- [ ] A1 Rust → WASM "hello" runs in everyone's browser · A6 Rust stub built to `packages/engine-wasm` (Ionut and Octa build on it)
 - [ ] LU1 first real pack (Iowa weather) merged · *fallback: the mock pack*
 - [ ] I1 wireframe + design tokens; LU2 persona started
 - [ ] O1 app shell shows the map with farm markers (work in progress is fine)
@@ -157,10 +158,10 @@ flowchart LR
 | Person | Files |
 |---|---|
 | Albert | `Cargo.toml` · `crates/fieldshift-core/src/{lib,season,rotation,soil,explain}.rs` · `crates/fieldshift-wasm/` · `crates/fieldshift-server/` · Rust tests · `docs/team/*`, `docs/CHALLENGE.md`, `docs/SUBMISSION.md`, `docs/SCIENCE.md`, `README.md` |
-| Moldo | `crates/fieldshift-core/data/crops.json`, `src/soil_health.rs` · `data/equipment.json`, `data/quant_params.json` · `pipeline/presets.json`, `pipeline/ndvi/`, `pipeline/yields/`, `pipeline/quant/`, `pipeline/appeears/` · `web/data/validation/<farm>.json` · `docs/QA.md` |
-| Luca | `pipeline/power/`, `pipeline/soil/`, `pipeline/cmip6/`, `pipeline/build_packs.py` · `web/data/farms/*`, `web/data/layers/*` (assembly), `web/data/mock/*` · `web/data/validation/summary.json` · `prompts/*` (LLM) · `docs/DATA_SOURCES.md`, `docs/STORY.md` |
-| Ionut | `crates/fieldshift-core/src/{stress,optimize,quant}.rs` · `web/css/*` (shared with the site) · `web/src/charts.ts` · `web/src/ui/{compare,frontier,marginyear,science}.ts` · `assets/brand/` |
-| Octa | `web/` shell (`index.html`, `src/main.ts`, `src/ui/{inputs,hero,yearly,replay,explain,report}.ts`, `src/data/*`) · `site/` (Astro) · deployment (app + site) · video |
+| Moldo | `rules/*.rhai` (agronomy rules) · `crates/fieldshift-core/data/crops.json`, `src/soil_health.rs` · `data/equipment.json`, `data/quant_params.json` · `pipeline/presets.json`, `pipeline/ndvi/`, `pipeline/yields/`, `pipeline/quant/`, `pipeline/appeears/` · `apps/web/public/data/validation/<farm>.json` · `docs/QA.md` |
+| Luca | `pipeline/power/`, `pipeline/soil/`, `pipeline/cmip6/`, `pipeline/build_packs.py` · `apps/web/public/data/farms/*`, `apps/web/public/data/layers/*` (assembly), `apps/web/public/data/mock/*` · `apps/web/public/data/validation/summary.json` · `prompts/*` (LLM) · `docs/DATA_SOURCES.md`, `docs/STORY.md` |
+| Ionut | `crates/fieldshift-core/src/{stress,optimize,quant,score,rules}.rs` · Tailwind theme + `apps/web/styles/*` · `packages/ui/charts/*` · `apps/web/components/{compare,frontier,marginyear,science}.tsx` · `assets/brand/` |
+| Octa | `apps/web/` Next.js (routes, `components/{inputs,hero,yearly,replay,explain,report,hero3d}.tsx`, `lib/data/*`, WASM worker) · deployment (Vercel) · video |
 
 - Branch per task (`lu1-power`, `a7-season`, `o4-replay`…), small PRs. Albert merges (Octa while Albert sleeps). **`main` must always load.**
 - Exception: during a sleep shift, the merger may make an urgent fix in a sleeping person's file and tells them on wake-up.

@@ -2,8 +2,8 @@
 
 **You are:** the owner of the NASA data pipeline (weather, soil, climate projections) and of the **validation numbers**
 that win the *Validity* score. You also own the story: persona, plain-language copy and the deck.
-**You own:** `pipeline/power/`, `pipeline/soil/`, `pipeline/cmip6/`, `pipeline/build_packs.py` · `web/data/farms/*`, `web/data/mock/*` · `prompts/*` (LLM prompts + fallback templates) ·
-`web/data/validation/summary.json` · `docs/DATA_SOURCES.md`, `docs/STORY.md` · the deck.
+**You own:** `pipeline/power/`, `pipeline/soil/`, `pipeline/cmip6/`, `pipeline/build_packs.py` · `apps/web/public/data/farms/*`, `apps/web/public/data/mock/*` · `prompts/*` (LLM prompts + fallback templates) ·
+`apps/web/public/data/validation/summary.json` · `docs/DATA_SOURCES.md`, `docs/STORY.md` · the deck.
 **Your partners:** Moldo (NDVI, yields, presets → your packs) · Albert (consumes packs; LLM endpoint) · Ionut (wireframe, design) · Octa (copy, video).
 **Sleep:** shift 1, ≈T+11.5 → T+15.5. **Start the CMIP6 downloads before you sleep.**
 **Setup:** Earthdata account (urs.earthdata.nasa.gov); `pip install requests numpy pandas xarray netCDF4 s3fs`.
@@ -11,7 +11,7 @@ that win the *Validity* score. You also own the story: persona, plain-language c
 ## Your tasks in order
 | # | Task | With | Needs / start when | Done when | Unblocks | Est. | By |
 |---|---|---|---|---|---|---|---|
-| LU0 | **Mocks** (15 min): `web/data/mock/tiny_pack.json` (C1 shape, 2 years of fake values), `mock/scenarios.json` (C4), `mock/summary.json` (C6) | — | T0 | Merged | A6, O1, I6, I7 | 15 m | T+0.5 |
+| LU0 | **Mocks** (15 min): `apps/web/public/data/mock/tiny_pack.json` (C1 shape, 2 years of fake values), `mock/scenarios.json` (C4), `mock/summary.json` (C6) | — | T0 | Merged | A6, O1, I6, I7 | 15 m | T+0.5 |
 | LU1 | **NASA POWER weather** `pipeline/power/` → `layers/<farm>/weather.json` (daily `T2M_MAX, T2M_MIN, PRECTOTCORR, GWETROOT, ALLSKY_SFC_SW_DWN, RH2M, WS2M`, `community=AG`, 2001–2025; one request per farm, ~2 s). Plus **`pipeline/build_packs.py`** (merges layers → `farms/<id>.json` + `index.json`). **Iowa first** | — | A2 farms | Iowa pack merged by T+2.5, all farms by T+3 | **A7, O1** | 2 h | **CP1** |
 | LU2 | **Persona + storyboard**: one farmer (name, farm, worry, phone or laptop) + the 30-s video storyboard (6 frames, below) → Drive `02 Design` | **Ionut** (wireframe) | LU1 | Approved at the story sync (T+4) | I1, **O9** | 1.5 h | T+4 |
 | LU3 | **SoilGrids soil** `pipeline/soil/` → `layers/<farm>/soil.json`: sand, clay, silt, SOC, bulk density, pH at 0–5, 5–15, 15–30, 30–60, 60–100 cm. Use the **WCS** service first (`maps.isric.org/mapserv?map=/map/<prop>.map`, tiny GeoTIFF around the point → median); the REST API is often down (503). Divide by the d_factor (10, or 100 for bdod) | — | LU2 | Soil in every pack | **A7** | 2 h | T+6 |

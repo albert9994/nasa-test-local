@@ -11,9 +11,9 @@ We build FieldShift **from zero** this weekend. (An earlier throw-away prototype
 | [MOLDO.md](MOLDO.md) | Moldo | Agronomy (crops, rotations, economics, equipment, realism) + NDVI and yield data + soil health + quant price/yield parameters |
 | [LUCA.md](LUCA.md) | Luca | Data pipeline (weather, soil, climate projections) + validation numbers + persona, copy, LLM prompts, deck |
 | [IONUT.md](IONUT.md) | Ionut | Design system + charts + Rust stress test, optimizer and **quant engine** + cards/panels + video graphics |
-| [OCTA.md](OCTA.md) | Octa | Frontend lead: full app (WASM), light site (Astro), AI-explanation UI, replay, live click, deploy + **the video** |
+| [OCTA.md](OCTA.md) | Octa | Frontend lead: full app (WASM), light site (Next.js static pages + Three.js hero), AI-explanation UI, replay, live click, deploy + **the video** |
 
-Product brainstorm (Romanian): app vs light site, Rust engine, LLM, **quant engine**: [../BRAINSTORM.md](../BRAINSTORM.md).
+Product brainstorm (Romanian): app vs light site, full stack (Next.js, React, Three.js, Rust), LLM, **quant engine**, **hybrid FieldShift Score**, **monetization**: [../BRAINSTORM.md](../BRAINSTORM.md).
 Feature ideas, judging, pitch and Q&A: [../MASTER_PLAN.md](../MASTER_PLAN.md).
 Competitors and design inspiration (with what each person should steal): [../INSPIRATION.md](../INSPIRATION.md).
 Who is affected and why FieldShift helps (sources for the deck and Q&A): [../IMPACT_EVIDENCE.md](../IMPACT_EVIDENCE.md).

@@ -51,7 +51,7 @@ Then the app shows how to get more margin:
 
 ### What we build this weekend (all from zero)
 One **Rust engine** (`fieldshift-core`: simulator, stress test, optimizer, **quant engine**) used two ways:
-- compiled to **WASM** in the browser: the **light site** (Astro landing + instant demo) and the live sliders of the app;
+- compiled to **WASM** in the browser: the **light site** (Next.js static landing with a Three.js 3D hero + instant demo) and the live sliders of the app;
 - natively in an **Axum server**: heavy runs (10,000 Monte Carlo futures) and the **LLM explanation endpoint** (our API), which explains results to the farmer using only the engine's numbers.
 
 Plus a **Python data pipeline** that caches NASA data for the demo farms, and **live NASA data** for any point clicked on the map.
