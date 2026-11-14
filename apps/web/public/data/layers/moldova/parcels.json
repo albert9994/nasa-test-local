@@ -1,0 +1,909 @@
+{
+  "type": "FeatureCollection",
+  "farmId": "moldova",
+  "locality": "Perieni / Bârlad, Jud. Vaslui",
+  "defaultZoom": 14.8,
+  "center": [
+    27.73,
+    46.65
+  ],
+  "source": "NASA/USGS HLS Sentinel-2/Landsat 10–30m field boundaries + NASADEM 30m slope + SoilGrids 250m",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "moldova-P01",
+      "properties": {
+        "id": "moldova-P01",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S01 — Dealul Morii Sus",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.2,
+        "slope": 6.9,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 16.4,
+        "currentCrop": "wheat",
+        "rotation": [
+          "wheat",
+          "maize",
+          "sunflower"
+        ],
+        "hlsNdviPeak": 0.71,
+        "ndviAnomaly4YrPct": -5.8,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 6% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.722,
+          46.65626
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.718399,
+              46.655529
+            ],
+            [
+              27.724597,
+              46.654299
+            ],
+            [
+              27.725605,
+              46.656982
+            ],
+            [
+              27.719407,
+              46.658212
+            ],
+            [
+              27.718399,
+              46.655529
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P02",
+      "properties": {
+        "id": "moldova-P02",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S02 — Dealul Morii Mijloc",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 14.5,
+        "slope": 7.0,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 16.8,
+        "currentCrop": "maize",
+        "rotation": [
+          "maize",
+          "sunflower",
+          "barley"
+        ],
+        "hlsNdviPeak": 0.75,
+        "ndviAnomaly4YrPct": -0.2,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 0% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.72854,
+          46.65497
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.725023,
+              46.654225
+            ],
+            [
+              27.73117,
+              46.653101
+            ],
+            [
+              27.732054,
+              46.655713
+            ],
+            [
+              27.725907,
+              46.656837
+            ],
+            [
+              27.725023,
+              46.654225
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P03",
+      "properties": {
+        "id": "moldova-P03",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S03 — Coasta Perieni Nord",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 16.2,
+        "slope": 6.9,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 18.0,
+        "currentCrop": "sunflower",
+        "rotation": [
+          "sunflower",
+          "barley",
+          "pea"
+        ],
+        "hlsNdviPeak": 0.77,
+        "ndviAnomaly4YrPct": 3.3,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 3% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.73508,
+          46.65368
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.731207,
+              46.653008
+            ],
+            [
+              27.737647,
+              46.65167
+            ],
+            [
+              27.738944,
+              46.654356
+            ],
+            [
+              27.732504,
+              46.655694
+            ],
+            [
+              27.731207,
+              46.653008
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P04",
+      "properties": {
+        "id": "moldova-P04",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S04 — Coasta Perieni Sud",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.6,
+        "slope": 7.4,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 17.7,
+        "currentCrop": "barley",
+        "rotation": [
+          "barley",
+          "pea",
+          "sorghum"
+        ],
+        "hlsNdviPeak": 0.8,
+        "ndviAnomaly4YrPct": 6.2,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 6% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.74161,
+          46.6524
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.737841,
+              46.651702
+            ],
+            [
+              27.744203,
+              46.65043
+            ],
+            [
+              27.745383,
+              46.653089
+            ],
+            [
+              27.739021,
+              46.654362
+            ],
+            [
+              27.737841,
+              46.651702
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P05",
+      "properties": {
+        "id": "moldova-P05",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S05 — Terasa Bârlad V",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.2,
+        "slope": 7.2,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 15.4,
+        "currentCrop": "sorghum",
+        "rotation": [
+          "pea",
+          "sorghum",
+          "soybean"
+        ],
+        "hlsNdviPeak": 0.71,
+        "ndviAnomaly4YrPct": -5.1,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 5% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.7208,
+          46.65337
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.717265,
+              46.652632
+            ],
+            [
+              27.723379,
+              46.651383
+            ],
+            [
+              27.72433,
+              46.654112
+            ],
+            [
+              27.718216,
+              46.655361
+            ],
+            [
+              27.717265,
+              46.652632
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P06",
+      "properties": {
+        "id": "moldova-P06",
+        "farmId": "moldova",
+        "isDefaultParcel": true,
+        "name": "S06 — Terasa Bârlad E (Principală)",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 14.6,
+        "slope": 6.5,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 16.5,
+        "currentCrop": "maize",
+        "rotation": [
+          "maize",
+          "sunflower",
+          "wheat"
+        ],
+        "hlsNdviPeak": 0.64,
+        "ndviAnomaly4YrPct": -14.5,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 14% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.72733,
+          46.65208
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.72375,
+              46.651355
+            ],
+            [
+              27.729966,
+              46.650217
+            ],
+            [
+              27.730918,
+              46.652815
+            ],
+            [
+              27.724702,
+              46.653953
+            ],
+            [
+              27.72375,
+              46.651355
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P07",
+      "properties": {
+        "id": "moldova-P07",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S07 — Pârâul Rece",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.4,
+        "slope": 5.8,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 17.1,
+        "currentCrop": "millet",
+        "rotation": [
+          "soybean",
+          "millet",
+          "wheat"
+        ],
+        "hlsNdviPeak": 0.72,
+        "ndviAnomaly4YrPct": -3.9,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          27.73387,
+          46.6508
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.730131,
+              46.650099
+            ],
+            [
+              27.736473,
+              46.64886
+            ],
+            [
+              27.73761,
+              46.651498
+            ],
+            [
+              27.731268,
+              46.652738
+            ],
+            [
+              27.730131,
+              46.650099
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P08",
+      "properties": {
+        "id": "moldova-P08",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S08 — Cumpăna Apelor",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.8,
+        "slope": 5.8,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 18.0,
+        "currentCrop": "wheat",
+        "rotation": [
+          "millet",
+          "wheat",
+          "maize"
+        ],
+        "hlsNdviPeak": 0.72,
+        "ndviAnomaly4YrPct": -4.1,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          27.74041,
+          46.64951
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.736662,
+              46.648814
+            ],
+            [
+              27.742981,
+              46.647505
+            ],
+            [
+              27.744153,
+              46.65021
+            ],
+            [
+              27.737833,
+              46.651519
+            ],
+            [
+              27.736662,
+              46.648814
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P09",
+      "properties": {
+        "id": "moldova-P09",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S09 — Versantul Vest",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 14.7,
+        "slope": 7.6,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 17.0,
+        "currentCrop": "sunflower",
+        "rotation": [
+          "wheat",
+          "maize",
+          "sunflower"
+        ],
+        "hlsNdviPeak": 0.79,
+        "ndviAnomaly4YrPct": 4.8,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 5% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.71959,
+          46.65049
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.71599,
+              46.649762
+            ],
+            [
+              27.722226,
+              46.648623
+            ],
+            [
+              27.723196,
+              46.651214
+            ],
+            [
+              27.71696,
+              46.652353
+            ],
+            [
+              27.71599,
+              46.649762
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P10",
+      "properties": {
+        "id": "moldova-P10",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S10 — Versantul Central",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.5,
+        "slope": 6.1,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 17.7,
+        "currentCrop": "barley",
+        "rotation": [
+          "maize",
+          "sunflower",
+          "barley"
+        ],
+        "hlsNdviPeak": 0.66,
+        "ndviAnomaly4YrPct": -12.1,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 12% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.72613,
+          46.6492
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.722372,
+              46.648505
+            ],
+            [
+              27.728725,
+              46.647247
+            ],
+            [
+              27.729886,
+              46.649898
+            ],
+            [
+              27.723533,
+              46.651155
+            ],
+            [
+              27.722372,
+              46.648505
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P11",
+      "properties": {
+        "id": "moldova-P11",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S11 — Lunca Îngustă",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.5,
+        "slope": 6.3,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 16.6,
+        "currentCrop": "pea",
+        "rotation": [
+          "sunflower",
+          "barley",
+          "pea"
+        ],
+        "hlsNdviPeak": 0.8,
+        "ndviAnomaly4YrPct": 6.3,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 6% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.73267,
+          46.64791
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.728865,
+              46.647227
+            ],
+            [
+              27.735275,
+              46.645991
+            ],
+            [
+              27.736467,
+              46.648602
+            ],
+            [
+              27.730057,
+              46.649838
+            ],
+            [
+              27.728865,
+              46.647227
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P12",
+      "properties": {
+        "id": "moldova-P12",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S12 — Drumul Viei",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 16.2,
+        "slope": 6.3,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 16.6,
+        "currentCrop": "sorghum",
+        "rotation": [
+          "barley",
+          "pea",
+          "sorghum"
+        ],
+        "hlsNdviPeak": 0.7,
+        "ndviAnomaly4YrPct": -7.2,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 7% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.7392,
+          46.64663
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.735333,
+              46.645954
+            ],
+            [
+              27.741771,
+              46.644607
+            ],
+            [
+              27.743072,
+              46.647302
+            ],
+            [
+              27.736635,
+              46.648649
+            ],
+            [
+              27.735333,
+              46.645954
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P13",
+      "properties": {
+        "id": "moldova-P13",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S13 — Poiana Lungă",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.8,
+        "slope": 5.6,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 17.5,
+        "currentCrop": "millet",
+        "rotation": [
+          "pea",
+          "sorghum",
+          "soybean"
+        ],
+        "hlsNdviPeak": 0.82,
+        "ndviAnomaly4YrPct": 9.4,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          27.71839,
+          46.6476
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.714492,
+              46.646936
+            ],
+            [
+              27.720991,
+              46.645667
+            ],
+            [
+              27.722284,
+              46.648273
+            ],
+            [
+              27.715785,
+              46.649542
+            ],
+            [
+              27.714492,
+              46.646936
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P14",
+      "properties": {
+        "id": "moldova-P14",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S14 — Coasta Soarelui",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.8,
+        "slope": 7.6,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 15.1,
+        "currentCrop": "wheat",
+        "rotation": [
+          "sorghum",
+          "soybean",
+          "millet"
+        ],
+        "hlsNdviPeak": 0.74,
+        "ndviAnomaly4YrPct": -1.9,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 2% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.72492,
+          46.64632
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.721231,
+              46.645609
+            ],
+            [
+              27.727492,
+              46.644294
+            ],
+            [
+              27.728618,
+              46.647026
+            ],
+            [
+              27.722358,
+              46.648341
+            ],
+            [
+              27.721231,
+              46.645609
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P15",
+      "properties": {
+        "id": "moldova-P15",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S15 — Hotarul Tutova",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 14.7,
+        "slope": 6.8,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 15.6,
+        "currentCrop": "maize",
+        "rotation": [
+          "soybean",
+          "millet",
+          "wheat"
+        ],
+        "hlsNdviPeak": 0.75,
+        "ndviAnomaly4YrPct": 0.5,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 0% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.73146,
+          46.64503
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.72785,
+              46.644306
+            ],
+            [
+              27.734093,
+              46.643162
+            ],
+            [
+              27.735073,
+              46.645756
+            ],
+            [
+              27.72883,
+              46.6469
+            ],
+            [
+              27.72785,
+              46.644306
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "moldova-P16",
+      "properties": {
+        "id": "moldova-P16",
+        "farmId": "moldova",
+        "isDefaultParcel": false,
+        "name": "S16 — Valea Adâncă",
+        "locality": "Perieni / Bârlad, Jud. Vaslui",
+        "areaHa": 15.8,
+        "slope": 7.7,
+        "soilLabel": "Cernoziom cambic / Faeoziom (teren în pantă)",
+        "socGKg": 16.0,
+        "currentCrop": "sunflower",
+        "rotation": [
+          "millet",
+          "wheat",
+          "maize"
+        ],
+        "hlsNdviPeak": 0.81,
+        "ndviAnomaly4YrPct": 7.7,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 8% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.738,
+          46.64374
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.734306,
+              46.643035
+            ],
+            [
+              27.740564,
+              46.64172
+            ],
+            [
+              27.74169,
+              46.644453
+            ],
+            [
+              27.735431,
+              46.645769
+            ],
+            [
+              27.734306,
+              46.643035
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

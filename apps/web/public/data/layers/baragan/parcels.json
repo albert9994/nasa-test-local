@@ -1,0 +1,909 @@
+{
+  "type": "FeatureCollection",
+  "farmId": "baragan",
+  "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+  "defaultZoom": 14.8,
+  "center": [
+    27.45,
+    44.55
+  ],
+  "source": "NASA/USGS HLS Sentinel-2/Landsat 10–30m field boundaries + NASADEM 30m slope + SoilGrids 250m",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "baragan-P01",
+      "properties": {
+        "id": "baragan-P01",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T11 — Canalul Nord",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 22.4,
+        "slope": 1.1,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 17.9,
+        "currentCrop": "wheat",
+        "rotation": [
+          "wheat",
+          "maize",
+          "sunflower"
+        ],
+        "hlsNdviPeak": 0.67,
+        "ndviAnomaly4YrPct": -12.5,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 12% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.43656,
+          44.55333
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.433024,
+              44.551224
+            ],
+            [
+              27.4409,
+              44.552325
+            ],
+            [
+              27.440097,
+              44.555443
+            ],
+            [
+              27.432221,
+              44.554343
+            ],
+            [
+              27.433024,
+              44.551224
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P02",
+      "properties": {
+        "id": "baragan-P02",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T12 — Perdeaua Veche",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 23.0,
+        "slope": 1.2,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 20.3,
+        "currentCrop": "maize",
+        "rotation": [
+          "maize",
+          "sunflower",
+          "barley"
+        ],
+        "hlsNdviPeak": 0.85,
+        "ndviAnomaly4YrPct": 9.9,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          27.44461,
+          44.55445
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.441069,
+              44.552339
+            ],
+            [
+              27.44897,
+              44.553366
+            ],
+            [
+              27.448151,
+              44.556559
+            ],
+            [
+              27.44025,
+              44.555532
+            ],
+            [
+              27.441069,
+              44.552339
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P03",
+      "properties": {
+        "id": "baragan-P03",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T13 — Drumul Silozului",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 21.9,
+        "slope": 0.9,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 19.3,
+        "currentCrop": "sunflower",
+        "rotation": [
+          "sunflower",
+          "barley",
+          "sorghum"
+        ],
+        "hlsNdviPeak": 0.75,
+        "ndviAnomaly4YrPct": -2.9,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          27.45266,
+          44.55556
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.449213,
+              44.553467
+            ],
+            [
+              27.456989,
+              44.554591
+            ],
+            [
+              27.456105,
+              44.557661
+            ],
+            [
+              27.448329,
+              44.556536
+            ],
+            [
+              27.449213,
+              44.553467
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P04",
+      "properties": {
+        "id": "baragan-P04",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T14 — Movila Mare (Principală)",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 22.2,
+        "slope": 1.0,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 19.5,
+        "currentCrop": "barley",
+        "rotation": [
+          "barley",
+          "sorghum",
+          "pea"
+        ],
+        "hlsNdviPeak": 0.73,
+        "ndviAnomaly4YrPct": -5.4,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          27.46071,
+          44.55668
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.457167,
+              44.554568
+            ],
+            [
+              27.465038,
+              44.555706
+            ],
+            [
+              27.46425,
+              44.558789
+            ],
+            [
+              27.456379,
+              44.557651
+            ],
+            [
+              27.457167,
+              44.554568
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P05",
+      "properties": {
+        "id": "baragan-P05",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T15 — Valea Seacă Vest",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 21.3,
+        "slope": 1.3,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 21.1,
+        "currentCrop": "pea",
+        "rotation": [
+          "sorghum",
+          "pea",
+          "soybean"
+        ],
+        "hlsNdviPeak": 0.76,
+        "ndviAnomaly4YrPct": -1.2,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          27.43747,
+          44.55
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.43417,
+              44.547919
+            ],
+            [
+              27.441793,
+              44.549053
+            ],
+            [
+              27.440772,
+              44.552073
+            ],
+            [
+              27.433149,
+              44.55094
+            ],
+            [
+              27.43417,
+              44.547919
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P06",
+      "properties": {
+        "id": "baragan-P06",
+        "farmId": "baragan",
+        "isDefaultParcel": true,
+        "name": "T16 — Valea Seacă Est",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 22.3,
+        "slope": 1.2,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 19.5,
+        "currentCrop": "maize",
+        "rotation": [
+          "maize",
+          "wheat",
+          "sunflower"
+        ],
+        "hlsNdviPeak": 0.66,
+        "ndviAnomaly4YrPct": -14.5,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 14% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          27.44552,
+          44.55111
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.442119,
+              44.54902
+            ],
+            [
+              27.449869,
+              44.550068
+            ],
+            [
+              27.448921,
+              44.553202
+            ],
+            [
+              27.441171,
+              44.552155
+            ],
+            [
+              27.442119,
+              44.54902
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P07",
+      "properties": {
+        "id": "baragan-P07",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T17 — Sola Fântâna",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 23.3,
+        "slope": 1.5,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 20.4,
+        "currentCrop": "millet",
+        "rotation": [
+          "soybean",
+          "millet",
+          "wheat"
+        ],
+        "hlsNdviPeak": 0.7,
+        "ndviAnomaly4YrPct": -8.8,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          27.45357,
+          44.55223
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.449955,
+              44.550106
+            ],
+            [
+              27.457933,
+              44.551131
+            ],
+            [
+              27.457184,
+              44.554347
+            ],
+            [
+              27.449206,
+              44.553322
+            ],
+            [
+              27.449955,
+              44.550106
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P08",
+      "properties": {
+        "id": "baragan-P08",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T18 — Sola Salcâmi",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 21.2,
+        "slope": 1.6,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 20.9,
+        "currentCrop": "wheat",
+        "rotation": [
+          "millet",
+          "wheat",
+          "maize"
+        ],
+        "hlsNdviPeak": 0.77,
+        "ndviAnomaly4YrPct": -0.6,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          27.46162,
+          44.55334
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.4583,
+              44.551262
+            ],
+            [
+              27.465935,
+              44.552419
+            ],
+            [
+              27.464937,
+              44.555421
+            ],
+            [
+              27.457303,
+              44.554264
+            ],
+            [
+              27.4583,
+              44.551262
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P09",
+      "properties": {
+        "id": "baragan-P09",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T21 — Calea Călărași Nord",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 21.8,
+        "slope": 0.9,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 19.1,
+        "currentCrop": "sunflower",
+        "rotation": [
+          "wheat",
+          "maize",
+          "sunflower"
+        ],
+        "hlsNdviPeak": 0.82,
+        "ndviAnomaly4YrPct": 6.0,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          27.43838,
+          44.54666
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.434888,
+              44.544555
+            ],
+            [
+              27.442703,
+              44.545717
+            ],
+            [
+              27.441874,
+              44.548762
+            ],
+            [
+              27.43406,
+              44.547601
+            ],
+            [
+              27.434888,
+              44.544555
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P10",
+      "properties": {
+        "id": "baragan-P10",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T22 — Calea Călărași Sud",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 23.2,
+        "slope": 1.4,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 18.4,
+        "currentCrop": "barley",
+        "rotation": [
+          "maize",
+          "sunflower",
+          "barley"
+        ],
+        "hlsNdviPeak": 0.74,
+        "ndviAnomaly4YrPct": -4.4,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          27.44643,
+          44.54777
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.44274,
+              44.545643
+            ],
+            [
+              27.450784,
+              44.546715
+            ],
+            [
+              27.450121,
+              44.549905
+            ],
+            [
+              27.442077,
+              44.548832
+            ],
+            [
+              27.44274,
+              44.545643
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P11",
+      "properties": {
+        "id": "baragan-P11",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T23 — Pădurea Mică",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 23.2,
+        "slope": 1.6,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 19.4,
+        "currentCrop": "sorghum",
+        "rotation": [
+          "sunflower",
+          "barley",
+          "sorghum"
+        ],
+        "hlsNdviPeak": 0.74,
+        "ndviAnomaly4YrPct": -3.7,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          27.45448,
+          44.54889
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.450835,
+              44.546764
+            ],
+            [
+              27.458837,
+              44.547818
+            ],
+            [
+              27.458124,
+              44.551013
+            ],
+            [
+              27.450123,
+              44.549959
+            ],
+            [
+              27.450835,
+              44.546764
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P12",
+      "properties": {
+        "id": "baragan-P12",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T24 — Sola Izvor",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 21.8,
+        "slope": 0.9,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 18.6,
+        "currentCrop": "pea",
+        "rotation": [
+          "barley",
+          "sorghum",
+          "pea"
+        ],
+        "hlsNdviPeak": 0.76,
+        "ndviAnomaly4YrPct": -1.0,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          27.46253,
+          44.55
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.459125,
+              44.547912
+            ],
+            [
+              27.466858,
+              44.549036
+            ],
+            [
+              27.465933,
+              44.552095
+            ],
+            [
+              27.458201,
+              44.550971
+            ],
+            [
+              27.459125,
+              44.547912
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P13",
+      "properties": {
+        "id": "baragan-P13",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T25 — Hotarul de Sud V",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 22.5,
+        "slope": 1.5,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 19.3,
+        "currentCrop": "millet",
+        "rotation": [
+          "sorghum",
+          "pea",
+          "soybean"
+        ],
+        "hlsNdviPeak": 0.81,
+        "ndviAnomaly4YrPct": 5.4,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          27.43929,
+          44.54332
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.435773,
+              44.541214
+            ],
+            [
+              27.443635,
+              44.5423
+            ],
+            [
+              27.44281,
+              44.545428
+            ],
+            [
+              27.434948,
+              44.544342
+            ],
+            [
+              27.435773,
+              44.541214
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P14",
+      "properties": {
+        "id": "baragan-P14",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T26 — Hotarul de Sud E",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 21.7,
+        "slope": 1.4,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 20.9,
+        "currentCrop": "wheat",
+        "rotation": [
+          "pea",
+          "soybean",
+          "millet"
+        ],
+        "hlsNdviPeak": 0.77,
+        "ndviAnomaly4YrPct": 0.2,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          27.44734,
+          44.54444
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.444034,
+              44.542358
+            ],
+            [
+              27.451678,
+              44.543439
+            ],
+            [
+              27.450647,
+              44.546514
+            ],
+            [
+              27.443004,
+              44.545434
+            ],
+            [
+              27.444034,
+              44.542358
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P15",
+      "properties": {
+        "id": "baragan-P15",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T27 — Stația Veche",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 22.4,
+        "slope": 1.5,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 20.6,
+        "currentCrop": "maize",
+        "rotation": [
+          "soybean",
+          "millet",
+          "wheat"
+        ],
+        "hlsNdviPeak": 0.82,
+        "ndviAnomaly4YrPct": 6.2,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          27.45539,
+          44.54555
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.45171,
+              44.543422
+            ],
+            [
+              27.459713,
+              44.544606
+            ],
+            [
+              27.459071,
+              44.547681
+            ],
+            [
+              27.451068,
+              44.546497
+            ],
+            [
+              27.45171,
+              44.543422
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "baragan-P16",
+      "properties": {
+        "id": "baragan-P16",
+        "farmId": "baragan",
+        "isDefaultParcel": false,
+        "name": "T28 — SolaGara",
+        "locality": "Dragoș Vodă / Lehliu, Jud. Călărași",
+        "areaHa": 23.3,
+        "slope": 1.4,
+        "soilLabel": "Cernoziom cambic (luto-argilos, Bărăgan)",
+        "socGKg": 20.9,
+        "currentCrop": "sunflower",
+        "rotation": [
+          "millet",
+          "wheat",
+          "maize"
+        ],
+        "hlsNdviPeak": 0.72,
+        "ndviAnomaly4YrPct": -7.1,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          27.46344,
+          44.54667
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              27.459838,
+              44.544548
+            ],
+            [
+              27.467805,
+              44.545565
+            ],
+            [
+              27.467041,
+              44.548785
+            ],
+            [
+              27.459074,
+              44.547768
+            ],
+            [
+              27.459838,
+              44.544548
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

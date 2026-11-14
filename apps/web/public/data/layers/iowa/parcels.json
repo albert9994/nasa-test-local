@@ -1,0 +1,893 @@
+{
+  "type": "FeatureCollection",
+  "farmId": "iowa",
+  "locality": "Nevada Township, Story County, IA",
+  "defaultZoom": 14.8,
+  "center": [
+    -93.62,
+    42.03
+  ],
+  "source": "NASA/USGS HLS Sentinel-2/Landsat 10–30m field boundaries + NASADEM 30m slope + SoilGrids 250m",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "iowa-P01",
+      "properties": {
+        "id": "iowa-P01",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "NW Quarter North",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 25.1,
+        "slope": 2.2,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 23.6,
+        "currentCrop": "maize",
+        "rotation": [
+          "maize",
+          "soybean"
+        ],
+        "hlsNdviPeak": 0.91,
+        "ndviAnomaly4YrPct": 8.3,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -93.6296,
+          42.0372
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.632496,
+              42.034925
+            ],
+            [
+              -93.626525,
+              42.034906
+            ],
+            [
+              -93.626704,
+              42.039475
+            ],
+            [
+              -93.632675,
+              42.039494
+            ],
+            [
+              -93.632496,
+              42.034925
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P02",
+      "properties": {
+        "id": "iowa-P02",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "NW Quarter South",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 25.9,
+        "slope": 1.9,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 24.0,
+        "currentCrop": "soybean",
+        "rotation": [
+          "soybean",
+          "wheat"
+        ],
+        "hlsNdviPeak": 0.84,
+        "ndviAnomaly4YrPct": 0.4,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -93.6232,
+          42.0372
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.626254,
+              42.034925
+            ],
+            [
+              -93.620125,
+              42.034885
+            ],
+            [
+              -93.620146,
+              42.039475
+            ],
+            [
+              -93.626275,
+              42.039515
+            ],
+            [
+              -93.626254,
+              42.034925
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P03",
+      "properties": {
+        "id": "iowa-P03",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "NE Quarter West",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 25.7,
+        "slope": 2.1,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 22.4,
+        "currentCrop": "wheat",
+        "rotation": [
+          "wheat",
+          "sorghum"
+        ],
+        "hlsNdviPeak": 0.85,
+        "ndviAnomaly4YrPct": 1.6,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -93.6168,
+          42.0372
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.620018,
+              42.034925
+            ],
+            [
+              -93.613725,
+              42.03503
+            ],
+            [
+              -93.613582,
+              42.039475
+            ],
+            [
+              -93.619875,
+              42.03937
+            ],
+            [
+              -93.620018,
+              42.034925
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P04",
+      "properties": {
+        "id": "iowa-P04",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "NE Quarter East",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 26.1,
+        "slope": 2.1,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 22.9,
+        "currentCrop": "sorghum",
+        "rotation": [
+          "sorghum",
+          "pea"
+        ],
+        "hlsNdviPeak": 0.73,
+        "ndviAnomaly4YrPct": -12.6,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 13% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -93.6104,
+          42.0372
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.613402,
+              42.034925
+            ],
+            [
+              -93.607325,
+              42.034799
+            ],
+            [
+              -93.607398,
+              42.039475
+            ],
+            [
+              -93.613475,
+              42.039601
+            ],
+            [
+              -93.613402,
+              42.034925
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P05",
+      "properties": {
+        "id": "iowa-P05",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "West Creek Flat",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 25.5,
+        "slope": 2.3,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 23.3,
+        "currentCrop": "barley",
+        "rotation": [
+          "pea",
+          "barley"
+        ],
+        "hlsNdviPeak": 0.89,
+        "ndviAnomaly4YrPct": 5.5,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -93.6296,
+          42.0324
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.632553,
+              42.030125
+            ],
+            [
+              -93.626525,
+              42.030075
+            ],
+            [
+              -93.626647,
+              42.034675
+            ],
+            [
+              -93.632675,
+              42.034725
+            ],
+            [
+              -93.632553,
+              42.030125
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P06",
+      "properties": {
+        "id": "iowa-P06",
+        "farmId": "iowa",
+        "isDefaultParcel": true,
+        "name": "Central Tile Block",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 26.2,
+        "slope": 2.0,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 24.0,
+        "currentCrop": "maize",
+        "rotation": [
+          "maize",
+          "soybean"
+        ],
+        "hlsNdviPeak": 0.75,
+        "ndviAnomaly4YrPct": -10.8,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 11% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -93.6232,
+          42.0324
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.626236,
+              42.030125
+            ],
+            [
+              -93.620125,
+              42.030017
+            ],
+            [
+              -93.620164,
+              42.034675
+            ],
+            [
+              -93.626275,
+              42.034783
+            ],
+            [
+              -93.626236,
+              42.030125
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P07",
+      "properties": {
+        "id": "iowa-P07",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "Prairie Ridge North",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 26.8,
+        "slope": 1.6,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 23.4,
+        "currentCrop": "millet",
+        "rotation": [
+          "sunflower",
+          "millet"
+        ],
+        "hlsNdviPeak": 0.91,
+        "ndviAnomaly4YrPct": 9.8,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -93.6168,
+          42.0324
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.620016,
+              42.030125
+            ],
+            [
+              -93.613725,
+              42.030042
+            ],
+            [
+              -93.613584,
+              42.034675
+            ],
+            [
+              -93.619875,
+              42.034758
+            ],
+            [
+              -93.620016,
+              42.030125
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P08",
+      "properties": {
+        "id": "iowa-P08",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "Prairie Ridge South",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 24.4,
+        "slope": 2.2,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 23.0,
+        "currentCrop": "maize",
+        "rotation": [
+          "millet",
+          "maize"
+        ],
+        "hlsNdviPeak": 0.76,
+        "ndviAnomaly4YrPct": -9.9,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -93.6104,
+          42.0324
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.6133,
+              42.030125
+            ],
+            [
+              -93.607325,
+              42.030228
+            ],
+            [
+              -93.6075,
+              42.034675
+            ],
+            [
+              -93.613475,
+              42.034572
+            ],
+            [
+              -93.6133,
+              42.030125
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P09",
+      "properties": {
+        "id": "iowa-P09",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "SW Homestead North",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 25.9,
+        "slope": 2.4,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 25.5,
+        "currentCrop": "wheat",
+        "rotation": [
+          "maize",
+          "soybean"
+        ],
+        "hlsNdviPeak": 0.81,
+        "ndviAnomaly4YrPct": -3.5,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -93.6296,
+          42.0276
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.632772,
+              42.025325
+            ],
+            [
+              -93.626525,
+              42.025369
+            ],
+            [
+              -93.626428,
+              42.029875
+            ],
+            [
+              -93.632675,
+              42.029831
+            ],
+            [
+              -93.632772,
+              42.025325
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P10",
+      "properties": {
+        "id": "iowa-P10",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "SW Homestead South",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 26.8,
+        "slope": 2.1,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 25.3,
+        "currentCrop": "sorghum",
+        "rotation": [
+          "soybean",
+          "wheat"
+        ],
+        "hlsNdviPeak": 0.74,
+        "ndviAnomaly4YrPct": -12.4,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 12% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -93.6232,
+          42.0276
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.626426,
+              42.025325
+            ],
+            [
+              -93.620125,
+              42.025246
+            ],
+            [
+              -93.619974,
+              42.029875
+            ],
+            [
+              -93.626275,
+              42.029954
+            ],
+            [
+              -93.626426,
+              42.025325
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P11",
+      "properties": {
+        "id": "iowa-P11",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "Story Brook West",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 26.1,
+        "slope": 1.8,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 24.9,
+        "currentCrop": "pea",
+        "rotation": [
+          "wheat",
+          "sorghum"
+        ],
+        "hlsNdviPeak": 0.8,
+        "ndviAnomaly4YrPct": -4.9,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -93.6168,
+          42.0276
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.620048,
+              42.025325
+            ],
+            [
+              -93.613725,
+              42.025381
+            ],
+            [
+              -93.613552,
+              42.029875
+            ],
+            [
+              -93.619875,
+              42.029819
+            ],
+            [
+              -93.620048,
+              42.025325
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P12",
+      "properties": {
+        "id": "iowa-P12",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "Story Brook East",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 26.4,
+        "slope": 2.1,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 22.8,
+        "currentCrop": "barley",
+        "rotation": [
+          "sorghum",
+          "pea"
+        ],
+        "hlsNdviPeak": 0.8,
+        "ndviAnomaly4YrPct": -4.7,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -93.6104,
+          42.0276
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.613586,
+              42.025325
+            ],
+            [
+              -93.607325,
+              42.025294
+            ],
+            [
+              -93.607214,
+              42.029875
+            ],
+            [
+              -93.613475,
+              42.029906
+            ],
+            [
+              -93.613586,
+              42.025325
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P13",
+      "properties": {
+        "id": "iowa-P13",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "South Road 220th W",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 25.4,
+        "slope": 1.8,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 23.5,
+        "currentCrop": "millet",
+        "rotation": [
+          "pea",
+          "barley"
+        ],
+        "hlsNdviPeak": 0.89,
+        "ndviAnomaly4YrPct": 5.9,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -93.6296,
+          42.0228
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.632535,
+              42.020525
+            ],
+            [
+              -93.626525,
+              42.020467
+            ],
+            [
+              -93.626665,
+              42.025075
+            ],
+            [
+              -93.632675,
+              42.025133
+            ],
+            [
+              -93.632535,
+              42.020525
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P14",
+      "properties": {
+        "id": "iowa-P14",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "South Road 220th C",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 25.5,
+        "slope": 2.0,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 25.6,
+        "currentCrop": "maize",
+        "rotation": [
+          "barley",
+          "sunflower"
+        ],
+        "hlsNdviPeak": 0.73,
+        "ndviAnomaly4YrPct": -13.4,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 13% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -93.6232,
+          42.0228
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.626353,
+              42.020525
+            ],
+            [
+              -93.620125,
+              42.020616
+            ],
+            [
+              -93.620047,
+              42.025075
+            ],
+            [
+              -93.626275,
+              42.024984
+            ],
+            [
+              -93.626353,
+              42.020525
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P15",
+      "properties": {
+        "id": "iowa-P15",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "Timber Edge West",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 25.7,
+        "slope": 2.1,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 22.7,
+        "currentCrop": "soybean",
+        "rotation": [
+          "sunflower",
+          "millet"
+        ],
+        "hlsNdviPeak": 0.88,
+        "ndviAnomaly4YrPct": 4.4,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -93.6168,
+          42.0228
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.619767,
+              42.020525
+            ],
+            [
+              -93.613725,
+              42.020448
+            ],
+            [
+              -93.613833,
+              42.025075
+            ],
+            [
+              -93.619875,
+              42.025152
+            ],
+            [
+              -93.619767,
+              42.020525
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "iowa-P16",
+      "properties": {
+        "id": "iowa-P16",
+        "farmId": "iowa",
+        "isDefaultParcel": false,
+        "name": "Timber Edge East",
+        "locality": "Nevada Township, Story County, IA",
+        "areaHa": 26.5,
+        "slope": 1.9,
+        "soilLabel": "Clarion–Nicollet–Webster silty clay loam",
+        "socGKg": 22.5,
+        "currentCrop": "wheat",
+        "rotation": [
+          "millet",
+          "maize"
+        ],
+        "hlsNdviPeak": 0.8,
+        "ndviAnomaly4YrPct": -5.0,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -93.6104,
+          42.0228
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.613496,
+              42.020525
+            ],
+            [
+              -93.607325,
+              42.020398
+            ],
+            [
+              -93.607304,
+              42.025075
+            ],
+            [
+              -93.613475,
+              42.025202
+            ],
+            [
+              -93.613496,
+              42.020525
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "id": "moldova",
+  "name": "Vaslui, Moldavian Plateau (Romania)",
+  "country": "RO",
+  "region": "North-East Romania Rolling Hills (EU)",
+  "lat": 46.65,
+  "lon": 27.73,
+  "elev": 210,
+  "slope": 6.5,
+  "rotation": [
+    "maize",
+    "sunflower",
+    "wheat"
+  ],
+  "note": "Sloped plateau rain-fed; severe erosion risk + 2007, 2022 & 2024 pedological droughts",
+  "droughtYears": [
+    2007,
+    2022,
+    2024,
+    2015,
+    2020
+  ],
+  "sowingMonths": {
+    "wheat": "October",
+    "barley": "late September – mid October",
+    "maize": "mid April – early May",
+    "sunflower": "April",
+    "soybean": "late April – early May",
+    "sorghum": "early May",
+    "pea": "mid March – early April",
+    "millet": "May"
+  },
+  "cropPool": [
+    "wheat",
+    "maize",
+    "sunflower",
+    "barley",
+    "pea",
+    "sorghum",
+    "soybean",
+    "millet",
+    "fallow"
+  ],
+  "defaultEquipment": [
+    "row_planter",
+    "grain_drill",
+    "corn_header",
+    "sunflower_header"
+  ],
+  "costs": {
+    "maize": 810,
+    "wheat": 690,
+    "sunflower": 650,
+    "barley": 620,
+    "sorghum": 595,
+    "soybean": 710,
+    "pea": 560,
+    "millet": 440,
+    "fallow": 85,
+    "rye_cover": 100
+  },
+  "prices": {
+    "maize": 200,
+    "wheat": 220,
+    "sunflower": 460,
+    "barley": 190,
+    "sorghum": 182,
+    "soybean": 440,
+    "pea": 290,
+    "millet": 210,
+    "fallow": 0
+  },
+  "calib": {
+    "wheat": 0.96,
+    "maize": 0.91,
+    "sunflower": 0.95,
+    "barley": 0.96,
+    "sorghum": 0.97,
+    "pea": 0.95,
+    "soybean": 0.9,
+    "millet": 0.95
+  },
+  "sources": {
+    "costs": "https://www.madr.ro/ & Stațiunea de Cercetare-Dezvoltare pentru Combaterea Eroziunii Solului Perieni (Vaslui) — Tehnologii și costuri pe terenuri în pantă",
+    "prices": "https://www.madr.ro/cotatii-burse.html & FAO GIEWS FPMA Romania regional series",
+    "yields": "http://statistici.insse.ro:8077/tempo-online/ (INS TEMPO AGR109A — Județul Vaslui / Regiunea Nord-Est)"
+  }
+}

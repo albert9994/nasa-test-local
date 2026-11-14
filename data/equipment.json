@@ -1,0 +1,186 @@
+{
+  "equipmentCatalog": [
+    {
+      "id": "row_planter",
+      "name": "Precision Row-Crop Planter (70 cm / 30 in)",
+      "nameRo": "Semănătoare de precizie pentru prășitoare (SPC / 70 cm)",
+      "purchaseCostUsd": 48000,
+      "customHireUsdHa": 58,
+      "description": "Required for wide-row precision seeding of maize, sunflower, sorghum, and row-planted soybean."
+    },
+    {
+      "id": "grain_drill",
+      "name": "Small-Grain / No-Till Seed Drill (12.5–17 cm)",
+      "nameRo": "Semănătoare în rânduri dese pentru păioase (SUP)",
+      "purchaseCostUsd": 36000,
+      "customHireUsdHa": 48,
+      "description": "Required for winter wheat, barley, field pea, proso millet, and rye cover crops."
+    },
+    {
+      "id": "corn_header",
+      "name": "Combine Corn Header (snapping rolls)",
+      "nameRo": "Echipament (heder) de recoltat porumb cu tocător",
+      "purchaseCostUsd": 32000,
+      "customHireUsdHa": 85,
+      "description": "Required to harvest grain maize cleanly without high ear losses."
+    },
+    {
+      "id": "sunflower_header",
+      "name": "Sunflower Header / Pans Attachment",
+      "nameRo": "Echipament (heder) pentru floarea-soarelui cu tăvițe",
+      "purchaseCostUsd": 18000,
+      "customHireUsdHa": 75,
+      "description": "Required to harvest sunflower without losing 15–25% of shattered heads."
+    },
+    {
+      "id": "irrigation",
+      "name": "Center-Pivot / Drum-Reel Irrigation System",
+      "nameRo": "Sistem de irigații (tambur / pivot central)",
+      "purchaseCostUsd": 85000,
+      "investmentPerHaUsd": 2200,
+      "operatingCostUsdPerMm": 1.35,
+      "description": "Optional water-supply lever; unlocks water-intensive rotations under warming scenarios."
+    }
+  ],
+  "cropRequirements": {
+    "maize": {
+      "required": ["row_planter", "corn_header"],
+      "optional": ["irrigation"],
+      "notes": "Requires precision row planter and combine corn header."
+    },
+    "soybean": {
+      "required": ["row_planter"],
+      "alternative": ["grain_drill"],
+      "optional": ["irrigation"],
+      "notes": "Can be seeded with either a row planter or a grain drill; harvested with standard grain flex header."
+    },
+    "wheat": {
+      "required": ["grain_drill"],
+      "optional": [],
+      "notes": "Winter wheat seeded in autumn with a grain drill; harvested in early summer with standard grain header."
+    },
+    "barley": {
+      "required": ["grain_drill"],
+      "optional": [],
+      "notes": "Seeded with grain drill; harvested 10–14 days earlier than winter wheat with standard grain header."
+    },
+    "sorghum": {
+      "required": ["row_planter"],
+      "alternative": ["grain_drill"],
+      "optional": [],
+      "notes": "Planted with row planter (with sorghum plates) or grain drill; harvested with standard grain header (no special header needed!)."
+    },
+    "sunflower": {
+      "required": ["row_planter", "sunflower_header"],
+      "optional": [],
+      "notes": "Requires row planter and sunflower header/trays to prevent head drop losses."
+    },
+    "pea": {
+      "required": ["grain_drill"],
+      "optional": [],
+      "notes": "Seeded early spring with grain drill; harvested with standard grain header."
+    },
+    "millet": {
+      "required": ["grain_drill"],
+      "optional": [],
+      "notes": "Short-season drought emergency crop seeded with grain drill; harvested with standard grain header."
+    },
+    "fallow": {
+      "required": [],
+      "optional": [],
+      "notes": "Chemical or light-tillage fallow to store moisture in dryland rotations."
+    },
+    "rye_cover": {
+      "required": ["grain_drill"],
+      "optional": [],
+      "notes": "Autumn-seeded winter rye cover crop terminated before spring cash crop."
+    }
+  },
+  "marketPriceSources": [
+    {
+      "id": "fao_giews",
+      "name": "FAO GIEWS Food Price Monitoring and Analysis (FPMA)",
+      "url": "https://fpma.fao.org/giews/fpmat4/",
+      "coverage": "Global & regional monthly wholesale/export grain prices (2000–2025)",
+      "recentBenchmarkUsdPerT": {
+        "maize": 195,
+        "wheat": 230,
+        "soybean": 435,
+        "sorghum": 185,
+        "barley": 200
+      }
+    },
+    {
+      "id": "world_bank_pink_sheet",
+      "name": "World Bank Commodity Markets ('Pink Sheet')",
+      "url": "https://www.worldbank.org/en/research/commodity-markets",
+      "coverage": "Monthly international benchmark prices for maize, US HRW wheat, soybeans, sunflower oil/seed, and fertilizers (Urea, DAP, TSP) 1960–2025",
+      "recentBenchmarkUsdPerT": {
+        "maize": 192,
+        "wheat": 235,
+        "soybean": 440,
+        "sunflower": 485
+      },
+      "fertilizerShock2022": {
+        "ureaPeakIncreasePct": 145,
+        "dapPeakIncreasePct": 92,
+        "wholeFarmInputShockPct": 40
+      }
+    },
+    {
+      "id": "euronext_matif",
+      "name": "Euronext (MATIF Paris) Milling Wheat, Corn & Rapeseed Futures",
+      "url": "https://live.euronext.com/en/markets/paris/commodities",
+      "coverage": "European benchmark prices (converted EUR -> USD and adjusted for Constanța / Danube logistics basis)",
+      "recentBenchmarkUsdPerT": {
+        "wheat": 225,
+        "maize": 205,
+        "sunflower": 465,
+        "barley": 195
+      }
+    },
+    {
+      "id": "madr_ins_romania",
+      "name": "MADR România (Cotații Burse / Port Constanța) & INS TEMPO AGR201A",
+      "url": "https://www.madr.ro/cotatii-burse.html",
+      "coverage": "Romanian farm-gate and Constanța FOB prices for wheat, maize, sunflower, barley, and field pea",
+      "recentBenchmarkUsdPerT": {
+        "wheat": 220,
+        "maize": 200,
+        "sunflower": 460,
+        "barley": 190,
+        "pea": 290
+      }
+    },
+    {
+      "id": "usda_nass_ers",
+      "name": "USDA NASS Quick Stats & ERS Feed Grains Database",
+      "url": "https://quickstats.nass.usda.gov/",
+      "coverage": "US state and county marketing-year average prices received by farmers (Iowa & Kansas)",
+      "recentBenchmarkUsdPerT": {
+        "maize": 190,
+        "soybean": 430,
+        "wheat": 228,
+        "sorghum": 182,
+        "millet": 230
+      }
+    }
+  ],
+  "stressTestScenarios": {
+    "priceCrash": {
+      "label": "2014–2016 Grain Glut (-30% crop prices)",
+      "pricePct": -0.30,
+      "inputPct": 0.0
+    },
+    "fertilizerShock2022": {
+      "label": "2022 Energy & Fertilizer Spike (+40% input costs)",
+      "pricePct": 0.0,
+      "inputPct": 0.40
+    },
+    "perfectStorm": {
+      "label": "Double Squeeze (-25% crop prices, +35% input costs)",
+      "pricePct": -0.25,
+      "inputPct": 0.35
+    }
+  }
+}

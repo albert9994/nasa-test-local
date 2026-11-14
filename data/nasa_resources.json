@@ -1,0 +1,127 @@
+{
+  "version": "1.1.0",
+  "challenge": "NASA International Space Apps Challenge — Field Shift: Adapting Farms with NASA Data",
+  "partnerAgenciesCovered": ["NASA", "ESA (Copernicus)", "JAXA", "USGS", "USDA", "ISRIC"],
+  "resources": [
+    {
+      "id": "nasa_power",
+      "name": "NASA POWER (Prediction Of Worldwide Energy Resources — Agroclimatology)",
+      "agency": "NASA LaRC (MERRA-2 & CERES)",
+      "resolution": "0.5° × 0.625° (~50 km), daily (2001–2025)",
+      "variables": ["T2M_MAX", "T2M_MIN", "PRECTOTCORR", "GWETROOT", "ALLSKY_SFC_SW_DWN", "RH2M", "WS2M"],
+      "url": "https://power.larc.nasa.gov/api/temporal/daily/point",
+      "layerFile": "apps/web/public/data/layers/<farm>/weather.json",
+      "roleInFieldShift": "Drives the daily soil-water balance, GDD phenology, Hargreaves ET0, and heat/frost stress simulation across 25 real seasons."
+    },
+    {
+      "id": "modis_ndvi",
+      "name": "NASA Terra/Aqua MODIS Vegetation Indices (MOD13Q1 v061)",
+      "agency": "NASA LP DAAC / ORNL DAAC",
+      "resolution": "250 m, 16-day composite (2001–2025)",
+      "variables": ["250m_16_days_NDVI", "250m_16_days_pixel_reliability"],
+      "url": "https://modis.ornl.gov/rst/api/v1/MOD13Q1/subset",
+      "layerFile": "apps/web/public/data/layers/<farm>/ndvi.json",
+      "roleInFieldShift": "Independent satellite validation of simulated water×heat stress (r check in LU8), drought-replay canopy greenness curve, and 4-year parcel underperformance signal."
+    },
+    {
+      "id": "smap_l4",
+      "name": "NASA SMAP L4 Global 3-hourly 9 km Root-Zone Soil Moisture (SPL4SMGP v007)",
+      "agency": "NASA NSIDC DAAC / AppEEARS",
+      "resolution": "9 km, daily aggregated (2015–2025)",
+      "variables": ["sm_rootzone", "sm_surface"],
+      "url": "https://appeears.earthdatacloud.nasa.gov/",
+      "layerFile": "apps/web/public/data/layers/<farm>/appeears.json (smap)",
+      "roleInFieldShift": "Calibrates off-season soil-water recharge and starting plant-available water at sowing."
+    },
+    {
+      "id": "ecostress_esi",
+      "name": "NASA ISS ECOSTRESS Evaporative Stress Index L4 (ECO_L4T_ESI v002)",
+      "agency": "NASA LP DAAC / AppEEARS",
+      "resolution": "70 m, diurnal revisit (2019–2025)",
+      "variables": ["ESI", "ETcanopy"],
+      "url": "https://appeears.earthdatacloud.nasa.gov/",
+      "layerFile": "apps/web/public/data/layers/<farm>/appeears.json (esi)",
+      "roleInFieldShift": "Field-scale (70 m) thermal evaporative stress verification during mid-summer flowering."
+    },
+    {
+      "id": "nasadem_srtm",
+      "name": "NASA NASADEM Merged DEM Global 1 arc second (NASADEM_NC v001)",
+      "agency": "NASA LP DAAC",
+      "resolution": "30 m (3×3 neighborhood gradient)",
+      "variables": ["NASADEM_HGT", "slope_pct"],
+      "url": "https://lpdaac.usgs.gov/products/nasadem_hgtv001/",
+      "layerFile": "apps/web/public/data/layers/<farm>/appeears.json (slope) & parcels.json",
+      "roleInFieldShift": "Computes parcel slope (%) for curve-number surface runoff and RUSLE topographic factor (LS)."
+    },
+    {
+      "id": "nex_gddp_cmip6",
+      "name": "NASA NEX-GDDP-CMIP6 Downscaled Climate Projections",
+      "agency": "NASA NCCS / Ames Research Center",
+      "resolution": "0.25° (~25 km), daily ensemble (2030–2090, SSP2-4.5 & SSP5-8.5)",
+      "variables": ["tasmax", "tasmin", "pr"],
+      "url": "https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6",
+      "layerFile": "apps/web/public/data/layers/<farm>/scenarios.json",
+      "roleInFieldShift": "Provides the ensemble median and p10–p90 ΔT and ΔP trajectories for the 2050 stress test, 'Safe until ~20XX' margin year, and Quant Monte Carlo engine."
+    },
+    {
+      "id": "hls_sentinel2_landsat",
+      "name": "NASA/USGS Harmonized Landsat Sentinel-2 (HLS L30/S30) & ESA Copernicus Sentinel-2",
+      "agency": "NASA / USGS / ESA Copernicus (Partner Agency)",
+      "resolution": "10 m – 30 m, 2–3 day revisit",
+      "variables": ["NDVI_30m", "NDMI_moisture", "parcel_boundary_geometry"],
+      "url": "https://hls.gsfc.nasa.gov/",
+      "layerFile": "apps/web/public/data/layers/<farm>/parcels.json & appeears.json (hlsSentinel2)",
+      "roleInFieldShift": "Enables high-resolution ('from above') visual field-parcel boundaries, parcel-level NDVI/NDMI health badges, and ESA Partner Award eligibility."
+    },
+    {
+      "id": "gpm_imerg",
+      "name": "NASA/JAXA GPM IMERG Global Precipitation Measurement (IMERG Final Run v07)",
+      "agency": "NASA GSFC / JAXA (Partner Agency)",
+      "resolution": "0.1° (~10 km), half-hourly / daily (2001–2025)",
+      "variables": ["precipitation", "max_daily_storm_mm", "rusle_R_erosivity"],
+      "url": "https://gpm.nasa.gov/data/imerg",
+      "layerFile": "apps/web/public/data/layers/<farm>/appeears.json (gpmImerg)",
+      "roleInFieldShift": "Cross-checks extreme convective storm intensity and validates the RUSLE rainfall erosivity factor (R) on sloped fields."
+    },
+    {
+      "id": "grace_fo",
+      "name": "NASA GRACE / GRACE-FO Mascon Terrestrial Water Storage & Groundwater Anomaly",
+      "agency": "NASA JPL / GFZ",
+      "resolution": "0.5° Mascon CRI, monthly trend (2002–2025)",
+      "variables": ["lwe_thickness_trend_cm_yr", "groundwater_status"],
+      "url": "https://grace.jpl.nasa.gov/data/get-data/jpl_global_mascons/",
+      "layerFile": "apps/web/public/data/layers/<farm>/appeears.json (grace) & rules/13_groundwater_irrigation_risk.rhai",
+      "roleInFieldShift": "Measures long-term regional aquifer depletion (e.g. -2.1 cm/yr in Kansas High Plains) to warn farmers when groundwater irrigation investments face aquifer exhaustion."
+    },
+    {
+      "id": "crop_casma_harvest",
+      "name": "NASA/USDA CropCASMA & NASA Harvest (GEOGLAM Crop Monitor)",
+      "agency": "NASA Applied Sciences / USDA NASS / NASA Harvest",
+      "resolution": "1 km SMAP + 250 m MODIS cropland mask",
+      "variables": ["topsoil_moisture_anomaly_pct", "cropland_condition_class"],
+      "url": "https://nassgeo.csiss.gmu.edu/CropCASMA/",
+      "layerFile": "apps/web/public/data/layers/<farm>/appeears.json (cropCasma)",
+      "roleInFieldShift": "Provides sub-county 1 km topsoil moisture anomaly and GEOGLAM regional crop condition benchmark."
+    },
+    {
+      "id": "nasa_gibs_worldview",
+      "name": "NASA GIBS (Global Imagery Browse Services) & NASA Worldview WMTS",
+      "agency": "NASA EOSDIS",
+      "resolution": "250 m – 30 m map tiles",
+      "variables": ["MODIS_Terra_NDVI_8Day", "VIIRS_SNPP_CorrectedReflectance_TrueColor", "SMAP_L4_Uncertainty_RootZoneSoilMoisture"],
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/",
+      "layerFile": "Frontend MapLibre GL WMTS overlay (O1)",
+      "roleInFieldShift": "Renders live satellite overlays directly on the interactive farm map."
+    },
+    {
+      "id": "isric_soilgrids",
+      "name": "ISRIC SoilGrids 2.0 Global Soil Information",
+      "agency": "ISRIC World Soil Information (Partner Dataset)",
+      "resolution": "250 m, 5 depth intervals (0–100 cm)",
+      "variables": ["sand", "silt", "clay", "soc", "bdod", "phh2o"],
+      "url": "https://maps.isric.org/",
+      "layerFile": "apps/web/public/data/layers/<farm>/soil.json",
+      "roleInFieldShift": "Provides texture and organic carbon for Saxton–Rawls plant-available water (TAW), RUSLE erodibility (K), and topsoil carbon stocks."
+    }
+  ]
+}

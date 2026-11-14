@@ -211,3 +211,10 @@ Rules (Luca writes the prompt in `prompts/explain_*.md`):
 - Combines: simulator (climate, profit, water), quant (financial risk), rules (feasibility, soil bonuses), data signals (confidence), LLM (bounded ±10).
 - Rules are Rhai scripts: `fn apply(rot, farm, profile) -> #{ exclude: bool, delta: int, reason: string }`.
 - The LLM adjustment is schema-validated; out of range or invalid → `delta: 0`.
+
+## C13 · Aerial Field Parcels ("Tap-Your-Field" GeoJSON) & Multi-Mission NASA Catalog (Additive)
+- **Interactive Field Polygons (`apps/web/public/data/layers/<farm>/parcels.json`, Moldo → Octa O1/O5, Luca `build_packs.py`)**:
+  - GeoJSON `FeatureCollection` of 16 real-sized agricultural parcels around each demo farm (`iowa`, `kansas`, `baragan`, `moldova`) so farmers can simply **tap their field from above on the satellite map** without ever typing coordinates.
+  - Helper module: `apps/web/lib/data/parcel_picker.ts` (`resolveFieldAtClick`, `searchVillageOrPlace`, `SATELLITE_PARCEL_MAP_CONFIG`).
+- **Complete NASA + Partner Agency Catalog (`data/nasa_resources.json` & additive keys in `layers/<farm>/appeears.json`)**:
+  - Adds `grace` (NASA GRACE-FO groundwater trend `twsTrendCmYr`), `gpmImerg` (NASA/JAXA extreme storm erosivity), `hlsSentinel2` (NASA/USGS Landsat + ESA Sentinel-2 10–30 m NDMI & cropland mask), and `cropCasma` (NASA/USDA 1 km topsoil anomaly) alongside `smap`, `esi`, and `slope`.

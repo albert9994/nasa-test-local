@@ -1,0 +1,909 @@
+{
+  "type": "FeatureCollection",
+  "farmId": "kansas",
+  "locality": "Colby, Thomas County, KS",
+  "defaultZoom": 14.8,
+  "center": [
+    -101.05,
+    39.35
+  ],
+  "source": "NASA/USGS HLS Sentinel-2/Landsat 10–30m field boundaries + NASADEM 30m slope + SoilGrids 250m",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "kansas-P01",
+      "properties": {
+        "id": "kansas-P01",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "North Terrace A1",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 34.8,
+        "slope": 1.7,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 13.7,
+        "currentCrop": "wheat",
+        "rotation": [
+          "wheat",
+          "sorghum",
+          "sunflower"
+        ],
+        "hlsNdviPeak": 0.54,
+        "ndviAnomaly4YrPct": -10.9,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 11% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -101.0608,
+          39.3584
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.064252,
+              39.35574
+            ],
+            [
+              -101.05734,
+              39.355797
+            ],
+            [
+              -101.057348,
+              39.36106
+            ],
+            [
+              -101.06426,
+              39.361003
+            ],
+            [
+              -101.064252,
+              39.35574
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P02",
+      "properties": {
+        "id": "kansas-P02",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "North Terrace A2",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 34.7,
+        "slope": 1.6,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 12.5,
+        "currentCrop": "sorghum",
+        "rotation": [
+          "sorghum",
+          "sunflower",
+          "millet"
+        ],
+        "hlsNdviPeak": 0.54,
+        "ndviAnomaly4YrPct": -10.8,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 11% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -101.0536,
+          39.3584
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.056891,
+              39.35574
+            ],
+            [
+              -101.05014,
+              39.355685
+            ],
+            [
+              -101.050309,
+              39.36106
+            ],
+            [
+              -101.05706,
+              39.361115
+            ],
+            [
+              -101.056891,
+              39.35574
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P03",
+      "properties": {
+        "id": "kansas-P03",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "Prairie Wind B1",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 34.7,
+        "slope": 1.4,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 14.4,
+        "currentCrop": "sunflower",
+        "rotation": [
+          "sunflower",
+          "millet",
+          "pea"
+        ],
+        "hlsNdviPeak": 0.67,
+        "ndviAnomaly4YrPct": 9.7,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -101.0464,
+          39.3584
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.049652,
+              39.35574
+            ],
+            [
+              -101.04294,
+              39.355646
+            ],
+            [
+              -101.043148,
+              39.36106
+            ],
+            [
+              -101.04986,
+              39.361154
+            ],
+            [
+              -101.049652,
+              39.35574
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P04",
+      "properties": {
+        "id": "kansas-P04",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "Prairie Wind B2",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 36.5,
+        "slope": 1.9,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 12.3,
+        "currentCrop": "millet",
+        "rotation": [
+          "millet",
+          "pea",
+          "maize"
+        ],
+        "hlsNdviPeak": 0.58,
+        "ndviAnomaly4YrPct": -4.5,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -101.0392,
+          39.3584
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.042781,
+              39.35574
+            ],
+            [
+              -101.03574,
+              39.355644
+            ],
+            [
+              -101.035619,
+              39.36106
+            ],
+            [
+              -101.04266,
+              39.361156
+            ],
+            [
+              -101.042781,
+              39.35574
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P05",
+      "properties": {
+        "id": "kansas-P05",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "West Fallow Strip C1",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 34.8,
+        "slope": 1.4,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 14.6,
+        "currentCrop": "maize",
+        "rotation": [
+          "pea",
+          "maize",
+          "soybean"
+        ],
+        "hlsNdviPeak": 0.62,
+        "ndviAnomaly4YrPct": 2.4,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -101.0608,
+          39.3528
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.064202,
+              39.35014
+            ],
+            [
+              -101.05734,
+              39.350154
+            ],
+            [
+              -101.057398,
+              39.35546
+            ],
+            [
+              -101.06426,
+              39.355446
+            ],
+            [
+              -101.064202,
+              39.35014
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P06",
+      "properties": {
+        "id": "kansas-P06",
+        "farmId": "kansas",
+        "isDefaultParcel": true,
+        "name": "Central Sorghum C2",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 35.1,
+        "slope": 1.5,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 13.5,
+        "currentCrop": "wheat",
+        "rotation": [
+          "wheat",
+          "sorghum",
+          "fallow"
+        ],
+        "hlsNdviPeak": 0.52,
+        "ndviAnomaly4YrPct": -14.5,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 14% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -101.0536,
+          39.3528
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.056966,
+              39.35014
+            ],
+            [
+              -101.05014,
+              39.350083
+            ],
+            [
+              -101.050234,
+              39.35546
+            ],
+            [
+              -101.05706,
+              39.355517
+            ],
+            [
+              -101.056966,
+              39.35014
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P07",
+      "properties": {
+        "id": "kansas-P07",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "High Plains D1",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 35.2,
+        "slope": 1.5,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 12.6,
+        "currentCrop": "barley",
+        "rotation": [
+          "soybean",
+          "barley",
+          "wheat"
+        ],
+        "hlsNdviPeak": 0.57,
+        "ndviAnomaly4YrPct": -6.5,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -101.0464,
+          39.3528
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.049918,
+              39.35014
+            ],
+            [
+              -101.04294,
+              39.350187
+            ],
+            [
+              -101.042882,
+              39.35546
+            ],
+            [
+              -101.04986,
+              39.355413
+            ],
+            [
+              -101.049918,
+              39.35014
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P08",
+      "properties": {
+        "id": "kansas-P08",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "High Plains D2",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 34.3,
+        "slope": 1.6,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 14.5,
+        "currentCrop": "wheat",
+        "rotation": [
+          "barley",
+          "wheat",
+          "sorghum"
+        ],
+        "hlsNdviPeak": 0.58,
+        "ndviAnomaly4YrPct": -5.2,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -101.0392,
+          39.3528
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.042593,
+              39.35014
+            ],
+            [
+              -101.03574,
+              39.350234
+            ],
+            [
+              -101.035807,
+              39.35546
+            ],
+            [
+              -101.04266,
+              39.355366
+            ],
+            [
+              -101.042593,
+              39.35014
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P09",
+      "properties": {
+        "id": "kansas-P09",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "South Draw E1",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 37.3,
+        "slope": 1.7,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 13.7,
+        "currentCrop": "sunflower",
+        "rotation": [
+          "wheat",
+          "sorghum",
+          "sunflower"
+        ],
+        "hlsNdviPeak": 0.58,
+        "ndviAnomaly4YrPct": -5.2,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -101.0608,
+          39.3472
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.064455,
+              39.34454
+            ],
+            [
+              -101.05734,
+              39.344382
+            ],
+            [
+              -101.057145,
+              39.34986
+            ],
+            [
+              -101.06426,
+              39.350018
+            ],
+            [
+              -101.064455,
+              39.34454
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P10",
+      "properties": {
+        "id": "kansas-P10",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "South Draw E2",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 35.4,
+        "slope": 1.6,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 14.5,
+        "currentCrop": "millet",
+        "rotation": [
+          "sorghum",
+          "sunflower",
+          "millet"
+        ],
+        "hlsNdviPeak": 0.55,
+        "ndviAnomaly4YrPct": -10.5,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 10% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -101.0536,
+          39.3472
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.056969,
+              39.34454
+            ],
+            [
+              -101.05014,
+              39.344435
+            ],
+            [
+              -101.050231,
+              39.34986
+            ],
+            [
+              -101.05706,
+              39.349965
+            ],
+            [
+              -101.056969,
+              39.34454
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P11",
+      "properties": {
+        "id": "kansas-P11",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "Monument Road F1",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 35.3,
+        "slope": 1.8,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 13.1,
+        "currentCrop": "pea",
+        "rotation": [
+          "sunflower",
+          "millet",
+          "pea"
+        ],
+        "hlsNdviPeak": 0.58,
+        "ndviAnomaly4YrPct": -5.6,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -101.0464,
+          39.3472
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.049965,
+              39.34454
+            ],
+            [
+              -101.04294,
+              39.344605
+            ],
+            [
+              -101.042835,
+              39.34986
+            ],
+            [
+              -101.04986,
+              39.349795
+            ],
+            [
+              -101.049965,
+              39.34454
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P12",
+      "properties": {
+        "id": "kansas-P12",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "Monument Road F2",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 33.5,
+        "slope": 1.7,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 12.1,
+        "currentCrop": "maize",
+        "rotation": [
+          "millet",
+          "pea",
+          "maize"
+        ],
+        "hlsNdviPeak": 0.53,
+        "ndviAnomaly4YrPct": -13.6,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 14% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -101.0392,
+          39.3472
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.042527,
+              39.34454
+            ],
+            [
+              -101.03574,
+              39.344698
+            ],
+            [
+              -101.035873,
+              39.34986
+            ],
+            [
+              -101.04266,
+              39.349702
+            ],
+            [
+              -101.042527,
+              39.34454
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P13",
+      "properties": {
+        "id": "kansas-P13",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "Lower Loess G1",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 34.6,
+        "slope": 1.6,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 14.8,
+        "currentCrop": "barley",
+        "rotation": [
+          "pea",
+          "maize",
+          "soybean"
+        ],
+        "hlsNdviPeak": 0.63,
+        "ndviAnomaly4YrPct": 3.1,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -101.0608,
+          39.3416
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.064238,
+              39.33894
+            ],
+            [
+              -101.05734,
+              39.339012
+            ],
+            [
+              -101.057362,
+              39.34426
+            ],
+            [
+              -101.06426,
+              39.344188
+            ],
+            [
+              -101.064238,
+              39.33894
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P14",
+      "properties": {
+        "id": "kansas-P14",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "Lower Loess G2",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 36.0,
+        "slope": 1.9,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 13.2,
+        "currentCrop": "wheat",
+        "rotation": [
+          "maize",
+          "soybean",
+          "barley"
+        ],
+        "hlsNdviPeak": 0.61,
+        "ndviAnomaly4YrPct": 0.3,
+        "healthStatus": "good",
+        "satelliteSignalNote": "Stable canopy vigor relative to surrounding parcels.",
+        "center": [
+          -101.0536,
+          39.3416
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.057062,
+              39.33894
+            ],
+            [
+              -101.05014,
+              39.338817
+            ],
+            [
+              -101.050138,
+              39.34426
+            ],
+            [
+              -101.05706,
+              39.344383
+            ],
+            [
+              -101.057062,
+              39.33894
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P15",
+      "properties": {
+        "id": "kansas-P15",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "County Line H1",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 35.8,
+        "slope": 1.8,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 13.3,
+        "currentCrop": "sorghum",
+        "rotation": [
+          "soybean",
+          "barley",
+          "wheat"
+        ],
+        "hlsNdviPeak": 0.58,
+        "ndviAnomaly4YrPct": -4.6,
+        "healthStatus": "watch",
+        "satelliteSignalNote": "Moderate mid-summer moisture deficit on satellite thermal/NDVI history.",
+        "center": [
+          -101.0464,
+          39.3416
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.049837,
+              39.33894
+            ],
+            [
+              -101.04294,
+              39.33883
+            ],
+            [
+              -101.042963,
+              39.34426
+            ],
+            [
+              -101.04986,
+              39.34437
+            ],
+            [
+              -101.049837,
+              39.33894
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kansas-P16",
+      "properties": {
+        "id": "kansas-P16",
+        "farmId": "kansas",
+        "isDefaultParcel": false,
+        "name": "County Line H2",
+        "locality": "Colby, Thomas County, KS",
+        "areaHa": 35.7,
+        "slope": 1.6,
+        "soilLabel": "Keith silt loam (High Plains loess)",
+        "socGKg": 14.1,
+        "currentCrop": "sunflower",
+        "rotation": [
+          "barley",
+          "wheat",
+          "sorghum"
+        ],
+        "hlsNdviPeak": 0.53,
+        "ndviAnomaly4YrPct": -12.9,
+        "healthStatus": "critical",
+        "satelliteSignalNote": "HLS/MODIS signal: performed 13% below neighboring parcels in 3 of the last 4 summer droughts.",
+        "center": [
+          -101.0392,
+          39.3416
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -101.042724,
+              39.33894
+            ],
+            [
+              -101.03574,
+              39.338916
+            ],
+            [
+              -101.035676,
+              39.34426
+            ],
+            [
+              -101.04266,
+              39.344284
+            ],
+            [
+              -101.042724,
+              39.33894
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

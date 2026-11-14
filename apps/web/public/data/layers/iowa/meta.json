@@ -1,0 +1,84 @@
+{
+  "id": "iowa",
+  "name": "Story County, Iowa (USA)",
+  "country": "US",
+  "region": "Central Iowa Corn Belt",
+  "lat": 42.03,
+  "lon": -93.62,
+  "elev": 310,
+  "slope": 2.0,
+  "rotation": [
+    "maize",
+    "soybean"
+  ],
+  "note": "Corn Belt rain-fed; 2012 drought & heat wave benchmark",
+  "droughtYears": [
+    2012,
+    2003,
+    2023
+  ],
+  "sowingMonths": {
+    "maize": "late April – mid May",
+    "soybean": "early May – late May",
+    "wheat": "late September – mid October",
+    "sorghum": "mid May – early June",
+    "pea": "early April",
+    "barley": "early April",
+    "sunflower": "mid May – early June",
+    "millet": "June"
+  },
+  "cropPool": [
+    "maize",
+    "soybean",
+    "wheat",
+    "sorghum",
+    "pea",
+    "barley",
+    "sunflower",
+    "millet",
+    "fallow"
+  ],
+  "defaultEquipment": [
+    "row_planter",
+    "grain_drill",
+    "corn_header"
+  ],
+  "costs": {
+    "maize": 980,
+    "soybean": 640,
+    "wheat": 520,
+    "barley": 480,
+    "sorghum": 590,
+    "sunflower": 560,
+    "pea": 470,
+    "millet": 390,
+    "fallow": 85,
+    "rye_cover": 95
+  },
+  "prices": {
+    "maize": 190,
+    "soybean": 435,
+    "wheat": 225,
+    "barley": 205,
+    "sorghum": 180,
+    "sunflower": 490,
+    "pea": 310,
+    "millet": 220,
+    "fallow": 0
+  },
+  "calib": {
+    "maize": 1.08,
+    "soybean": 1.02,
+    "wheat": 0.98,
+    "sorghum": 1.0,
+    "barley": 0.97,
+    "pea": 1.0,
+    "sunflower": 0.96,
+    "millet": 0.95
+  },
+  "sources": {
+    "costs": "https://www.extension.iastate.edu/agdm/crops/html/a1-20.html (Iowa State University Extension — Estimated Costs of Crop Production in Iowa)",
+    "prices": "https://quickstats.nass.usda.gov/ & https://www.worldbank.org/en/research/commodity-markets (USDA NASS Iowa Marketing Year Average & World Bank Pink Sheet)",
+    "yields": "https://quickstats.nass.usda.gov/ (USDA NASS Story County, IA 2001–2025)"
+  }
+}

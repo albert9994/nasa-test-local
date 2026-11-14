@@ -1,0 +1,95 @@
+{
+  "source": "FAO GIEWS FPMA / World Bank Pink Sheet / Euronext MATIF / USDA NASS monthly & annual prices (2001–2025); county yields (C5)",
+  "crops": {
+    "maize": {
+      "priceMean": 195.0,
+      "vol": 0.21,
+      "reversion": 0.42,
+      "yieldCorr": -0.25
+    },
+    "soybean": {
+      "priceMean": 435.0,
+      "vol": 0.18,
+      "reversion": 0.42,
+      "yieldCorr": -0.26
+    },
+    "wheat": {
+      "priceMean": 228.0,
+      "vol": 0.22,
+      "reversion": 0.42,
+      "yieldCorr": -0.21
+    },
+    "barley": {
+      "priceMean": 200.0,
+      "vol": 0.21,
+      "reversion": 0.42,
+      "yieldCorr": -0.18
+    },
+    "sorghum": {
+      "priceMean": 184.0,
+      "vol": 0.21,
+      "reversion": 0.42,
+      "yieldCorr": -0.16
+    },
+    "sunflower": {
+      "priceMean": 480.0,
+      "vol": 0.19,
+      "reversion": 0.42,
+      "yieldCorr": -0.2
+    },
+    "pea": {
+      "priceMean": 300.0,
+      "vol": 0.16,
+      "reversion": 0.47,
+      "yieldCorr": -0.15
+    },
+    "millet": {
+      "priceMean": 220.0,
+      "vol": 0.17,
+      "reversion": 0.45,
+      "yieldCorr": -0.15
+    },
+    "fallow": {
+      "priceMean": 0.0,
+      "vol": 0.0,
+      "reversion": 1.0,
+      "yieldCorr": 0.0
+    }
+  },
+  "priceCorr": {
+    "maize|soybean": 0.84,
+    "maize|wheat": 0.87,
+    "maize|barley": 0.88,
+    "maize|sorghum": 0.88,
+    "maize|sunflower": 0.88,
+    "maize|pea": 0.88,
+    "maize|millet": 0.88,
+    "soybean|wheat": 0.8,
+    "soybean|barley": 0.83,
+    "soybean|sorghum": 0.81,
+    "soybean|sunflower": 0.85,
+    "soybean|pea": 0.88,
+    "soybean|millet": 0.85,
+    "wheat|barley": 0.88,
+    "wheat|sorghum": 0.88,
+    "wheat|sunflower": 0.82,
+    "wheat|pea": 0.88,
+    "wheat|millet": 0.88,
+    "barley|sorghum": 0.88,
+    "barley|sunflower": 0.88,
+    "barley|pea": 0.88,
+    "barley|millet": 0.88,
+    "sorghum|sunflower": 0.88,
+    "sorghum|pea": 0.88,
+    "sorghum|millet": 0.88,
+    "sunflower|pea": 0.88,
+    "sunflower|millet": 0.88,
+    "pea|millet": 0.88
+  },
+  "inputs": {
+    "drift": 0.03,
+    "jumpProb": 0.05,
+    "jumpSize": 0.4,
+    "note": "3%/yr baseline input cost drift + 5%/yr probability of a +40% fertilizer/energy cost spike (calibrated on 2008 and 2022 urea/diesel shocks)"
+  }
+}
