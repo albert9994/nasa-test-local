@@ -1,0 +1,16 @@
+{
+  "name": "@fieldshift/ui",
+  "version": "0.1.0",
+  "private": true,
+  "sideEffects": false,
+  "main": "./charts/index.ts",
+  "types": "./charts/index.ts",
+  "exports": {
+    "./charts": "./charts/index.ts",
+    "./charts/*": "./charts/*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
+}

@@ -1,0 +1,13 @@
+[package]
+name = "fieldshift-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "FieldShift core simulation, climate stress test, rotation optimizer, hybrid score, and Monte Carlo quant engine"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+rand.workspace = true
+rand_chacha.workspace = true
+rhai.workspace = true
