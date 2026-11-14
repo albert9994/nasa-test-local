@@ -114,7 +114,6 @@ pub fn simulate_resolved(
     let years = &farm.years;
     let n_years = years.len();
     let carry = phase_carry(farm, rot);
-    let p_mult = (1.0 + opts.d_p).max(0.0);
 
     let mut phase_fill = vec![0.72_f64; k];
     let mut farm_net = Vec::with_capacity(n_years);
@@ -138,7 +137,7 @@ pub fn simulate_resolved(
             continue;
         };
         let gwet_anom = farm.year_mean_gwet_anomaly(wy);
-        let off_season_rain = wy.off_season_precip_mm() * p_mult;
+        let off_season_rain = wy.off_season_precip_shifted(opts);
         let want_trace = trace_year == Some(year);
         let mut year_net_sum = 0.0;
         let mut year_trace = Vec::new();

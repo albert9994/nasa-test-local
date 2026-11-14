@@ -255,23 +255,22 @@ fn json_shapes_match_the_ts_contract() {
         .unwrap()[0],
     )
     .unwrap();
-    assert_eq!(
-        keys(&q),
-        set(&[
-            "rotation",
-            "years",
-            "income",
-            "pBadYear",
-            "var95",
-            "cvar95",
-            "pRuin",
-            "maxDrawdownP50",
-            "marginYear",
-            "meanAnnual",
-            "sdAnnual",
-            "riskAdjusted"
-        ])
-    );
+    // C3 fields are all present (extra additive fields are allowed)
+    let c3 = set(&[
+        "rotation",
+        "years",
+        "income",
+        "pBadYear",
+        "var95",
+        "cvar95",
+        "pRuin",
+        "maxDrawdownP50",
+        "marginYear",
+        "meanAnnual",
+        "sdAnnual",
+        "riskAdjusted",
+    ]);
+    assert!(c3.is_subset(&keys(&q)), "{:?}", keys(&q));
     assert_eq!(keys(&q["income"]), set(&["p10", "p50", "p90"]));
     assert_eq!(keys(&q["marginYear"]), set(&["p10", "p50", "p90"]));
 
@@ -480,4 +479,231 @@ fn farm_costs_and_prices_flow_through_options() {
     .unwrap();
     assert!(shock.mean_net < base.mean_net);
     assert!(shock.p_fail >= base.p_fail);
+}
+
+// ---- B4: Penman-Monteith, monthly CMIP6 shifts, CO2, southern hemisphere, validation ----
+
+fn with_scenarios(id: &str, scenarios: Value) -> PreparedFarm {
+    let p = format!(
+        "{}/../../apps/web/public/data/mock/farms/{id}.json",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let mut v: Value = serde_json::from_str(&std::fs::read_to_string(p).unwrap()).unwrap();
+    v["scenarios"] = scenarios;
+    prepare_farm_json(&v.to_string()).unwrap()
+}
+
+fn mean_yield(r: &fieldshift_core::rotation::RotationResult, crop: &str) -> f64 {
+    r.yield_by_crop[crop].iter().sum::<f64>() / r.years.len() as f64
+}
+
+#[test]
+fn iowa_and_baragan_stay_in_the_observed_yield_ranges() {
+    let f = load("iowa");
+    let r = simulate_rotation(
+        &f,
+        &rot(&[("maize", false), ("soybean", false)]),
+        &SimOptions::default(),
+        None,
+    )
+    .unwrap();
+    let (m, s) = (mean_yield(&r, "maize"), mean_yield(&r, "soybean"));
+    assert!((9.0..12.0).contains(&m), "maize {m}");
+    assert!((3.0..3.8).contains(&s), "soybean {s}");
+    let mut idx: Vec<usize> = (0..r.years.len()).collect();
+    idx.sort_by(|&a, &b| r.farm_net[a].total_cmp(&r.farm_net[b]));
+    assert!(
+        idx[..3].iter().any(|&i| r.years[i] == 2012),
+        "2012 in the 3 worst"
+    );
+
+    let b = load("baragan");
+    let r = simulate_rotation(
+        &b,
+        &rot(&[("maize", false), ("wheat", false)]),
+        &SimOptions::default(),
+        None,
+    )
+    .unwrap();
+    let w = mean_yield(&r, "wheat");
+    assert!((4.0..6.0).contains(&w), "wheat {w}");
+}
+
+#[test]
+fn co2_helps_wheat_and_leaves_maize_almost_unchanged_when_water_is_not_short() {
+    let f = load("iowa");
+    let base = SimOptions::default();
+    let hi = SimOptions {
+        co2_ppm: Some(550.0),
+        ..Default::default()
+    };
+    let w0 = simulate_rotation(&f, &rot(&[("wheat", false)]), &base, None).unwrap();
+    let w1 = simulate_rotation(&f, &rot(&[("wheat", false)]), &hi, None).unwrap();
+    let gain = mean_yield(&w1, "wheat") / mean_yield(&w0, "wheat");
+    assert!((1.10..1.20).contains(&gain), "wheat gain {gain}");
+    let m0 = simulate_rotation(&f, &rot(&[("maize", false)]), &base, None).unwrap();
+    let m1 = simulate_rotation(&f, &rot(&[("maize", false)]), &hi, None).unwrap();
+    let mg = mean_yield(&m1, "maize") / mean_yield(&m0, "maize");
+    assert!((1.0..1.06).contains(&mg), "maize gain {mg}");
+}
+
+#[test]
+fn monthly_shift_shapes_the_season_and_a_flat_shape_equals_the_uniform_slider() {
+    use fieldshift_core::climate::MonthlyShift;
+    let f = load("iowa");
+    let r = rot(&[("maize", false), ("soybean", false)]);
+    let uniform = SimOptions {
+        d_t: 2.0,
+        d_p: -0.1,
+        ..Default::default()
+    };
+    let flat = SimOptions {
+        monthly: Some(MonthlyShift::uniform(2.0, -0.1)),
+        ..Default::default()
+    };
+    let a = simulate_rotation(&f, &r, &uniform, None).unwrap();
+    let b = simulate_rotation(&f, &r, &flat, None).unwrap();
+    assert_eq!(a.farm_net, b.farm_net);
+    // the same annual +2 C landing in July-August hurts maize flowering far more than in winter
+    let mut summer = [0.0; 12];
+    summer[6] = 8.0;
+    summer[7] = 8.0;
+    let mut winter = [0.0; 12];
+    winter[0] = 8.0;
+    winter[1] = 8.0;
+    let hot = |t: [f64; 12]| SimOptions {
+        monthly: Some(MonthlyShift {
+            d_t: t,
+            d_p: [0.0; 12],
+        }),
+        ..Default::default()
+    };
+    let s = simulate_rotation(&f, &r, &hot(summer), None).unwrap();
+    let w = simulate_rotation(&f, &r, &hot(winter), None).unwrap();
+    assert!(
+        s.mean_net + 50.0 < w.mean_net,
+        "{} vs {}",
+        s.mean_net,
+        w.mean_net
+    );
+}
+
+#[test]
+fn quant_follows_per_model_trajectories_and_monthly_shapes_from_the_pack() {
+    let sc = serde_json::json!({
+        "ssp245": {
+            "2050": {"dT": 2.0, "dT_p10": 1.4, "dT_p90": 2.8, "dP": -0.04, "dP_p10": -0.15, "dP_p90": 0.06},
+            "series": [{"year": 2030, "dT": 1.0, "dP": -0.01}, {"year": 2050, "dT": 2.0, "dP": -0.04}, {"year": 2090, "dT": 3.0, "dP": -0.06}],
+            "monthly": {"dT": [1.5,1.5,1.8,2.0,2.2,2.6,3.0,3.0,2.6,2.0,1.8,1.5], "dP": [0.05,0.05,0.0,-0.02,-0.05,-0.1,-0.15,-0.15,-0.08,0.0,0.03,0.05]},
+            "perModel": {
+                "COOL": {"dT": 1.4, "dP": 0.03},
+                "HOT": {"dT": 3.0, "dP": -0.12}
+            }
+        }
+    });
+    let f = with_scenarios("iowa", sc);
+    assert_eq!(f.scenario_models("ssp245").len(), 2);
+    assert!(f.scenario_monthly("ssp245").is_some());
+    let cfg = QuantConfig {
+        paths: 300,
+        ..Default::default()
+    };
+    let q = quant_simulate(
+        &f,
+        &[rot(&[("maize", false), ("soybean", false)])],
+        &SimOptions::default(),
+        &cfg,
+        None,
+    )
+    .unwrap();
+    // two models: the mean warming at the end of the horizon is between theirs
+    let end = q[0].mean_dt_end;
+    assert!(end > 1.2 && end < 3.2, "{end}");
+    assert!(
+        q[0].mean_co2_end > 480.0 && q[0].mean_co2_end < 500.0,
+        "{}",
+        q[0].mean_co2_end
+    );
+    // margin year honours the monthly shape without breaking the contract
+    let o = SimOptions {
+        ssp: Some("ssp245".into()),
+        ..Default::default()
+    };
+    let my = margin_year(
+        &f,
+        &rot(&[("maize", false), ("soybean", false)]),
+        &o,
+        &f.scenario_series("ssp245"),
+    )
+    .unwrap();
+    let v = serde_json::to_value(&my).unwrap();
+    assert!(v["year"].is_number() || v["year"].is_null() || v["year"] == "now");
+}
+
+#[test]
+fn southern_hemisphere_seasons_cross_new_year() {
+    // Mirror Iowa: shift the calendar by half a year and put the farm in the southern hemisphere.
+    let p = format!(
+        "{}/../../apps/web/public/data/mock/farms/iowa.json",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let mut v: Value = serde_json::from_str(&std::fs::read_to_string(p).unwrap()).unwrap();
+    v["meta"]["lat"] = serde_json::json!(-34.0);
+    // southern year Y = Iowa Jul-Dec of Y followed by Iowa Jan-Jun of Y+1 (so day 283 = early April of Iowa = spring)
+    let src = v["weather"].as_object().unwrap().clone();
+    let mut out = serde_json::Map::new();
+    for y in 2001..2025 {
+        let (a, b) = (&src[&y.to_string()], &src[&(y + 1).to_string()]);
+        let mut year = serde_json::Map::new();
+        for k in ["tmax", "tmin", "prcp", "gwet", "rad", "rh", "wind"] {
+            let (x, z) = (a[k].as_array().unwrap(), b[k].as_array().unwrap());
+            let joined: Vec<Value> = x[182..365].iter().chain(z[..182].iter()).cloned().collect();
+            year.insert(k.to_string(), Value::Array(joined));
+        }
+        out.insert(y.to_string(), Value::Object(year));
+    }
+    v["weather"] = Value::Object(out);
+    let f = prepare_farm_json(&v.to_string()).unwrap();
+    // the last year has no continuation and is dropped rather than simulated truncated
+    assert_eq!(f.years.len(), 23);
+    let s = simulate_season(&f, "maize", 2010, &SimOptions::default(), true).unwrap();
+    assert!(s.sow > 250, "southern spring sowing, got day {}", s.sow);
+    assert!(
+        s.harvest > 365,
+        "harvest runs into the next calendar year: {}",
+        s.harvest
+    );
+    assert!(s.matured, "{s:?}");
+    assert!(s.yield_t_ha > 3.0, "{}", s.yield_t_ha);
+    let w = simulate_season(&f, "wheat", 2010, &SimOptions::default(), false).unwrap();
+    assert!(w.sow > 200 && w.yield_t_ha > 2.0, "{w:?}");
+}
+
+#[test]
+fn validate_reports_r_rmse_and_bias_and_never_touches_calibration() {
+    use fieldshift_core::validate::{validate, ObservedYields};
+    let f = load("iowa");
+    let sim =
+        simulate_rotation(&f, &rot(&[("maize", false)]), &SimOptions::default(), None).unwrap();
+    // "observed" = simulated + 1 t/ha
+    let years: serde_json::Map<String, Value> = sim
+        .years
+        .iter()
+        .zip(&sim.yield_by_crop["maize"])
+        .map(|(y, v)| (y.to_string(), serde_json::json!(v + 1.0)))
+        .collect();
+    let obs: ObservedYields = serde_json::from_value(
+        serde_json::json!({ "crops": { "maize": { "years": years }, "tomato": {"years": {}} } }),
+    )
+    .unwrap();
+    let rep = validate(&f, &obs, &SimOptions::default()).unwrap();
+    assert_eq!(rep.len(), 1);
+    let m = &rep["maize"];
+    assert_eq!(m.n, 25);
+    assert!(m.r > 0.99, "{}", m.r);
+    assert!(
+        (m.bias + 1.0).abs() < 0.02 && (m.rmse - 1.0).abs() < 0.02,
+        "{m:?}"
+    );
+    assert!(f.meta.calib.is_empty());
 }

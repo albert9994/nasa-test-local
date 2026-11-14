@@ -3,7 +3,10 @@
 //! One crate, three front-ends: `fieldshift-wasm` (browser / Tauri), `fieldshift-server` (Axum) and the tests.
 //! All numbers are `f64`; all JSON is camelCase and matches `apps/web/lib/engine/types.ts` exactly.
 
+pub mod climate;
+pub mod co2;
 pub mod crops;
+pub mod et0;
 pub mod explain;
 pub mod optimize;
 pub mod quant;
@@ -14,7 +17,9 @@ pub mod season;
 pub mod soil;
 pub mod soil_health;
 pub mod stress;
+pub mod validate;
 
+use climate::{month_of, MonthlyShift};
 use crops::{canonical_id, season_crop, SeasonCrop};
 use serde::{Deserialize, Serialize};
 use soil::{RawSoilLayer, SoilProfile};
@@ -87,6 +92,15 @@ pub struct SimOptions {
     pub prices: HashMap<String, f64>,
     #[serde(default)]
     pub costs: HashMap<String, f64>,
+    /// Atmospheric CO2 in ppm (default: today, 420 = no fertilisation effect). See `co2.rs`.
+    #[serde(default, rename = "co2ppm")]
+    pub co2_ppm: Option<f64>,
+    /// Extra calendar-month shifts on top of `dT` / `dP` (CMIP6 monthly deltas). See `climate.rs`.
+    #[serde(default)]
+    pub monthly: Option<MonthlyShift>,
+    /// Scenario the caller is exploring (`"ssp245"` / `"ssp585"`): selects the pack's monthly shape and CO2 pathway.
+    #[serde(default)]
+    pub ssp: Option<String>,
 }
 
 fn one() -> f64 {
@@ -109,11 +123,39 @@ impl Default for SimOptions {
             fail_share: 0.20,
             prices: HashMap::new(),
             costs: HashMap::new(),
+            co2_ppm: None,
+            monthly: None,
+            ssp: None,
         }
     }
 }
 
 impl SimOptions {
+    /// Temperature shift (°C) of calendar month `m` (0..=11): uniform `dT` plus the monthly delta.
+    #[inline]
+    pub fn d_t_month(&self, m: usize) -> f64 {
+        self.d_t + self.monthly.as_ref().map_or(0.0, |s| s.d_t[m])
+    }
+
+    /// Rain multiplier of calendar month `m`: `(1 + dP) * (1 + monthly dP)`, never negative.
+    #[inline]
+    pub fn p_mult_month(&self, m: usize) -> f64 {
+        ((1.0 + self.d_p) * (1.0 + self.monthly.as_ref().map_or(0.0, |s| s.d_p[m]))).max(0.0)
+    }
+
+    /// CO2 concentration in ppm used by the crop model.
+    #[inline]
+    pub fn co2(&self) -> f64 {
+        self.co2_ppm.unwrap_or(co2::CO2_REFERENCE_PPM)
+    }
+
+    /// Same options with the monthly shape replaced (uniform `dT` / `dP` are kept).
+    pub fn with_monthly(&self, shape: Option<MonthlyShift>) -> SimOptions {
+        let mut o = self.clone();
+        o.monthly = shape;
+        o
+    }
+
     /// Composes an additional climate shift on top of the options: temperatures add, rain multiplies.
     pub fn shifted(&self, d_t: f64, d_p: f64) -> SimOptions {
         let mut o = self.clone();
@@ -282,7 +324,22 @@ pub struct FarmPack {
     pub scenarios: Option<serde_json::Value>,
 }
 
+/// One day of weather. `rh` / `wind` are NaN when the pack has no such series.
+#[derive(Debug, Clone, Copy)]
+pub struct DayWeather {
+    pub tmax: f64,
+    pub tmin: f64,
+    pub prcp: f64,
+    pub rad: f64,
+    pub rh: f64,
+    pub wind: f64,
+}
+
 /// Sanitized daily weather for one year (365 / 366 days, all vectors the same length).
+///
+/// `rh` / `wind` are empty when the pack carries none (the simulator then falls back to Hargreaves ET0).
+/// `head` holds the first days of the *next* calendar year (southern hemisphere only), so a season that
+/// starts in October can run into the following March.
 #[derive(Debug, Clone)]
 pub struct WeatherYear {
     pub year: i32,
@@ -291,12 +348,58 @@ pub struct WeatherYear {
     pub prcp: Vec<f64>,
     pub gwet: Vec<f64>,
     pub rad: Vec<f64>,
+    pub rh: Vec<f64>,
+    pub wind: Vec<f64>,
+    pub head: Vec<DayWeather>,
 }
+
+/// Days of the following year appended to southern-hemisphere years.
+const HEAD_DAYS: usize = 300;
 
 impl WeatherYear {
     #[inline]
     pub fn days(&self) -> usize {
         self.tmax.len()
+    }
+
+    /// Days available to a season: the year plus the continuation into the next year (if any).
+    #[inline]
+    pub fn span_days(&self) -> usize {
+        self.tmax.len() + self.head.len()
+    }
+
+    #[inline]
+    pub fn is_leap(&self) -> bool {
+        self.days() >= 366
+    }
+
+    /// Weather of 0-based season day `d` (`d >= days()` reads the next year's head).
+    #[inline]
+    pub fn day(&self, d: usize) -> DayWeather {
+        let n = self.tmax.len();
+        if d < n {
+            DayWeather {
+                tmax: self.tmax[d],
+                tmin: self.tmin[d],
+                prcp: self.prcp[d],
+                rad: self.rad[d],
+                rh: self.rh.get(d).copied().unwrap_or(f64::NAN),
+                wind: self.wind.get(d).copied().unwrap_or(f64::NAN),
+            }
+        } else {
+            self.head[(d - n).min(self.head.len().saturating_sub(1))]
+        }
+    }
+
+    /// Calendar month 0..=11 of 0-based season day `d` (days past the year end continue in the next year).
+    #[inline]
+    pub fn month(&self, d: usize) -> usize {
+        let n = self.days();
+        if d < n {
+            month_of(d, self.is_leap())
+        } else {
+            month_of(d - n, false)
+        }
     }
 
     /// Off-season precipitation (Jan–Mar + Oct–Dec), mm.
@@ -309,6 +412,27 @@ impl WeatherYear {
             0.0
         };
         early + late
+    }
+
+    /// Off-season precipitation after the caller's rain shifts (uniform `dP` and monthly deltas).
+    pub fn off_season_precip_shifted(&self, opts: &SimOptions) -> f64 {
+        let n = self.prcp.len();
+        (0..n)
+            .filter(|&d| !(85..275).contains(&d))
+            .map(|d| self.prcp[d] * opts.p_mult_month(self.month(d)))
+            .sum()
+    }
+
+    /// Mean of the daily ET0 over the whole year with FAO-56 Penman-Monteith (Hargreaves when RH/wind are missing).
+    pub fn mean_et0(&self, lat: f64, elev: f64) -> f64 {
+        let n = self.days().max(1);
+        (0..self.days())
+            .map(|d| {
+                let w = self.day(d);
+                et0::et0_day(w.tmax, w.tmin, w.rad, w.rh, w.wind, lat, elev, d + 1)
+            })
+            .sum::<f64>()
+            / n as f64
     }
 }
 
@@ -340,6 +464,28 @@ fn sanitize_series(raw: &[f64], len: usize, default_val: f64) -> Vec<f64> {
         prev = clean;
     }
     out
+}
+
+/// Like `sanitize_series` for optional channels: empty when the pack has no valid value at all, otherwise
+/// invalid days take the previous valid value and everything is clamped to `[lo, hi]`.
+fn sanitize_optional(raw: &[f64], len: usize, lo: f64, hi: f64) -> Vec<f64> {
+    let valid = |v: f64| v.is_finite() && v > -900.0;
+    let Some(first) = raw.iter().copied().find(|&v| valid(v)) else {
+        return Vec::new();
+    };
+    if raw.len() < len {
+        return Vec::new();
+    }
+    let mut prev = first;
+    raw.iter()
+        .take(len)
+        .map(|&v| {
+            if valid(v) {
+                prev = v;
+            }
+            prev.clamp(lo, hi)
+        })
+        .collect()
 }
 
 /// Parses and prepares a pack once. Fails (rather than inventing weather) when the pack has no real daily data.
@@ -375,6 +521,8 @@ pub fn prepare_farm(pack: FarmPack) -> Result<PreparedFarm> {
             gwet_sum += g;
             gwet_cnt += 1.0;
         }
+        let rh = sanitize_optional(&rwy.rh, n, 5.0, 100.0);
+        let wind = sanitize_optional(&rwy.wind, n, 0.0, 40.0);
         years.push(yr);
         weather_by_year.insert(
             yr,
@@ -385,6 +533,9 @@ pub fn prepare_farm(pack: FarmPack) -> Result<PreparedFarm> {
                 prcp,
                 gwet,
                 rad,
+                rh,
+                wind,
+                head: Vec::new(),
             },
         );
     }
@@ -392,6 +543,36 @@ pub fn prepare_farm(pack: FarmPack) -> Result<PreparedFarm> {
         return Err(EngineError::NoWeather);
     }
     years.sort_unstable();
+
+    // southern hemisphere: a season sown in spring (Sep-Nov) ends in the next calendar year
+    if pack.meta.lat < 0.0 {
+        let heads: Vec<(i32, Vec<DayWeather>)> = years
+            .iter()
+            .filter_map(|y| {
+                let next = weather_by_year.get(&(y + 1))?;
+                let k = HEAD_DAYS.min(next.days());
+                Some((*y, (0..k).map(|d| next.day(d)).collect()))
+            })
+            .collect();
+        for (y, h) in heads {
+            if let Some(w) = weather_by_year.get_mut(&y) {
+                w.head = h;
+            }
+        }
+    }
+
+    // the last season of a southern pack has no continuation: drop it rather than simulate a truncated season
+    if pack.meta.lat < 0.0 && years.len() > 1 {
+        if let Some(&last) = years.last() {
+            if weather_by_year
+                .get(&last)
+                .is_some_and(|w| w.head.is_empty())
+            {
+                weather_by_year.remove(&last);
+                years.pop();
+            }
+        }
+    }
 
     let mut meta = pack.meta;
     if meta.name.is_empty() {
@@ -527,6 +708,70 @@ impl PreparedFarm {
         }
     }
 
+    fn ssp_node(&self, ssp: &str) -> Option<&serde_json::Value> {
+        self.scenarios_raw.as_ref()?.get(ssp)
+    }
+
+    /// The pack's monthly ΔT / ΔP pattern for `ssp` (C4 `monthly`), when present.
+    pub fn scenario_monthly(&self, ssp: &str) -> Option<MonthlyShift> {
+        MonthlyShift::from_json(self.ssp_node(ssp)?.get("monthly")?)
+    }
+
+    /// Per-model CMIP6 trajectories of `ssp` (`perModel`). A model with only a 2050 anchor follows the ensemble
+    /// series scaled to its anchor. Empty when the pack carries no per-model deltas.
+    pub fn scenario_models(&self, ssp: &str) -> Vec<climate::ModelTrajectory> {
+        let Some(node) = self.ssp_node(ssp) else {
+            return Vec::new();
+        };
+        let Some(models) = node.get("perModel").and_then(|m| m.as_object()) else {
+            return Vec::new();
+        };
+        let ens = self.scenario_series(ssp);
+        let ens50 = climate_at(&ens, 2050);
+        let mut out = Vec::new();
+        for (name, v) in models {
+            let own: Vec<ScenarioPoint> = v
+                .get("series")
+                .and_then(|s| s.as_array())
+                .map(|a| {
+                    a.iter()
+                        .filter_map(|p| serde_json::from_value(p.clone()).ok())
+                        .collect()
+                })
+                .unwrap_or_default();
+            let series = if own.len() >= 2 {
+                own
+            } else if let Some(dt) = v.get("dT").and_then(|x| x.as_f64()) {
+                let dp = v.get("dP").and_then(|x| x.as_f64()).unwrap_or(0.0);
+                let kt = if ens50.0.abs() > 0.05 {
+                    dt / ens50.0
+                } else {
+                    1.0
+                };
+                let kp = if ens50.1.abs() > 0.004 {
+                    dp / ens50.1
+                } else {
+                    1.0
+                };
+                ens.iter()
+                    .map(|p| ScenarioPoint {
+                        year: p.year,
+                        d_t: p.d_t * kt,
+                        d_p: p.d_p * kp,
+                    })
+                    .collect()
+            } else {
+                continue;
+            };
+            out.push(climate::ModelTrajectory {
+                name: name.clone(),
+                series,
+                monthly: v.get("monthly").and_then(MonthlyShift::from_json),
+            });
+        }
+        out
+    }
+
     /// `(dT p10, dT p90, dP p10, dP p90)` of the 2050 horizon (inter-model spread), when the pack has it.
     pub fn scenario_spread_2050(&self, ssp: &str) -> Option<(f64, f64, f64, f64)> {
         let h = self.scenarios_raw.as_ref()?.get(ssp)?.get("2050")?;
@@ -540,6 +785,12 @@ impl PreparedFarm {
             g("dP_p90").unwrap_or(dp + 0.04),
         ))
     }
+}
+
+/// `(dT, dP)` of a trajectory at `year` (linear, anchored at 2020 = no change).
+fn climate_at(series: &[ScenarioPoint], year: i32) -> (f64, f64) {
+    let p = stress::interp_series(series, year);
+    (p.d_t, p.d_p)
 }
 
 // ============================================================================

@@ -45,7 +45,14 @@ export interface Opts {
   fieldFactor: number;
   failNet: number; failShare: number;
   prices: Partial<Record<CropId, number>>; costs: Partial<Record<CropId, number>>;
+  /** Atmospheric CO2, ppm (default 420 = no fertilisation effect). Rust engine only. */
+  co2ppm?: number;
+  /** Extra calendar-month shifts: dT in °C, dP as a fraction, January first. Rust engine only. */
+  monthly?: MonthlyShift;
+  /** Scenario being explored; selects the pack's monthly shape and CO2 pathway. Rust engine only. */
+  ssp?: "ssp245" | "ssp585";
 }
+export interface MonthlyShift { dT: number[]; dP: number[] }
 export interface Weights { profit: number; stability: number; soil: number; water: number }
 export type Equipment = "row_planter" | "grain_drill" | "corn_header" | "sunflower_header" | "irrigation";
 export interface Constraints {
@@ -90,14 +97,34 @@ export interface RankedRotation {
 export type PickLabel = "Best balance" | "Drought shield" | "Soil builder";
 export interface PickResult { rot: Rotation; label: PickLabel; why: string; base: RotationResult; stress: RotationResult }
 export interface MarginYearResult { year: number | null | "now"; path: ScenarioPoint[] }
-export interface QuantParams { paths: number; fromYear: number; toYear: number; ssp: "ssp245" | "ssp585"; cashReserve: number; seed: number }
+export interface QuantParams {
+  paths: number; fromYear: number; toYear: number; ssp: "ssp245" | "ssp585"; cashReserve: number; seed: number;
+  /** $/ha/year in today's money (default 0). */
+  debtService?: number; livingCost?: number;
+  /** Also return the tornado `sensitivity` rows (runs the simulation 4 times). */
+  sensitivity?: boolean;
+  /** Apply the SSP CO2 pathway (default true) / report in today's dollars (default true). */
+  co2?: boolean; real?: boolean;
+  /** Mean block length of the weather bootstrap, years (3) and t-copula degrees of freedom (5). */
+  blockYears?: number; tDf?: number;
+}
 export interface QuantResult {
   rotation: Rotation; years: number[];
   income: { p10: number[]; p50: number[]; p90: number[] };
   pBadYear: number[]; var95: number; cvar95: number; pRuin: number; maxDrawdownP50: number;
   marginYear: { p10: number | null; p50: number | null; p90: number | null };
   meanAnnual: number; sdAnnual: number; riskAdjusted: number;
+  // ---- additive (Rust engine only) ----
+  cumulative?: { p10: number[]; p50: number[]; p90: number[] };
+  var95Cum?: number; cvar95Cum?: number; maxDrawdownPctP50?: number; pRuinByYear?: number[];
+  /** Monte-Carlo standard errors of the headline numbers. */
+  mcSe?: { meanAnnual: number; var95: number; cvar95: number; pRuin: number };
+  meanDtEnd?: number; meanCo2End?: number;
+  sensitivity?: { factor: string; label: string; deltaMeanAnnual: number; deltaCvar95: number; deltaPRuin: number }[];
 }
+/** `validate` result per crop (C5 county yields vs simulated). `pairs` = [year, observed, simulated]. */
+export interface CropValidation { n: number; r: number; rmse: number; bias: number; calib: number; pairs: [number, number, number][] }
+export interface ObservedYields { crops: Record<string, { years: Record<string, number> }> }
 
 // ---------- C10 · LLM fact sheet ----------
 export interface FactSheet {
@@ -141,6 +168,9 @@ export interface Engine {
   pickThree(ranked: RankedRotation[], baseline: Rotation): Promise<PickResult[]>;
   marginYear(h: FarmHandle, rot: Rotation, opts: Opts, series: ScenarioPoint[]): Promise<MarginYearResult>;
   marketShock(h: FarmHandle, rot: Rotation, opts: Opts, shock: { pricePct: number; inputPct: number }): Promise<RotationResult>;
-  quantSimulate(h: FarmHandle, rots: Rotation[], opts: Opts, p: QuantParams): Promise<QuantResult[]>;
+  /** `quantParams` = C11 `quant_params.json` (Rust engine: parameters; the mock ignores them). */
+  quantSimulate(h: FarmHandle, rots: Rotation[], opts: Opts, p: QuantParams, quantParams?: unknown): Promise<QuantResult[]>;
   factSheet(h: FarmHandle, rot: Rotation, opts: Opts, picks: PickResult[]): Promise<FactSheet>;
+  /** Calibration report vs observed county yields (Rust engine only). */
+  validate?(h: FarmHandle, observed: ObservedYields, opts?: Opts): Promise<Record<string, CropValidation>>;
 }

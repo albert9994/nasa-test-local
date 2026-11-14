@@ -220,13 +220,24 @@ pub fn margin_year_with(
     series: &[ScenarioPoint],
     sim: SimFn,
 ) -> MarginYearResult {
+    margin_year_core(opts, series, &|_, p| opts.shifted(p.d_t, p.d_p), sim)
+}
+
+/// `margin_year_with` where `options_at(year, trajectory point)` builds the options of each year (so a caller can
+/// add the monthly CMIP6 shape and the CO2 of that year to the annual-mean shift).
+pub fn margin_year_core(
+    opts: &SimOptions,
+    series: &[ScenarioPoint],
+    options_at: &(dyn Fn(i32, ScenarioPoint) -> SimOptions + Sync),
+    sim: SimFn,
+) -> MarginYearResult {
     let limit = opts.fail_share.clamp(0.0, 1.0);
     let path: Vec<ScenarioPoint> = if series.is_empty() {
         default_cmip6_series()
     } else {
         series.to_vec()
     };
-    if p_fail_at(sim, opts, 0.0, 0.0) > limit {
+    if sim(opts).p_fail > limit {
         return MarginYearResult {
             year: MarginYearValue::Now,
             path,
@@ -234,7 +245,7 @@ pub fn margin_year_with(
     }
     for year in 2026..=2090 {
         let p = interp_series(&path, year);
-        if p_fail_at(sim, opts, p.d_t, p.d_p) > limit {
+        if sim(&options_at(year, p)).p_fail > limit {
             return MarginYearResult {
                 year: MarginYearValue::Year(year),
                 path,
@@ -301,7 +312,24 @@ pub fn margin_year(
     series: &[ScenarioPoint],
 ) -> Result<MarginYearResult> {
     let rot = ResolvedRotation::new(rotation)?;
-    Ok(margin_year_with(opts, series, &|o| {
+    // with `opts.ssp` the pack's monthly CMIP6 shape and the SSP CO2 of each year are applied along the trajectory
+    let ssp = opts.ssp.clone();
+    let shape = ssp
+        .as_deref()
+        .and_then(|s| farm.scenario_monthly(s))
+        .or_else(|| opts.monthly.clone());
+    let at = |year: i32, p: ScenarioPoint| -> SimOptions {
+        let mut o = opts.shifted(0.0, 0.0);
+        match &shape {
+            Some(sh) => o.monthly = Some(sh.scaled_to(p.d_t, p.d_p)),
+            None => o = opts.shifted(p.d_t, p.d_p),
+        }
+        if let (None, Some(s)) = (opts.co2_ppm, ssp.as_deref()) {
+            o.co2_ppm = Some(crate::co2::ssp_co2_ppm(s, year));
+        }
+        o
+    };
+    Ok(margin_year_core(opts, series, &at, &|o| {
         simulate_resolved(farm, &rot, o, None)
     }))
 }
