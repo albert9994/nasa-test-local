@@ -1,0 +1,57 @@
+{
+  "id": "baragan",
+  "name": "Baragan Plain (Romania)",
+  "lat": 44.55,
+  "lon": 27.45,
+  "elev": 32.13,
+  "slope": 1.5,
+  "rotation": [
+    "maize",
+    "wheat"
+  ],
+  "note": "Lower Danube. 2022/2024 extreme drought.",
+  "cropPool": [
+    "wheat",
+    "maize",
+    "sunflower",
+    "barley",
+    "sorghum",
+    "pea",
+    "soybean",
+    "millet",
+    "fallow"
+  ],
+  "costs": {
+    "maize": 620,
+    "wheat": 400,
+    "sunflower": 400,
+    "soybean": 450,
+    "barley": 360,
+    "sorghum": 450,
+    "pea": 340,
+    "millet": 280,
+    "fallow": 50
+  },
+  "prices": {
+    "maize": 180,
+    "wheat": 210,
+    "sunflower": 420,
+    "soybean": 400,
+    "barley": 190,
+    "sorghum": 170,
+    "pea": 280,
+    "millet": 240
+  },
+  "calib": {
+    "maize": 0.73,
+    "wheat": 0.7
+  },
+  "sources": {
+    "weather": "NASA POWER daily, community=AG (MERRA-2 meteorology, CERES/MERRA-2 solar)",
+    "ndvi": "MODIS MOD13Q1 v061 250 m 16-day NDVI via ORNL DAAC",
+    "soil": "ISRIC SoilGrids 2.0 250 m (mean, Q0.05, Q0.95)",
+    "scenarios": "NASA NEX-GDDP-CMIP6 v2.0 0.25 deg ensemble",
+    "costs": "MADR / ASAS Romania Crop Technology Budgets",
+    "prices": "Euronext MATIF / INS TEMPO Romania"
+  }
+}

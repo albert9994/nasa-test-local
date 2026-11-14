@@ -1,0 +1,57 @@
+{
+  "id": "kansas",
+  "name": "Finney County, Kansas (USA)",
+  "lat": 37.95,
+  "lon": -100.85,
+  "elev": 858.35,
+  "slope": 1.0,
+  "rotation": [
+    "wheat",
+    "fallow"
+  ],
+  "note": "Dryland High Plains. 2011/2022 droughts.",
+  "cropPool": [
+    "wheat",
+    "sorghum",
+    "sunflower",
+    "pea",
+    "millet",
+    "barley",
+    "maize",
+    "soybean",
+    "fallow"
+  ],
+  "costs": {
+    "wheat": 300,
+    "sorghum": 380,
+    "maize": 520,
+    "sunflower": 330,
+    "soybean": 400,
+    "pea": 300,
+    "barley": 300,
+    "millet": 250,
+    "fallow": 50
+  },
+  "prices": {
+    "wheat": 230,
+    "sorghum": 175,
+    "maize": 190,
+    "sunflower": 430,
+    "soybean": 420,
+    "pea": 300,
+    "barley": 200,
+    "millet": 260
+  },
+  "calib": {
+    "wheat": 0.69,
+    "sorghum": 1.14
+  },
+  "sources": {
+    "weather": "NASA POWER daily, community=AG (MERRA-2 meteorology, CERES/MERRA-2 solar)",
+    "ndvi": "MODIS MOD13Q1 v061 250 m 16-day NDVI via ORNL DAAC",
+    "soil": "ISRIC SoilGrids 2.0 250 m (mean, Q0.05, Q0.95)",
+    "scenarios": "NASA NEX-GDDP-CMIP6 v2.0 0.25 deg ensemble",
+    "costs": "K-State Research and Extension Western Kansas Dryland Crop Budgets",
+    "prices": "USDA NASS / FAO GIEWS"
+  }
+}

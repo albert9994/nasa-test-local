@@ -1,0 +1,5 @@
+{
+  "elev": 47,
+  "slope": 0.0,
+  "slopeSource": "SRTM 1 arc-sec (OpenTopoData srtm30m), Horn 3x3 gradient at ~90 m spacing, percent"
+}
