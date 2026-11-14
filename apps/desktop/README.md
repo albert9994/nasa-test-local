@@ -44,24 +44,13 @@ VITE_API_URL=https://api.example.com pnpm --filter desktop tauri build
 `vite.config.ts` maps `VITE_API_URL` onto `process.env.NEXT_PUBLIC_API_URL`, which `packages/ui/src/lib/platform/api-url.ts` reads, so web
 and desktop share the same code path and fallback. Satellite layers and the weather alerts work without the server (NASA GIBS, Open-Meteo).
 
-## Switching the native Rust engine on
+## Native Rust engine
 
-By default the app uses the TypeScript engine (Web Worker). The native engine runs `fieldshift-core` in Rust.
+The desktop app runs `fieldshift-core` natively (rayon on all cores): every `Engine` method is a Tauri command in
+`src-tauri/src/native.rs`, with farms kept in a registry in Tauri state and heavy calls on `spawn_blocking`. The cargo feature
+`native-engine` is on by default (`--no-default-features` builds the shell without it).
 
-1. `crates/fieldshift-core` must exist and expose `call(method, json) -> Result<json, String>` (see the contract in
-   `src-tauri/src/native.rs`; adapt `dispatch` there if the crate exposes typed functions instead).
-2. In `src-tauri/Cargo.toml` uncomment the `fieldshift-core` dependency and switch the feature line to
-   `native-engine = ["dep:fieldshift-core"]`.
-3. Build: `pnpm --filter desktop tauri build -- --features native-engine` (or `tauri dev -- --features native-engine`).
-   In CI, run the "Desktop installers" workflow manually and tick `native_engine`.
-
-At start-up the UI calls the `engine_info` command. If it succeeds, every `Engine` call goes through Tauri commands
-(`simulate_rotation`, `optimize`, `quant_simulate`, ...); if it fails (feature off, core missing) the app silently keeps
-the TypeScript engine. The sidebar shows which one is active.
-
-## Notes
-
-- `src-tauri/Cargo.toml` has an empty `[workspace]` table on purpose: it is not part of the root cargo workspace (`crates/*`).
-- Icons are generated from `src-tauri/icon-source.svg` with `pnpm tauri icon src-tauri/icon-source.svg`.
-- The webview needs internet only for map tiles, place search (Nominatim) and live NASA POWER / SoilGrids data for custom
-  fields; everything fetched for a field is cached on disk.
+At start-up the UI calls `engine_info` (`{kind:"native", version, threads}`); on success the engine kind is `native` (header badge,
+sidebar) and Monte-Carlo runs 10 000 paths (WASM keeps 1 000). If a command fails the call is retried on the WASM/TypeScript worker
+engine, and a broken bridge switches to it for good. `src-tauri` has its own `[workspace]` and `Cargo.lock`, so the root
+`cargo test --workspace` is unaffected; run `cargo test --release` in `src-tauri` for the native tests and the 10 000-path timing.

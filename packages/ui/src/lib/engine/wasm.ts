@@ -6,6 +6,7 @@
 import type {
   CropValidation, Engine, FarmHandle, ObservedYields, Opts, QuantParams, QuantResult, Rotation,
 } from "./types";
+import { loadQuantParams } from "./quant-params";
 
 /** The wasm-bindgen exports we use (names are the `js_name`s of crates/fieldshift-wasm). */
 interface WasmModule {
@@ -42,23 +43,6 @@ export function loadWasmModule(source?: unknown): Promise<WasmModule> {
     loading.catch(() => { loading = null; });
   }
   return loading;
-}
-
-/** C11 parameters are optional: fetched once (`/data/quant_params.json`), literature defaults inside the engine if absent. */
-let quantParams: Promise<unknown> | null = null;
-function loadQuantParams(): Promise<unknown> {
-  if (!quantParams) {
-    quantParams = (async () => {
-      try {
-        const res = await fetch("/data/quant_params.json");
-        if (!res.ok) return undefined;
-        return await res.json();
-      } catch {
-        return undefined;
-      }
-    })();
-  }
-  return quantParams;
 }
 
 const toRust = (h: FarmHandle) => Number(h);

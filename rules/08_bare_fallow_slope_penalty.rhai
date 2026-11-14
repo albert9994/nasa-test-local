@@ -40,6 +40,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -9,
+            code: "bare_fallow_slope",
+            vars: #{ slope: slope },
             reason: "Bare summer fallow on a " + slope + "% slope accelerates humus mineralization and severe sheet/rill erosion"
         };
     }
@@ -48,6 +50,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -8,
+            code: "fallow_uneconomic",
+            vars: #{  },
             reason: "Summer fallow is uneconomic in high-rainfall Corn Belt soils where profile recharges naturally over winter"
         };
     }

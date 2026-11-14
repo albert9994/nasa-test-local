@@ -33,6 +33,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: true,
             delta: -20,
+            code: "pea_continuous",
+            vars: #{  },
             reason: "Continuous field pea builds lethal Aphanomyces and Fusarium root rot"
         };
     }
@@ -41,6 +43,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -8,
+            code: "pea_every_2",
+            vars: #{  },
             reason: "Pea grown every 2nd year risks root-rot buildup; keep at least a 3-year break between pea crops"
         };
     }

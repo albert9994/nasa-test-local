@@ -19,6 +19,8 @@ fn apply(rot, farm, profile) {
             return #{
                 exclude: false,
                 delta: -7,
+                code: "acidic_ph",
+                vars: #{ ph: ph, crop: c },
                 reason: "Acidic topsoil (pH " + ph + " < 5.6) inhibits Rhizobium nodulation in " + c + " without liming"
             };
         }
@@ -26,6 +28,8 @@ fn apply(rot, farm, profile) {
             return #{
                 exclude: false,
                 delta: -6,
+                code: "alkaline_ph",
+                vars: #{ ph: ph, crop: c },
                 reason: "Alkaline soil (pH " + ph + " > 8.0) triggers iron chlorosis in " + c
             };
         }

@@ -39,6 +39,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: bonus,
+            code: "legume_before_cereal",
+            vars: #{ legume: leg_name, next: next_name },
             reason: leg_name + " fixes biological nitrogen ($55–68/ha fertilizer saved) and boosts the following " + next_name + " yield"
         };
     }

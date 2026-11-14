@@ -23,6 +23,8 @@ fn apply(rot, farm, profile) {
             return #{
                 exclude: true,
                 delta: -20,
+                code: "not_sellable",
+                vars: #{ crop: c },
                 reason: c + " is not in the farmer's locally sellable crop pool"
             };
         }

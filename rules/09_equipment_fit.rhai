@@ -45,6 +45,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: true,
             delta: -15,
+            code: "missing_equipment_no_budget",
+            vars: #{ equipment: missing[0] },
             reason: "Missing required farm machinery (" + missing[0] + ") and investment budget is $0"
         };
     }
@@ -52,6 +54,8 @@ fn apply(rot, farm, profile) {
     #{
         exclude: false,
         delta: -4,
+        code: "missing_equipment",
+        vars: #{ equipment: missing[0] },
         reason: "Requires custom harvesting/seeding or attachment purchase (" + missing[0] + ")"
     }
 }

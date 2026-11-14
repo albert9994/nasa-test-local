@@ -10,8 +10,8 @@ use crate::rules::evaluate_rules;
 use crate::score::score_from_parts;
 use crate::stress::{STRESS_DP_FRAC, STRESS_DT_C};
 use crate::{
-    par_map, rotation_label, round1, Constraints, PreparedFarm, ResolvedRotation, Result,
-    RotationStep, SimOptions, Weights,
+    par_map, rotation_label, round1, round2, Constraints, PreparedFarm, ReasonCode,
+    ResolvedRotation, Result, RotationStep, SimOptions, Weights,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -37,6 +37,9 @@ pub struct PickResult {
     pub rot: Vec<RotationStep>,
     pub label: String,
     pub why: String,
+    /// Structured form of `why` (`best_vs_baseline`, `best_score`, `drought_shield`, `soil_builder`) for i18n.
+    #[serde(default, rename = "whyCode", skip_serializing_if = "Option::is_none")]
+    pub why_code: Option<crate::ReasonCode>,
     pub base: RotationResult,
     pub stress: RotationResult,
 }
@@ -261,33 +264,68 @@ pub fn pick_three(ranked: &[RankedRotation], baseline: &[RotationStep]) -> Vec<P
 fn build_pick(c: &RankedRotation, baseline: Option<&RankedRotation>, label: &str) -> PickResult {
     let name = rotation_label(&c.rot);
     let n_years = c.base.years.len().max(1);
-    let why = match label {
+    let (why, why_code) = match label {
         "Best balance" => match baseline {
-            Some(b) => format!(
-                "{name}: {:+.0} $/ha vs your rotation, {}/{} bad years under +2 °C and 20 % less rain, soil score {:.0}",
-                round1(c.base.mean_net - b.base.mean_net),
-                c.stress.fails,
-                n_years,
-                c.base.soil_score
+            Some(b) => (
+                format!(
+                    "{name}: {:+.0} $/ha vs your rotation, {}/{} bad years under +2 °C and 20 % less rain, soil score {:.0}",
+                    round1(c.base.mean_net - b.base.mean_net),
+                    c.stress.fails,
+                    n_years,
+                    c.base.soil_score
+                ),
+                ReasonCode::new(
+                    "best_vs_baseline",
+                    &[
+                        ("deltaNet", round1(c.base.mean_net - b.base.mean_net).into()),
+                        ("fails", c.stress.fails.into()),
+                        ("years", n_years.into()),
+                        ("soil", c.base.soil_score.round().into()),
+                    ],
+                ),
             ),
-            None => format!(
-                "{name}: highest overall score for your priorities ({:.0}/100)",
-                c.score
+            None => (
+                format!(
+                    "{name}: highest overall score for your priorities ({:.0}/100)",
+                    c.score
+                ),
+                ReasonCode::new("best_score", &[("score", c.score.round().into())]),
             ),
         },
-        "Drought shield" => format!(
-            "{name}: only {}/{} bad years at +2 °C and 20 % less rain (stress net {:.0} $/ha)",
-            c.stress.fails, n_years, c.stress.mean_net
+        "Drought shield" => (
+            format!(
+                "{name}: only {}/{} bad years at +2 °C and 20 % less rain (stress net {:.0} $/ha)",
+                c.stress.fails, n_years, c.stress.mean_net
+            ),
+            ReasonCode::new(
+                "drought_shield",
+                &[
+                    ("fails", c.stress.fails.into()),
+                    ("years", n_years.into()),
+                    ("stressNet", c.stress.mean_net.round().into()),
+                ],
+            ),
         ),
-        _ => format!(
-            "{name}: soil score {:.0}/100 ({:+.2} %/yr soil carbon, {:.2} t/ha/yr erosion)",
-            c.base.soil_score, c.base.soc_change_pct, c.base.erosion
+        _ => (
+            format!(
+                "{name}: soil score {:.0}/100 ({:+.2} %/yr soil carbon, {:.2} t/ha/yr erosion)",
+                c.base.soil_score, c.base.soc_change_pct, c.base.erosion
+            ),
+            ReasonCode::new(
+                "soil_builder",
+                &[
+                    ("soil", c.base.soil_score.round().into()),
+                    ("carbonPct", round2(c.base.soc_change_pct).into()),
+                    ("erosion", round2(c.base.erosion).into()),
+                ],
+            ),
         ),
     };
     PickResult {
         rot: c.rot.clone(),
         label: label.to_string(),
         why,
+        why_code: Some(why_code),
         base: c.base.clone(),
         stress: c.stress.clone(),
     }

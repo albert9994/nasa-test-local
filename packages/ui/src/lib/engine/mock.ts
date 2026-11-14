@@ -5,7 +5,7 @@
 import type {
   Constraints, CropId, Engine, FactSheet, FarmHandle, FarmPack, FrontierResult, MarginResult,
   MarginYearResult, Opts, PickResult, QuantParams, QuantResult, RankedRotation, Rotation, RotationResult,
-  ScenarioPoint, SeasonResult, Weights,
+  ReasonCode, ScenarioPoint, SeasonResult, Weights,
 } from "./types";
 
 interface CropParams {
@@ -321,9 +321,16 @@ export const mockEngine: Engine = {
     const worst = base.worstYear;
     const wr = rotation(f, rot, opts, worst).traced ?? [];
     const why: string[] = [];
+    const codes: ReasonCode[] = [];
     for (const s of wr) {
-      if (s.factors.water < 0.75) why.push(`${cropName(s.crop).toLowerCase()}: drought (${s.stressDays} stress days)`);
-      if (s.heatDays > 0) why.push(`${cropName(s.crop).toLowerCase()}: ${s.heatDays} days above ${CROPS[s.crop].heatT} °C at flowering`);
+      if (s.factors.water < 0.75) {
+        why.push(`${cropName(s.crop).toLowerCase()}: drought (${s.stressDays} stress days)`);
+        codes.push({ code: "drought", crop: s.crop, stressDays: s.stressDays });
+      }
+      if (s.heatDays > 0) {
+        why.push(`${cropName(s.crop).toLowerCase()}: ${s.heatDays} days above ${CROPS[s.crop].heatT} °C at flowering`);
+        codes.push({ code: "heat_flowering", crop: s.crop, days: s.heatDays });
+      }
     }
     const series = f.pack.scenarios?.ssp245?.series ?? DEFAULT_SERIES;
     const my = await mockEngine.marginYear(h, rot, opts, series);
@@ -336,6 +343,7 @@ export const mockEngine: Engine = {
       margin: { dT: m.dT, dP: m.dP, status: m.already ? "already_over" : m.dT < 1 ? "tight" : "safe",
         safeUntil: { ssp245: String(my.year ?? "after 2090"), ssp585: String(my.year ?? "after 2090") } },
       worstYearWhy: why.slice(0, 3),
+      worstYearWhyCodes: codes.slice(0, 3),
       alternatives: picks.map((p) => ({
         label: p.label, rotation: rotationLabel(p.rot), badYears: `${p.base.fails}/${n}`, deltaNet: p.base.meanNet - base.meanNet,
         margin: { dT: margin(f, p.rot, opts).dT }, soilScore: p.base.soilScore, fitsBudget: true, missingEquipment: [],

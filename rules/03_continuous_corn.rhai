@@ -29,6 +29,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -12,
+            code: "continuous_maize",
+            vars: #{  },
             reason: "Continuous maize suffers 12% yield drag, Western corn rootworm (Diabrotica) pressure, and full N fertilizer cost"
         };
     }
@@ -37,6 +39,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -7,
+            code: "back_to_back_maize",
+            vars: #{  },
             reason: "Back-to-back maize phases increase rootworm larval damage and nitrogen input requirements"
         };
     }

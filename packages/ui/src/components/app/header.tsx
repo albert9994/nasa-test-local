@@ -7,6 +7,7 @@ import { LocaleSwitch } from "@/components/ui/locale-switch";
 import { useCurrency, useT, type Currency } from "@/lib/i18n";
 import { useApp } from "@/lib/store/app";
 import { getEngine, engineVia } from "@/lib/engine";
+import { nativeInfo } from "@/lib/engine/tauri";
 
 function useTheme() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -37,7 +38,7 @@ export function AppHeader() {
   const { currency, setCurrency } = useCurrency();
   const { theme, toggle } = useTheme();
   const [badge, setBadge] = useState("");
-  useEffect(() => { setBadge(`${getEngine().kind} · ${engineVia()}`); }, [handle]);
+  useEffect(() => { { const k = getEngine().kind; setBadge(k === "native" ? `native · ${nativeInfo?.threads ?? 1} threads` : `${k} · ${engineVia()}`); } }, [handle]);
 
   return (
     <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-surface px-4 py-3">

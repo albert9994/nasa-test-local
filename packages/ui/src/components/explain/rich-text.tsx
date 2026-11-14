@@ -3,13 +3,14 @@
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import type { FactSheet } from "@/lib/engine/types";
-import { useT } from "@/lib/i18n";
+import { useCurrency, useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { numberRegistry, segmentText, type Lang, type NumberRef } from "./templates";
 
 export function RichText({ text, fact, lang, caret }: { text: string; fact: FactSheet; lang: Lang; caret?: boolean }) {
   const t = useT();
-  const reg = useMemo(() => numberRegistry(fact), [fact]);
+  const currency = useCurrency((s) => s.currency);
+  const reg = useMemo(() => numberRegistry(fact, currency), [fact, currency]);
   const segs = useMemo(() => segmentText(text, reg), [text, reg]);
   const [active, setActive] = useState<NumberRef | null>(null);
   return (
