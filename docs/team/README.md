@@ -15,6 +15,7 @@ We build FieldShift **from zero** this weekend. (An earlier throw-away prototype
 
 Feature ideas, judging, pitch and Q&A: [../MASTER_PLAN.md](../MASTER_PLAN.md).
 Competitors and design inspiration (with what each person should steal): [../INSPIRATION.md](../INSPIRATION.md).
+Who is affected and why FieldShift helps (sources for the deck and Q&A): [../IMPACT_EVIDENCE.md](../IMPACT_EVIDENCE.md).
 
 **How to use your file:** do the rows top to bottom. *With* = who you pair with. *Needs / start when* = what must be done first.
 When you finish a row that *Unblocks* someone, post `"<ID> done → <who> unblocked"` + the file path in the team chat.
