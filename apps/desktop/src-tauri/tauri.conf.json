@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "FieldShift",
+  "version": "0.1.0",
+  "identifier": "ro.fieldshift.desktop",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "FieldShift",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 1024,
+        "minHeight": 700,
+        "center": true,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Productivity",
+    "shortDescription": "Climate-risk planning for farmers",
+    "longDescription": "FieldShift shows how heat and drought could affect each field of your farm and which rotation keeps you safest. Built on NASA data.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "wix": { "language": ["en-US", "ro-RO"] },
+      "nsis": { "languages": ["English", "Romanian"], "displayLanguageSelector": true }
+    },
+    "macOS": { "minimumSystemVersion": "11.0" }
+  }
+}

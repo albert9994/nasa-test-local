@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@source "../../../packages/ui/src";
+@import "../../../packages/ui/src/styles/theme.css";
+
+:root {
+  --font-geist-sans: "Geist Variable";
+  --font-geist-mono: "Geist Mono Variable";
+}
+html, body, #root { height: 100%; }
+body { overflow: hidden; user-select: none; -webkit-user-select: none; }
+input, textarea, select, [contenteditable], .selectable { user-select: text; -webkit-user-select: text; }
