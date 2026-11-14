@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { AppHeader } from "@/components/app/header";
 import { FarmMap } from "@/components/app/farm-map";
 import { FarmPanel } from "@/components/app/farm-panel";
+import { LiveClick } from "@/components/app/live-click";
 import { InputsPanel } from "@/components/inputs/inputs-panel";
 import { HeroCard } from "@/components/hero/hero-card";
 import { YearlyChart } from "@/components/hero/yearly-chart";
@@ -22,6 +23,7 @@ export function AppShell() {
       <main className="grid flex-1 gap-4 p-4 lg:grid-cols-[minmax(320px,380px)_1fr]">
         <aside className="flex flex-col gap-4">
           <FarmMap />
+          <LiveClick />
           <FarmPanel />
           <InputsPanel />
         </aside>
