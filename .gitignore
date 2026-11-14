@@ -218,3 +218,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# FieldShift extras
+.DS_Store
+node_modules/
+.claude/settings.local.json
