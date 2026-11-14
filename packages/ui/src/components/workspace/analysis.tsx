@@ -1,16 +1,11 @@
 "use client";
 // Field analysis area. Loads the selected field's data pack, hands it to the shared analysis store (`useApp`) and renders
-// the analysis panels. Today: the v1 components (same as apps/web/app/app/shell.tsx). When `components/field/FieldAnalysis`
-// (B3) lands, replace the body of <Panels/> with it; the loading/store wiring around it stays.
+// the shared analysis panels (FieldAnalysis, B3).
 import { useEffect, useState } from "react";
 import { useT } from "@/lib/i18n";
 import { useApp } from "@/lib/store/app";
 import type { Field, Profile } from "@/lib/store/farm";
-import { InputsPanel } from "@/components/inputs/inputs-panel";
-import { HeroCard } from "@/components/hero/hero-card";
-import { YearlyChart } from "@/components/hero/yearly-chart";
-import { DroughtReplay } from "@/components/replay/drought-replay";
-import { ExplainPanel } from "@/components/explain/explain-panel";
+import { FieldAnalysis } from "@/components/field";
 import { loadFieldPack, packForField } from "./packs";
 
 type Status = "loading" | "ready" | "error";
@@ -64,15 +59,5 @@ export function Analysis({ field, profile }: { field: Field; profile: Profile })
 }
 
 function Panels() {
-  return (
-    <div className="grid gap-4 xl:grid-cols-[minmax(320px,380px)_1fr]">
-      <div className="flex flex-col gap-4" data-tour="stress"><InputsPanel /></div>
-      <div className="flex min-w-0 flex-col gap-4">
-        <div data-tour="margin"><HeroCard /></div>
-        <div data-tour="futures"><YearlyChart /></div>
-        <DroughtReplay />
-        <div data-tour="rotations"><ExplainPanel /></div>
-      </div>
-    </div>
-  );
+  return <FieldAnalysis />;
 }

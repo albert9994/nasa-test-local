@@ -13,13 +13,14 @@ import { Analysis } from "./analysis";
 import { AddFieldDialog } from "./add-field-dialog";
 import { useRisk } from "./risk";
 import { buildReportHtml } from "./report";
+import { useAnalysis } from "@/lib/store/analysis";
 
 const TOUR: TourStep[] = [
   { target: "fields", titleKey: "workspace.t_fields_t", bodyKey: "workspace.t_fields_b", placement: "right" },
-  { target: "margin", titleKey: "workspace.t_margin_t", bodyKey: "workspace.t_margin_b" },
-  { target: "stress", titleKey: "workspace.t_stress_t", bodyKey: "workspace.t_stress_b", placement: "right" },
-  { target: "futures", titleKey: "workspace.t_futures_t", bodyKey: "workspace.t_futures_b" },
-  { target: "rotations", titleKey: "workspace.t_rotations_t", bodyKey: "workspace.t_rotations_b", placement: "top" },
+  { target: "margin-hero", titleKey: "workspace.t_margin_t", bodyKey: "workspace.t_margin_b", onEnter: () => useAnalysis.getState().setTab("overview") },
+  { target: "tab-stress", titleKey: "workspace.t_stress_t", bodyKey: "workspace.t_stress_b", onEnter: () => useAnalysis.getState().setTab("stress") },
+  { target: "tab-futures", titleKey: "workspace.t_futures_t", bodyKey: "workspace.t_futures_b", onEnter: () => useAnalysis.getState().setTab("futures") },
+  { target: "tab-rotations", titleKey: "workspace.t_rotations_t", bodyKey: "workspace.t_rotations_b", onEnter: () => useAnalysis.getState().setTab("rotations") },
   { target: "report", titleKey: "workspace.t_report_t", bodyKey: "workspace.t_report_b", placement: "left" },
   { target: "settings", titleKey: "workspace.t_settings_t", bodyKey: "workspace.t_settings_b", placement: "right" },
 ];

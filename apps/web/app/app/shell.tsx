@@ -1,18 +1,13 @@
 "use client";
-// Full app layout (O1). Each region is one owner's component; keep this file a thin layout so PRs don't collide.
-// Slots for Ionut's modules: #compare (I5), #frontier (I3b), #science (I7), #marginYear (I6, inside the hero).
+// Dev harness for the field analysis workspace: map + farm panel on the left, <FieldAnalysis/> on the right.
+// Keep this file a thin layout; the desktop app reuses FieldAnalysis directly.
 import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppHeader } from "@/components/app/header";
 import { FarmMap } from "@/components/app/farm-map";
 import { FarmPanel } from "@/components/app/farm-panel";
 import { LiveClick } from "@/components/app/live-click";
-import { InputsPanel } from "@/components/inputs/inputs-panel";
-import { HeroCard } from "@/components/hero/hero-card";
-import { YearlyChart } from "@/components/hero/yearly-chart";
-import { DroughtReplay } from "@/components/replay/drought-replay";
-import { ExplainPanel } from "@/components/explain/explain-panel";
-import { Placeholder } from "@/components/ui/placeholder";
+import { FieldAnalysis } from "@/components/field";
 import { useApp } from "@/lib/store/app";
 import { useWorkerEngine } from "@/lib/engine";
 
@@ -37,25 +32,16 @@ function Boot() {
 
 export function AppShell() {
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col bg-bg">
       <Suspense fallback={null}><Boot /></Suspense>
       <AppHeader />
-      <main className="grid flex-1 gap-4 p-4 lg:grid-cols-[minmax(320px,380px)_1fr]">
-        <aside className="flex flex-col gap-4">
+      <main className="grid flex-1 gap-4 p-4 lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)]">
+        <aside className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-4 lg:self-start">
           <FarmMap />
           <LiveClick />
           <FarmPanel />
-          <InputsPanel />
         </aside>
-        <section className="flex min-w-0 flex-col gap-4">
-          <HeroCard />
-          <YearlyChart />
-          <div id="compare"><Placeholder task="I5" title="Compare cards (Ionut)" /></div>
-          <div id="frontier"><Placeholder task="I3b" title="Failure frontier (Ionut)" /></div>
-          <DroughtReplay />
-          <ExplainPanel />
-          <div id="science"><Placeholder task="I7" title="Validation + data panel (Ionut)" /></div>
-        </section>
+        <FieldAnalysis />
       </main>
     </div>
   );

@@ -5,12 +5,12 @@ import { ChevronDown } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 
-export function Section({ title, hint, defaultOpen = true, children }: { title: string; hint?: string; defaultOpen?: boolean; children: ReactNode }) {
+export function Section({ title, hint, defaultOpen = true, children, tour }: { title: string; hint?: string; defaultOpen?: boolean; children: ReactNode; tour?: string }) {
   return (
-    <details open={defaultOpen} className="group border-t border-line first:border-t-0">
+    <details open={defaultOpen} className="group border-t border-line first:border-t-0" data-tour={tour}>
       <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 py-2 [&::-webkit-details-marker]:hidden">
         <span className="min-w-0">
-          <span className="display block text-xl">{title}</span>
+          <span className="block text-base font-semibold tracking-tight">{title}</span>
           {hint && <span className="block text-xs text-fg-muted">{hint}</span>}
         </span>
         <ChevronDown aria-hidden className="size-4 shrink-0 text-fg-muted transition-transform group-open:rotate-180" />
@@ -53,12 +53,11 @@ export function Chip({ active, onClick, children, label }: { active: boolean; on
     <button
       type="button" role="checkbox" aria-checked={active} aria-label={label} onClick={onClick}
       className={cn(
-        "min-h-9 rounded-full border px-3 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold",
-        active ? "border-gold bg-gold/15 text-fg" : "border-line text-fg-muted hover:bg-bg",
+        "min-h-9 rounded-full border px-3 text-sm transition-colors",
+        active ? "border-primary bg-primary-soft text-primary" : "border-line text-fg-muted hover:bg-surface-2",
       )}
     >{children}</button>
   );
 }
 
-export const inputCls =
-  "h-10 min-w-0 rounded-lg border border-line bg-bg px-2 text-sm text-fg focus:outline-none focus-visible:ring-2 focus-visible:ring-gold";
+export const inputCls = "h-10 min-w-0 rounded-lg border border-line bg-surface px-2 text-sm text-fg";
