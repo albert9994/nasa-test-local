@@ -1,0 +1,17 @@
+[package]
+name = "fieldshift-wasm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "WASM & JSON bindings for the FieldShift agro-climatic engine (Contract C3)"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+fieldshift-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+once_cell = { workspace = true }
+parking_lot = { workspace = true }

@@ -1,0 +1,41 @@
+{
+  "rotation": "winter wheat → sorghum → pea",
+  "score": 78,
+  "confidence": "medium",
+  "subscores": {
+    "climate": 85,
+    "financialRisk": 72,
+    "profit": 64,
+    "soil": 70,
+    "water": 80,
+    "feasibility": 95
+  },
+  "weights": {
+    "climate": 0.3,
+    "financialRisk": 0.25,
+    "profit": 0.25,
+    "soil": 0.1,
+    "water": 0.05,
+    "feasibility": 0.05
+  },
+  "base": 76,
+  "rules": [
+    {
+      "id": "legume_before_cereal",
+      "delta": 3,
+      "reason": "pea leaves nitrogen for the next wheat"
+    }
+  ],
+  "excludedBy": null,
+  "llm": {
+    "delta": -1,
+    "reason": "farmer reports compacted soil; first-year sorghum may lag",
+    "confidence": "medium"
+  },
+  "waterfall": [
+    ["base", 76],
+    ["rules", 3],
+    ["llm", -1],
+    ["final", 78]
+  ]
+}

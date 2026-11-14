@@ -1,0 +1,20 @@
+[package]
+name = "fieldshift-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "FieldShift core agro-climatic simulation, stress-testing, optimization, quant, and LLM fact-sheet engine"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+rand = { workspace = true }
+rand_chacha = { workspace = true }
+once_cell = { workspace = true }
+indexmap = { workspace = true }
+
+[[bench]]
+name = "engine_bench"
+harness = false

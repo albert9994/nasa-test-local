@@ -1,0 +1,95 @@
+[
+  {
+    "rot": [
+      { "crop": "maize", "cover": true },
+      { "crop": "soybean", "cover": true },
+      { "crop": "wheat", "cover": false }
+    ],
+    "label": "Best balance",
+    "why": "Adds winter wheat and rye cover to diversify flowering windows, fix legume N, and raise warming margin by +0.9 °C.",
+    "base": {
+      "meanNet": 542.0,
+      "minNet": -65.0,
+      "worstYear": 2012,
+      "pFail": 0.0417,
+      "fails": 1,
+      "soilScore": 79.5,
+      "socChangePct": 0.34,
+      "erosion": 1.6,
+      "waterUse": 452.0
+    },
+    "stress": {
+      "meanNet": 418.0,
+      "minNet": -142.0,
+      "worstYear": 2012,
+      "pFail": 0.125,
+      "fails": 3,
+      "soilScore": 77.0,
+      "socChangePct": 0.28,
+      "erosion": 1.7,
+      "waterUse": 438.0
+    }
+  },
+  {
+    "rot": [
+      { "crop": "wheat", "cover": false },
+      { "crop": "sorghum", "cover": true },
+      { "crop": "soybean", "cover": false }
+    ],
+    "label": "Drought shield",
+    "why": "Replaces drought-sensitive maize with deep-rooted sorghum and early-harvested winter wheat, cutting bad years under +2 °C / -20% rain.",
+    "base": {
+      "meanNet": 488.0,
+      "minNet": 42.0,
+      "worstYear": 2012,
+      "pFail": 0.0,
+      "fails": 0,
+      "soilScore": 74.0,
+      "socChangePct": 0.21,
+      "erosion": 1.8,
+      "waterUse": 410.0
+    },
+    "stress": {
+      "meanNet": 402.0,
+      "minNet": -18.0,
+      "worstYear": 2012,
+      "pFail": 0.0417,
+      "fails": 1,
+      "soilScore": 72.0,
+      "socChangePct": 0.16,
+      "erosion": 1.9,
+      "waterUse": 395.0
+    }
+  },
+  {
+    "rot": [
+      { "crop": "soybean", "cover": true },
+      { "crop": "wheat", "cover": true },
+      { "crop": "pea", "cover": true }
+    ],
+    "label": "Soil builder",
+    "why": "Year-round living cover with two legumes and winter cereal builds +0.62% soil organic carbon per year and cuts erosion below 1.1 t/ha/yr.",
+    "base": {
+      "meanNet": 446.0,
+      "minNet": 15.0,
+      "worstYear": 2012,
+      "pFail": 0.0,
+      "fails": 0,
+      "soilScore": 89.0,
+      "socChangePct": 0.62,
+      "erosion": 1.05,
+      "waterUse": 398.0
+    },
+    "stress": {
+      "meanNet": 365.0,
+      "minNet": -48.0,
+      "worstYear": 2012,
+      "pFail": 0.0833,
+      "fails": 2,
+      "soilScore": 87.5,
+      "socChangePct": 0.55,
+      "erosion": 1.12,
+      "waterUse": 384.0
+    }
+  }
+]

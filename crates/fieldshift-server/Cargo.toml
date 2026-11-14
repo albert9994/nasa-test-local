@@ -1,0 +1,18 @@
+[package]
+name = "fieldshift-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "FieldShift HTTP API & LLM explanation server (Contracts C9, C10, C12)"
+
+[dependencies]
+fieldshift-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+bytes = { workspace = true }
+lru = { workspace = true }
+parking_lot = { workspace = true }
+once_cell = { workspace = true }
+log = { workspace = true }
