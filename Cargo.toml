@@ -1,0 +1,29 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/fieldshift-core",
+    "crates/fieldshift-wasm",
+    "crates/fieldshift-server",
+]
+
+[workspace.package]
+version = "0.2.0"
+edition = "2021"
+license = "MIT"
+authors = ["FieldShift Team"]
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+rand = { version = "0.9", default-features = false, features = ["std"] }
+rand_chacha = { version = "0.9", default-features = false, features = ["std"] }
+rayon = "1"
+rhai = { version = "1", features = ["sync"] }
+once_cell = "1"
+fieldshift-core = { path = "crates/fieldshift-core", default-features = false }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

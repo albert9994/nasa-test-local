@@ -8,6 +8,17 @@ pnpm --filter web test && pnpm --filter web typecheck && pnpm --filter web build
 
 > Next.js 16 differs from older docs: read `node_modules/next/dist/docs/` before using a new API (see AGENTS.md).
 
+## Server URL (`NEXT_PUBLIC_API_URL`)
+The Axum server (`crates/fieldshift-server`: AI advisor `/api/explain`, FieldShift Score `/api/score`) is optional. Set its base URL
+at build/dev time and the app uses it; leave it empty and the advisor falls back to template text and the score is computed in the browser.
+
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:8787 pnpm dev      # no trailing slash needed
+```
+
+All server calls go through `packages/ui/src/lib/platform/api-url.ts` (`API_URL`, `apiUrl("/api/...")`). The server answers 429 when
+its rate limit is hit (the UI then shows the template text with a note); its LLM key never reaches the browser.
+
 ## Where things live (one owner per file, so PRs don't collide)
 | Path | What | Owner / task |
 |---|---|---|
@@ -23,7 +34,7 @@ pnpm --filter web test && pnpm --filter web typecheck && pnpm --filter web build
 | `components/hero/*` | Adaptation Margin hero + yearly chart | O3 |
 | `components/replay/*` | drought replay | O4 |
 | `components/explain/*` | AI explanation, FieldShift Score, plan | O7 |
-| `app/page.tsx`, `app/(site)/*`, `components/site/*`, `components/three/*` | light site + 3D | O6 |
+| `app/[locale]/*` (`/ro`, `/en`: landing, `/map` free tool, `/pricing`, `/signin`), `proxy.ts` (`/` → locale), `components/{site,landpick,field-snapshot}/*`, `lib/geo/*` | public SaaS site + free map tool | V2-B1 |
 | `#compare`, `#frontier`, `#science`, `#marginYear` slots | Ionut's components | I3b, I5, I6, I7 |
 
 `public/data/mock/farms/*.json` are real data (NASA POWER 2001–2025, SoilGrids, MODIS NDVI) for Iowa, Kansas and the Bărăgan,

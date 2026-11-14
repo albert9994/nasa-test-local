@@ -60,6 +60,16 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The UI engine runs the Rust crate as WASM inside a Web Worker: build packages/engine-wasm after install
+      # (typecheck, the wasm adapter test and the web build all use it).
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - name: Build engine WASM
+        run: |
+          curl -sSf https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
+          pnpm wasm
       - run: pnpm -r --if-present run lint
       - run: pnpm -r --if-present run typecheck
       - run: pnpm -r --if-present run test
