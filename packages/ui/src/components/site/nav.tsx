@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useLocalePath, useSiteEnv } from "./env";
 import { Logo } from "./logo";
 import { LocaleSwitcher } from "./locale-switcher";
+import { ThemeToggle } from "./theme";
 
 export const btn = (variant: "primary" | "outline" | "ghost" = "primary", size: "sm" | "md" | "lg" = "md") =>
   cn(
@@ -16,7 +17,8 @@ export const btn = (variant: "primary" | "outline" | "ghost" = "primary", size: 
     variant === "ghost" && "text-fg-muted hover:bg-surface-2 hover:text-fg",
   );
 
-export function SiteNav() {
+/** `overlay`: floats transparently over a full-bleed hero and turns solid once the page scrolls. */
+export function SiteNav({ overlay = false }: { overlay?: boolean }) {
   const t = useT();
   const { Link } = useSiteEnv();
   const p = useLocalePath();
@@ -25,21 +27,33 @@ export function SiteNav() {
     ["navProduct", "#product"], ["navHow", "#how"], ["navData", "#data"], ["navPricing", "#pricing"], ["navFaq", "#faq"],
   ] as const;
   const close = () => setOpen(false);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (!overlay) return;
+    const on = () => setScrolled(window.scrollY > 24);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, [overlay]);
+  const clear = overlay && !scrolled && !open;
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-6">
+    <header className={cn("top-0 z-50 border-b transition-[background-color,border-color] duration-500",
+      overlay ? "fixed inset-x-0" : "sticky", clear ? "border-transparent bg-transparent" : "border-line bg-bg/80 backdrop-blur-md")}>
+      <div className={cn("mx-auto flex h-16 items-center gap-6 px-4 sm:px-6", overlay ? "max-w-7xl sm:px-8" : "max-w-6xl")}>
         <Link href={p()} aria-label="FieldShift" onClick={close}><Logo /></Link>
-        <nav className="ml-4 hidden items-center gap-1 lg:flex" aria-label="Main">
+        <nav className="ml-2 hidden items-center gap-0.5 lg:flex" aria-label="Main">
           {links.map(([k, h]) => (
-            <Link key={k} href={`${p()}${h}`} className="rounded-full px-3 py-1.5 text-sm text-fg-muted hover:bg-surface-2 hover:text-fg">{t(`site.${k}`)}</Link>
+            <Link key={k} href={`${p()}${h}`} className="whitespace-nowrap rounded-full px-3 py-1.5 text-sm text-fg-muted hover:bg-surface-2 hover:text-fg">{t(`site.${k}`)}</Link>
           ))}
         </nav>
         <div className="ml-auto hidden items-center gap-3 lg:flex">
+          <ThemeToggle />
           <LocaleSwitcher />
           <Link href={p("/signin")} className={btn("ghost", "sm")}>{t("site.navSignin")}</Link>
           <Link href={p("/map")} className={btn("primary", "sm")}>{t("site.navTry")}</Link>
         </div>
         <div className="ml-auto flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
           <LocaleSwitcher />
           <button type="button" aria-expanded={open} aria-label={open ? t("site.navClose") : t("site.navMenu")} onClick={() => setOpen(!open)}
             className="grid size-10 place-items-center rounded-full border border-line bg-surface">

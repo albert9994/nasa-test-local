@@ -4,17 +4,19 @@ import { MapTool } from "@/components/landpick/map-tool";
 import { useLocalePath } from "./env";
 import { SiteNav } from "./nav";
 import { SiteFooter } from "./footer";
-import { Hero } from "./hero";
+import { HeroCinema, MarginBand } from "./cinema/hero-cinema";
+import { useSmoothScroll } from "./smooth-scroll";
 import { MapHeader } from "./map-header";
 import { SigninForm } from "./signin-form";
-import { DataSources, DesktopDownload, Faq, Features, FinalCta, HowItWorks, PlanComparison, PricingSection, PricingTiers, Section } from "./sections";
+import { DataSources, DesktopDownload, Faq, Features, FinalCta, HowItWorks, PlanComparison, PricingSection, PricingTiers, Section, Showcase } from "./sections";
 
 export function LandingPage() {
+  useSmoothScroll();
   return (
     <>
-      <SiteNav />
+      <SiteNav overlay />
       <main>
-        <Hero /><HowItWorks /><Features /><DataSources /><PricingSection /><DesktopDownload /><Faq /><FinalCta />
+        <HeroCinema /><MarginBand /><HowItWorks /><Showcase /><Features /><DataSources /><PricingSection /><DesktopDownload /><Faq /><FinalCta />
       </main>
       <SiteFooter />
     </>

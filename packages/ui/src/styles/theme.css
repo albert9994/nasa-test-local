@@ -37,21 +37,26 @@
   --radius-sm: 8px;
   --shadow: 0 1px 2px rgb(20 32 26 / 0.05), 0 4px 16px rgb(20 32 26 / 0.06);
 
+  /* cinematic stage (landing hero, full-bleed bands) */
+  --stage: #eef0e6; --stage-2: #e3e8da; --glow: rgb(201 162 39 / 0.18); --accent-ink: var(--primary);
+
   /* aliases for v1 components */
   --bg-elev: var(--surface);
   --gold: var(--primary);
   --accent: var(--primary);
 }
 
-/* Optional dark theme (desktop "pro" mode); never automatic. */
+/* Dark theme: a cinematic night field (deep green-black stage, ivory type, corn-gold accents).
+   On the website it follows the visitor's choice (saved as `fs-theme`) or the system setting; in the app, only on request. */
 :root[data-theme="dark"] {
-  --bg: #101612; --surface: #172019; --surface-2: #1d271f; --line: #2a362d; --line-strong: #3a473d;
-  --fg: #e9efe9; --fg-muted: #a5b2a8; --fg-subtle: #7a877d;
-  --primary: #5fb37a; --primary-hover: #74c28d; --primary-fg: #0d1a11; --primary-soft: #1f3326;
-  --leaf: #6cc07f; --soil: #c49a78; --wheat: #e2c35a;
-  --data: #6aa5e8; --data-soft: #1b2a3b; --water: #3fb5cf; --heat: #f08a5d; --heat-soft: #3a2219;
-  --warn: #e3b25a; --warn-soft: #382c16; --ok: #6cc07f; --ok-soft: #1c3223; --danger: #f2877d; --danger-soft: #3b1d1a;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
+  --bg: #070b08; --surface: #0e1410; --surface-2: #141c16; --line: #1e2920; --line-strong: #2c3a2f;
+  --fg: #f2efe4; --fg-muted: #a9b1a4; --fg-subtle: #6f7a70;
+  --primary: #5dbb7b; --primary-hover: #77cc91; --primary-fg: #04110a; --primary-soft: #11251a;
+  --leaf: #6cc07f; --soil: #c49a78; --wheat: #e6b84a;
+  --data: #79b0ef; --data-soft: #0f1d2d; --water: #45bad3; --heat: #f28c52; --heat-soft: #2a170e;
+  --warn: #e8b552; --warn-soft: #29200f; --ok: #66c37f; --ok-soft: #0f2418; --danger: #f2877d; --danger-soft: #2c1513;
+  --shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 24px 60px -24px rgb(0 0 0 / 0.8);
+  --stage: #050806; --stage-2: #0b130d; --glow: rgb(230 184 74 / 0.16); --accent-ink: var(--wheat);
 }
 
 @theme inline {
@@ -85,6 +90,7 @@
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
   --font-sans: var(--font-geist-sans), "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), "Barlow Condensed", var(--font-geist-sans), ui-sans-serif, sans-serif;
   --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
   --radius-card: var(--radius);
   --shadow-card: var(--shadow);
@@ -99,6 +105,15 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); -
 .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 /* v1 used a serif display face; v2 uses tight Geist headings everywhere. */
 .display { font-weight: 600; letter-spacing: -0.025em; line-height: 1.05; }
+/* Cinematic headline: tall condensed uppercase (landing). */
+.headline { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: -0.005em; line-height: 0.9; }
+.kicker { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; }
+.grain { position: relative; isolation: isolate; }
+.grain::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0.05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+:root[data-theme="dark"] .grain::after { opacity: 0.08; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }

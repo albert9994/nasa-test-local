@@ -2,6 +2,7 @@
 // Framed preview of the free map tool for the hero: real Esri World Imagery tiles (Bărăgan) + an example field card.
 // The numbers are a real run of the engine on NASA POWER 2001–2025 for that area and are labelled "Example".
 import { useT } from "@/lib/i18n";
+import { HEAT_DAYS as HEAT } from "./cinema/heat";
 
 const Z = 14;
 const LAT = 44.55, LON = 27.45;
@@ -11,8 +12,6 @@ const tile = (lat: number, lon: number) => {
 };
 const t0 = tile(LAT, LON);
 const TILES = [[-1, -1], [0, -1], [1, -1], [-1, 0], [0, 0], [1, 0]].map(([dx, dy]) => ({ x: t0.x + dx, y: t0.y + dy, col: dx + 1, row: dy + 1 }));
-/** Days above 35 °C per year, 2001–2025 (NASA POWER, Bărăgan example point). */
-const HEAT = [16, 16, 12, 3, 5, 9, 28, 16, 14, 21, 10, 41, 7, 8, 37, 21, 19, 4, 26, 11, 15, 27, 34, 55, 36];
 
 export function ProductPreview() {
   const t = useT();
