@@ -3,6 +3,7 @@
 // Messages live in ./messages/<namespace>.ts as { en: {...}, ro: {...} } and are registered in ./messages/index.ts.
 // Keys are "namespace.key". Vars: t("margin.sentence", { dT: "1.4" }) replaces {dT}.
 // Add a NEW namespace file for a new feature (fewer merge conflicts than editing a shared file).
+import { createContext, useContext } from "react";
 import { create } from "zustand";
 import { MESSAGES } from "./messages";
 
@@ -48,8 +49,15 @@ export function translate(locale: Locale, key: string, vars?: Vars): string {
   return s;
 }
 
+/** Optional: server-rendered apps (Next.js) provide the URL locale here so SSR output matches the page locale. */
+export const LocaleContext = createContext<Locale | null>(null);
+function useActiveLocale(): Locale {
+  const stored = useLocale((s) => s.locale);
+  return useContext(LocaleContext) ?? stored;
+}
+
 export function useT() {
-  const locale = useLocale((s) => s.locale);
+  const locale = useActiveLocale();
   return Object.assign((key: string, vars?: Vars) => translate(locale, key, vars), { locale });
 }
 
@@ -69,7 +77,7 @@ export function formatMoney(locale: Locale, usd: number, currency: Currency = "E
   return new Intl.NumberFormat(locale === "ro" ? "ro-RO" : "en-US", { style: "currency", currency, maximumFractionDigits: digits }).format(usd * FX[currency]);
 }
 export function useFormat() {
-  const locale = useLocale((s) => s.locale);
+  const locale = useActiveLocale();
   const currency = useCurrency((s) => s.currency);
   return {
     locale, currency,
