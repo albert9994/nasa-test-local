@@ -14,13 +14,14 @@ use fieldshift_core::explain::{
     build_fact_sheet, render_template_explanation, verify_numbers_in_text, FactSheet,
 };
 use fieldshift_core::optimize::{optimize, pick_three, PickResult};
-use fieldshift_core::quant::{quant_simulate, QuantConfig};
+use fieldshift_core::quant::{quant_simulate, QuantConfig, QuantModel};
 use fieldshift_core::rotation::simulate_rotation;
 use fieldshift_core::score::{compute_score, LlmAdjustment};
 use fieldshift_core::season::simulate_season;
 use fieldshift_core::stress::{
     adaptation_margin, frontier, margin_year, market_shock, MarketShockParams,
 };
+use fieldshift_core::validate::{validate, ObservedYields};
 use fieldshift_core::{
     prepare_farm, Constraints, EngineError, FarmPack, PreparedFarm, RotationStep, ScenarioPoint,
     SimOptions, Weights,
@@ -40,6 +41,8 @@ pub struct AppState {
     data_dirs: Vec<PathBuf>,
     farms: Arc<RwLock<HashMap<String, Arc<PreparedFarm>>>>,
     llm: Arc<dyn LlmClient>,
+    /// C11 `quant_params.json` (next to the farms directory, or `FIELDSHIFT_QUANT_PARAMS`); literature defaults if absent.
+    quant: Option<Arc<QuantModel>>,
 }
 
 impl AppState {
@@ -56,11 +59,28 @@ impl AppState {
     }
 
     pub fn new(data_dirs: Vec<PathBuf>) -> Self {
+        let quant = Self::find_beside(&data_dirs, "quant_params.json")
+            .or_else(|| {
+                std::env::var("FIELDSHIFT_QUANT_PARAMS")
+                    .ok()
+                    .map(PathBuf::from)
+            })
+            .and_then(|p| std::fs::read_to_string(p).ok())
+            .and_then(|t| QuantModel::from_json(&t).ok())
+            .map(Arc::new);
         Self {
             data_dirs,
             farms: Arc::default(),
             llm: Arc::new(NoLlm),
+            quant,
         }
+    }
+
+    /// `<data dir>/../<name>` (the web app keeps `farms/`, `validation/` and `quant_params.json` side by side).
+    fn find_beside(dirs: &[PathBuf], name: &str) -> Option<PathBuf> {
+        dirs.iter()
+            .filter_map(|d| d.parent().map(|p| p.join(name)))
+            .find(|p| p.is_file())
     }
 
     pub fn with_llm(mut self, llm: Arc<dyn LlmClient>) -> Self {
@@ -240,6 +260,7 @@ struct StressReq {
 }
 
 async fn stress(State(s): State<AppState>, Json(r): Json<StressReq>) -> ApiResult {
+    let quant_model = s.quant.clone();
     blocking(move || {
         let farm = r.farm.resolve(&s)?;
         let rot = rotation_or_default(r.rotation, &farm);
@@ -263,13 +284,65 @@ async fn stress(State(s): State<AppState>, Json(r): Json<StressReq>) -> ApiResul
                     Some(v) if !v.is_null() => serde_json::from_value(v.clone()).map_err(bad)?,
                     _ => vec![rot],
                 };
-                let cfg: QuantConfig = serde_json::from_value(r.params).map_err(bad)?;
-                to_json(&quant_simulate(&farm, &rots, &r.opts, &cfg, None)?)
+                let cfg: QuantConfig = serde_json::from_value(r.params.clone()).map_err(bad)?;
+                // C11 params: inline `quantParams` > server file > literature defaults
+                let inline: Option<QuantModel> = match r.params.get("quantParams") {
+                    Some(v) if !v.is_null() => Some(
+                        QuantModel::from_json(&v.to_string())
+                            .map_err(|e| ApiError::bad(format!("invalid quantParams: {e}")))?,
+                    ),
+                    _ => None,
+                };
+                let model = inline.as_ref().or(quant_model.as_deref());
+                to_json(&quant_simulate(&farm, &rots, &r.opts, &cfg, model)?)
             }
             other => Err(ApiError::bad(format!(
                 "unknown stress kind {other:?} (margin | frontier | market | marginYear | quant)"
             ))),
         }
+    })
+    .await
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ValidateReq {
+    #[serde(flatten)]
+    farm: FarmRef,
+    #[serde(default)]
+    opts: SimOptions,
+    /// C5 county yields; when omitted the server reads `validation/<farmId>.json` next to the farms directory.
+    observed: Option<ObservedYields>,
+}
+
+/// Calibration report `{crop: {n, r, rmse, bias, calib, pairs}}`: simulated vs observed county yields.
+async fn validate_route(State(s): State<AppState>, Json(r): Json<ValidateReq>) -> ApiResult {
+    blocking(move || {
+        let id = r.farm.farm_id.clone();
+        let farm = r.farm.resolve(&s)?;
+        let observed = match r.observed {
+            Some(o) => o,
+            None => {
+                let id =
+                    id.ok_or_else(|| ApiError::bad("`observed` is required with an inline pack"))?;
+                if !id
+                    .chars()
+                    .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
+                {
+                    return Err(ApiError::bad(format!("invalid farmId {id:?}")));
+                }
+                let name = format!("validation/{id}.json");
+                let path = AppState::find_beside(&s.data_dirs, &name).ok_or(ApiError {
+                    status: StatusCode::NOT_FOUND,
+                    message: format!("no county yields for {id:?} (expected {name})"),
+                })?;
+                let text = std::fs::read_to_string(&path)
+                    .map_err(|e| ApiError::internal(format!("{}: {e}", path.display())))?;
+                serde_json::from_str(&text)
+                    .map_err(|e| ApiError::bad(format!("{}: {e}", path.display())))?
+            }
+        };
+        to_json(&validate(&farm, &observed, &r.opts)?)
     })
     .await
 }
@@ -458,6 +531,7 @@ pub fn app(state: AppState) -> Router {
         .route("/api/health", get(health))
         .route("/api/simulate", post(simulate))
         .route("/api/stress", post(stress))
+        .route("/api/validate", post(validate_route))
         .route("/api/optimize", post(optimize_route))
         .route("/api/score", post(score))
         .route("/api/explain", post(explain))
