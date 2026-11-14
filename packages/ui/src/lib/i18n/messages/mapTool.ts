@@ -11,7 +11,7 @@ export const mapTool = {
     searchError: "Search is unavailable right now. Pan the map instead.",
     // modes
     modeLabel: "Select land",
-    modeParcel: "Pick a parcel",
+    modeParcel: "Parcel",
     modeDraw: "Draw",
     modeCircle: "Circle",
     hintParcel: "Click a farmland parcel on the map.",
@@ -152,7 +152,7 @@ export const mapTool = {
     noResults: "Nu am găsit locul. Încearcă altă grafie.",
     searchError: "Căutarea nu merge acum. Mută harta cu mâna.",
     modeLabel: "Alege terenul",
-    modeParcel: "Alege o parcelă",
+    modeParcel: "Parcelă",
     modeDraw: "Desenează",
     modeCircle: "Cerc",
     hintParcel: "Apasă pe o parcelă agricolă de pe hartă.",

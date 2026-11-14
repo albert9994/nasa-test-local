@@ -49,6 +49,11 @@ const BASE_STYLE: StyleSpecification = {
 
 const DEFAULT_VIEW: MapView = { lat: 45.0, lon: 26.2, zoom: 6.4 };
 const PARCEL_MIN_ZOOM = 13;
+/** On phones the field snapshot sheet covers the lower ~58 % of the screen, so keep the land in the upper part. */
+function fitPadding() {
+  if (typeof window === "undefined" || window.innerWidth >= 768) return 80;
+  return { top: 210, bottom: Math.round(window.innerHeight * 0.6), left: 28, right: 28 };
+}
 const EMPTY = { type: "FeatureCollection", features: [] } as const;
 
 type FC = { type: "FeatureCollection"; features: unknown[] };
@@ -75,16 +80,24 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
   const [hover, setHover] = useState<Parcel | null>(null);
   const [ndviYear, setNdviYear] = useState(2025);
   const seen = useRef(new Map<number, Parcel>());
+  const initialLand = useRef(land); // only a land that came with the first render (URL) frames the map on load
   const own = useRef<Land | null>(null); // last land produced by this component (so external changes can re-frame the map)
   const view = initialView ?? DEFAULT_VIEW;
 
-  const emit = useCallback((l: Land | null) => { own.current = l; onLandChange(l); }, [onLandChange]);
+  const emit = useCallback((l: Land | null, reveal = true) => {
+    own.current = l;
+    onLandChange(l);
+    if (l && reveal && window.innerWidth < 768) { // phones: bring the new selection above the bottom sheet
+      const b = ringBBox(l.ring), m = ref.current;
+      m?.fitBounds([[b.west, b.south], [b.east, b.north]], { padding: fitPadding(), maxZoom: m.getZoom(), duration: 600 });
+    }
+  }, [onLandChange]);
 
   // frame the map on a land that was set from outside (URL, saved field)
   useEffect(() => {
     if (!land || land === own.current) return;
     const b = ringBBox(land.ring);
-    ref.current?.fitBounds([[b.west, b.south], [b.east, b.north]], { padding: 80, maxZoom: 17, duration: 900 });
+    ref.current?.fitBounds([[b.west, b.south], [b.east, b.north]], { padding: fitPadding(), maxZoom: 17, duration: 900 });
   }, [land]);
 
   // ---------- farmland parcels (Overpass) ----------
@@ -156,14 +169,13 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
   const clearAll = () => { setDraft([]); emit(null); };
   const onCircleHa = (ha: number) => {
     setCircleHa(ha);
-    if (land?.kind === "circle" && land.circle) emit(landFromCircle(land.circle.center, ha));
+    if (land?.kind === "circle" && land.circle) emit(landFromCircle(land.circle.center, ha), false);
   };
 
   const onPlace = (h: PlaceHit) => {
     const m = ref.current;
     if (!m) return;
-    if (h.bbox) m.fitBounds([[h.bbox[0], h.bbox[1]], [h.bbox[2], h.bbox[3]]], { padding: 40, maxZoom: 14, duration: 1200 });
-    else m.flyTo({ center: [h.lon, h.lat], zoom: 13.5, duration: 1200 });
+    m.flyTo({ center: [h.lon, h.lat], zoom: 14, duration: 1200 });
   };
 
   const hint = useMemo(() => {
@@ -185,7 +197,7 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
   const cursor = mode === "parcel" ? (hover ? "pointer" : "grab") : "crosshair";
 
   return (
-    <div className={cn("relative h-full w-full overflow-hidden bg-primary-soft", className)}>
+    <div className={cn("relative h-full w-full overflow-hidden bg-primary-soft max-md:[&_.maplibregl-ctrl-top-right]:hidden", className)}>
       <MapGL
         ref={ref}
         mapStyle={BASE_STYLE}
@@ -199,7 +211,8 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
         onMouseMove={onMouseMove}
         onMoveEnd={onMoveEnd}
         onLoad={() => {
-          if (land) { const b = ringBBox(land.ring); ref.current?.fitBounds([[b.west, b.south], [b.east, b.north]], { padding: 80, maxZoom: 17, duration: 0 }); }
+          const l0 = initialLand.current;
+          if (l0) { const b = ringBBox(l0.ring); ref.current?.fitBounds([[b.west, b.south], [b.east, b.north]], { padding: fitPadding(), maxZoom: 17, duration: 0 }); }
           onMoveEnd();
         }}
       >

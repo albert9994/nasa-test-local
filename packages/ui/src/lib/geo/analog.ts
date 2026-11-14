@@ -67,17 +67,21 @@ const RO_NAMES: Record<string, string> = {
 };
 export const townName = (t: RefTown, locale: "ro" | "en") => (locale === "ro" ? RO_NAMES[t.name] ?? t.name : t.name);
 
-export interface Analog { town: RefTown; targetT: number; deltaT: number; distanceKm: number }
+/** NASA POWER's (Tmax + Tmin) / 2 in summer reads ~1.8 °C above station means (checked against 3 stations: Slobozia, Ames, Garden City). */
+export const POWER_SUMMER_BIAS_C = 1.8;
 
-/** Town whose summer mean temperature is closest to `currentSummerT + dT`; ties (±0.4 °C) go to the nearer one. */
+export interface Analog { town: RefTown; /** Summer mean today, bias-corrected to station-like values. */ nowT: number; targetT: number; deltaT: number; distanceKm: number }
+
+/** Town whose summer mean temperature is closest to `currentSummerT` (POWER, bias-corrected) `+ dT`; ties (±0.4 °C) go to the nearer one. */
 export function findAnalog(lat: number, lon: number, currentSummerT: number, dT: number, towns: RefTown[] = REF_TOWNS): Analog | null {
   const south = lat < 0;
   const pool = towns.filter((t) => (t.lat < 0) === south);
   if (!pool.length || !Number.isFinite(currentSummerT)) return null;
-  const targetT = currentSummerT + dT;
+  const nowT = currentSummerT - POWER_SUMMER_BIAS_C;
+  const targetT = nowT + dT;
   const scored = pool.map((town) => ({ town, err: Math.abs(town.summerT - targetT), distanceKm: haversineKm({ lat, lon }, town) }));
   const bestErr = Math.min(...scored.map((s) => s.err));
   if (bestErr > 2.5) return null; // too far outside the reference list to say anything honest
   const close = scored.filter((s) => s.err <= bestErr + 0.4).sort((a, b) => a.distanceKm - b.distanceKm)[0];
-  return { town: close.town, targetT, deltaT: dT, distanceKm: close.distanceKm };
+  return { town: close.town, nowT, targetT, deltaT: dT, distanceKm: close.distanceKm };
 }

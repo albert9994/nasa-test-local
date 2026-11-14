@@ -26,6 +26,7 @@ export const MAP_TOUR_ID = "map-tool";
 export function MapTool({ header, desktopHref, syncUrl = true }: MapToolProps) {
   const t = useT();
   const [ready, setReady] = useState(false);
+  const [tourReady, setTourReady] = useState(false);
   const [land, setLand] = useState<Land | null>(null);
   const [ndvi, setNdvi] = useState(false);
   const [sheet, setSheet] = useState(false);
@@ -42,6 +43,16 @@ export function MapTool({ header, desktopHref, syncUrl = true }: MapToolProps) {
     if (u.lat != null && u.lon != null) setInitialView({ lat: u.lat, lon: u.lon, zoom: u.zoom ?? 14 });
     setReady(true);
   }, []);
+
+  // the walkthrough points at elements inside the lazily loaded map, so wait until they exist
+  useEffect(() => {
+    if (!ready) return;
+    let tries = 0;
+    const id = setInterval(() => {
+      if (document.querySelector('[data-tour="search"]') || ++tries > 40) { clearInterval(id); setTourReady(true); }
+    }, 150);
+    return () => clearInterval(id);
+  }, [ready]);
 
   // write it back (debounced)
   const writeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -87,7 +98,7 @@ export function MapTool({ header, desktopHref, syncUrl = true }: MapToolProps) {
             "z-30 flex min-h-0 flex-col bg-bg",
             "md:static md:h-auto md:border-l md:border-line",
             "max-md:absolute max-md:inset-x-0 max-md:bottom-0 max-md:rounded-t-3xl max-md:border-t max-md:border-line max-md:shadow-[0_-12px_32px_-12px_rgb(20_32_26/0.3)] max-md:transition-[height] max-md:duration-300",
-            sheet ? "max-md:h-[72%]" : "max-md:h-[84px]",
+            sheet ? "max-md:h-[58%]" : "max-md:h-[84px]",
           )}
         >
           <button type="button" onClick={() => setSheet(!sheet)} aria-expanded={sheet} aria-label={sheet ? t("mapTool.panelCollapse") : t("mapTool.panelExpand")}
@@ -119,7 +130,7 @@ export function MapTool({ header, desktopHref, syncUrl = true }: MapToolProps) {
           </div>
         </aside>
       </div>
-      {ready && <Tour id={MAP_TOUR_ID} steps={steps} autoStart={!fromUrl} />}
+      {tourReady && <Tour id={MAP_TOUR_ID} steps={steps} autoStart={!fromUrl} />}
     </div>
   );
 }

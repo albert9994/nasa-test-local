@@ -10,7 +10,7 @@ describe("analog", () => {
     const now = findAnalog(44.55, 27.45, 22.5, 0)!;
     const future = findAnalog(44.55, 27.45, 22.5, 2.5)!;
     expect(future.town.summerT).toBeGreaterThan(now.town.summerT);
-    expect(future.targetT).toBeCloseTo(25, 5);
+    expect(future.targetT).toBeCloseTo(22.5 - 1.8 + 2.5, 5);
   });
   it("uses southern towns for the southern hemisphere", () => {
     expect(findAnalog(-33, -60, 23, 2)!.town.lat).toBeLessThan(0);

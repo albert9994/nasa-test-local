@@ -214,7 +214,7 @@ export function buildLivePack(lat: number, lon: number, onProgress?: Progress): 
 async function run(lat: number, lon: number, onProgress?: Progress): Promise<FarmPack> {
   onProgress?.("Fetching 25 years of NASA POWER weather…");
   const ctl = new AbortController();
-  const soilTimer = setTimeout(() => ctl.abort(), 8000);
+  const soilTimer = setTimeout(() => ctl.abort(), 15000); // 30 WCS requests, ~7 s when the browser is busy
   const soilP = fetchSoilWCS(lat, lon, ctl.signal).catch(() => null);
   const powerCtl = new AbortController();
   const powerTimer = setTimeout(() => powerCtl.abort(), 45000);

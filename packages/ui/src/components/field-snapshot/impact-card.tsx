@@ -95,7 +95,7 @@ export function ImpactCard({ pack, stats }: { pack: FarmPack; stats: ClimateStat
             <p className="flex items-center gap-1 text-xs font-medium text-fg-muted">{t("mapTool.analogTitle")}<InfoTip text={t("mapTool.srcAnalog")} /></p>
             {analog ? (
               <>
-                <p className="mt-1.5 text-sm leading-relaxed">{t("mapTool.analogLine", { town: townName(analog.town, t.locale), country: analog.town.country, t: f.num(analog.town.summerT, 0), now: f.num(stats.summerTemp, 0) })}</p>
+                <p className="mt-1.5 text-sm leading-relaxed">{t("mapTool.analogLine", { town: townName(analog.town, t.locale), country: analog.town.country, t: f.num(analog.town.summerT, 0), now: f.num(analog.nowT, 0) })}</p>
                 <p className="mt-1 text-xs text-fg-subtle">{t("mapTool.analogApprox")}</p>
               </>
             ) : <p className="mt-1.5 text-sm text-fg-muted">{t("mapTool.analogNone")}</p>}

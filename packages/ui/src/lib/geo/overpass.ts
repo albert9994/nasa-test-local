@@ -4,7 +4,10 @@ import { openRing, ringAreaHa, ringCentroid, type BBox, type LngLat, type Ring }
 export interface Parcel { id: number; ring: Ring; areaHa: number; centroid: { lat: number; lon: number }; crop?: string }
 
 export const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
-const CELL = 0.02; // degrees; the query box is the snapped cell grown by one cell each way (≈ 4 × 3 km)
+/** Tried in order when the main instance is slow (> 14 s) or errors; the public servers are often busy. */
+export const OVERPASS_FALLBACKS = ["https://overpass.kumi.systems/api/interpreter"];
+const ATTEMPT_MS = 14000;
+const CELL = 0.01; // degrees; the query box is the snapped cell grown by one cell each way (≈ 3.3 × 2.4 km): small queries stay fast on the busy public servers
 export const MIN_PARCEL_HA = 0.2;
 export const MAX_PARCEL_HA = 1500;
 
@@ -51,13 +54,26 @@ export function fetchParcels(lat: number, lon: number, signal?: AbortSignal): Pr
     const wait = lastCall + 1000 - Date.now();
     lastCall = Math.max(Date.now(), lastCall) + (wait > 0 ? wait : 0);
     if (wait > 0) await new Promise((r) => setTimeout(r, wait));
-    const res = await fetch(OVERPASS_URL, {
-      method: "POST", signal,
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `data=${encodeURIComponent(parcelQuery(bbox))}`,
-    });
-    if (!res.ok) throw new Error(`Overpass ${res.status}`);
-    return parseOverpass(await res.json());
+    const body = `data=${encodeURIComponent(parcelQuery(bbox))}`;
+    let lastErr: unknown = new Error("Overpass unavailable");
+    for (const url of [OVERPASS_URL, ...OVERPASS_FALLBACKS]) {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), ATTEMPT_MS);
+      const onAbort = () => ctl.abort();
+      signal?.addEventListener("abort", onAbort);
+      try {
+        const res = await fetch(url, { method: "POST", signal: ctl.signal, headers: { "Content-Type": "application/x-www-form-urlencoded", Accept: "application/json" }, body });
+        if (!res.ok) throw new Error(`Overpass ${res.status}`);
+        return parseOverpass(await res.json());
+      } catch (e) {
+        lastErr = e;
+        if (signal?.aborted) break;
+      } finally {
+        clearTimeout(timer);
+        signal?.removeEventListener("abort", onAbort);
+      }
+    }
+    throw lastErr;
   })();
   p.catch(() => cache.delete(key));
   cache.set(key, p);

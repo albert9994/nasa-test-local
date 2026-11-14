@@ -1,6 +1,7 @@
 "use client";
 import { ArrowLeft, HelpCircle } from "lucide-react";
 import { useT } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 import { useTour } from "@/components/tour/tour";
 import { useLocalePath, useSiteEnv } from "./env";
 import { Logo } from "./logo";
@@ -24,7 +25,7 @@ export function MapHeader() {
         <button type="button" onClick={() => useTour.getState().start(MAP_TOUR_ID)} className={btn("ghost", "sm")} aria-label={t("mapTool.tourRestart")}>
           <HelpCircle className="size-4" /><span className="hidden sm:inline">{t("mapTool.tourRestart")}</span>
         </button>
-        <Link href={`${p()}#download`} className={`${btn("outline", "sm")} hidden sm:inline-flex`}>FieldShift Desktop</Link>
+        <Link href={`${p()}#download`} className={cn(btn("outline", "sm"), "hidden sm:inline-flex")}>FieldShift Desktop</Link>
         <LocaleSwitcher />
       </div>
     </header>
