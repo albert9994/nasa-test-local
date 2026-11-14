@@ -1,12 +1,14 @@
 "use client";
 // Market slider + expert prices/costs table. Writes opts.prices / opts.costs for the crops in the rotation.
 import { useEffect, useMemo } from "react";
-import { CROPS, cropName, type CropId, type Opts } from "@/lib/engine";
+import { useF, useNames } from "@/components/field/hooks";
+import { fromUsd, toUsd } from "@/components/field/fmt";
+import { CROPS, type CropId, type Opts } from "@/lib/engine";
+import { useCurrency, useT } from "@/lib/i18n";
 import { useApp } from "@/lib/store/app";
 import { useMarket } from "@/lib/store/market";
 import { Field, inputCls } from "./parts";
 
-const pct = (v: number) => `${v > 0 ? "+" : ""}${Math.round(v * 100)}%`;
 
 export function basePrice(c: CropId, meta: { prices?: Opts["prices"] } | undefined, over: Opts["prices"]) {
   return over[c] ?? meta?.prices?.[c] ?? CROPS[c].price;
@@ -42,17 +44,21 @@ export function useMarketSync() {
 }
 
 export function MarketSliders() {
+  const t = useT();
+  const f = useF();
   const { pricePct, inputPct, setPricePct, setInputPct } = useMarket();
   return (
     <>
-      <Field label="Crop prices" value={pricePct} min={-0.3} max={0.3} step={0.01} format={pct} onChange={setPricePct}
-        help="What if grain sells for more or less than usual?" />
-      <Field label="Input costs (seed, fuel, fertilizer)" value={inputPct} min={0} max={0.4} step={0.01} format={pct} onChange={setInputPct} />
+      <Field label={t("inputs.crop_prices")} value={pricePct} min={-0.3} max={0.3} step={0.01} format={f.signedPct} onChange={setPricePct} help={t("inputs.crop_prices_help")} />
+      <Field label={t("inputs.input_costs")} value={inputPct} min={0} max={0.4} step={0.01} format={f.signedPct} onChange={setInputPct} />
     </>
   );
 }
 
 export function PriceTable() {
+  const t = useT();
+  const names = useNames();
+  const currency = useCurrency((s) => s.currency);
   const pack = useApp((s) => s.pack);
   const rotation = useApp((s) => s.rotation);
   const m = useMarket();
@@ -60,28 +66,28 @@ export function PriceTable() {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
-        <caption className="sr-only">Base price and cost per crop, before the market shift</caption>
+        <caption className="sr-only">{t("inputs.prices_caption")}</caption>
         <thead>
-          <tr className="text-left text-xs text-fg-muted"><th className="py-1 pr-2 font-normal">Crop</th><th className="px-1 font-normal">Price $/t</th><th className="px-1 font-normal">Cost $/ha</th></tr>
+          <tr className="text-left text-xs text-fg-muted"><th className="py-1 pr-2 font-normal">{t("inputs.th_crop")}</th><th className="px-1 font-normal">{t("inputs.th_price")} ({currency})</th><th className="px-1 font-normal">{t("inputs.th_cost")} ({currency})</th></tr>
         </thead>
         <tbody>
           {crops.map((c) => (
             <tr key={c}>
-              <th scope="row" className="py-1 pr-2 text-left font-normal">{cropName(c)}</th>
+              <th scope="row" className="py-1 pr-2 text-left font-normal">{names.crop(c)}</th>
               <td className="px-1 py-1">
                 <input
-                  type="number" inputMode="decimal" min={0} aria-label={`${cropName(c)} price in dollars per tonne`} disabled={c === "fallow"}
+                  type="number" inputMode="decimal" min={0} aria-label={t("inputs.price_aria", { crop: names.crop(c) })} disabled={c === "fallow"}
                   className={`${inputCls} num w-full max-w-24 disabled:opacity-40`}
-                  value={basePrice(c, pack?.meta, m.basePrices)}
-                  onChange={(e) => m.setBasePrice(c, e.target.value === "" ? undefined : Math.max(0, +e.target.value))}
+                  value={fromUsd(currency, basePrice(c, pack?.meta, m.basePrices))}
+                  onChange={(e) => m.setBasePrice(c, e.target.value === "" ? undefined : toUsd(currency, Math.max(0, +e.target.value)))}
                 />
               </td>
               <td className="px-1 py-1">
                 <input
-                  type="number" inputMode="decimal" min={0} aria-label={`${cropName(c)} cost in dollars per hectare`}
+                  type="number" inputMode="decimal" min={0} aria-label={t("inputs.cost_aria", { crop: names.crop(c) })}
                   className={`${inputCls} num w-full max-w-24`}
-                  value={baseCost(c, pack?.meta, m.baseCosts)}
-                  onChange={(e) => m.setBaseCost(c, e.target.value === "" ? undefined : Math.max(0, +e.target.value))}
+                  value={fromUsd(currency, baseCost(c, pack?.meta, m.baseCosts))}
+                  onChange={(e) => m.setBaseCost(c, e.target.value === "" ? undefined : toUsd(currency, Math.max(0, +e.target.value)))}
                 />
               </td>
             </tr>
@@ -89,7 +95,7 @@ export function PriceTable() {
         </tbody>
       </table>
       {(Object.keys(m.basePrices).length > 0 || Object.keys(m.baseCosts).length > 0) && (
-        <button type="button" className="mt-1 text-xs text-fg-muted underline" onClick={() => m.reset(m.packId)}>Reset to defaults</button>
+        <button type="button" className="mt-1 text-xs text-fg-muted underline" onClick={() => m.reset(m.packId)}>{t("inputs.reset_defaults")}</button>
       )}
     </div>
   );

@@ -1,23 +1,25 @@
 "use client";
 // FieldShift Score card (C12): big score, confidence, sub-score bars, SVG waterfall. Server first, client fallback.
 import { useEffect, useMemo, useState } from "react";
-import { rotationLabel } from "@/lib/engine";
 import type { ScoreResult } from "@/lib/engine/types";
+import { useT } from "@/lib/i18n";
 import { useApp } from "@/lib/store/app";
+import { useNames } from "@/components/field/hooks";
 import { cn } from "@/lib/utils";
 import { fetchScore } from "./api";
 import { computeScore } from "./score";
 
-const SUB: { key: keyof ScoreResult["subscores"]; en: string; color: string }[] = [
-  { key: "climate", en: "Climate", color: "var(--heat)" },
-  { key: "financialRisk", en: "Financial risk", color: "var(--gold)" },
-  { key: "profit", en: "Profit", color: "var(--gold)" },
-  { key: "soil", en: "Soil", color: "var(--soil)" },
-  { key: "water", en: "Water", color: "var(--water)" },
-  { key: "feasibility", en: "Feasibility", color: "var(--leaf)" },
+const SUB: { key: keyof ScoreResult["subscores"]; color: string }[] = [
+  { key: "climate", color: "var(--heat)" },
+  { key: "financialRisk", color: "var(--data)" },
+  { key: "profit", color: "var(--primary)" },
+  { key: "soil", color: "var(--soil)" },
+  { key: "water", color: "var(--water)" },
+  { key: "feasibility", color: "var(--leaf)" },
 ];
 
 export function Waterfall({ steps }: { steps: [string, number][] }) {
+  const t = useT();
   // base → rules → llm → final; deltas float from the running total
   const W = 320, H = 150, pad = 22, bw = 46;
   const max = Math.max(100, ...steps.map((s) => s[1]));
@@ -29,20 +31,20 @@ export function Waterfall({ steps }: { steps: [string, number][] }) {
     if (total) run = v; else run = to;
     const x = 12 + i * ((W - 24 - bw) / Math.max(1, steps.length - 1));
     const top = y(Math.max(from, to)), h = Math.max(2, Math.abs(y(from) - y(to)));
-    const color = total ? (name === "final" ? "var(--gold)" : "var(--fg-muted)") : v >= 0 ? "var(--leaf)" : "var(--heat)";
+    const color = total ? (name === "final" ? "var(--primary)" : "var(--fg-subtle)") : v >= 0 ? "var(--leaf)" : "var(--heat)";
     return { name, v, x, top, h, color, total };
   });
+  const label = (n: string) => { const k = `explain.wf_${n}`; const s = t(k); return s === k ? n : s; };
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" className="w-full"
-      aria-label={"Score waterfall: " + steps.map(([n, v]) => `${n} ${v}`).join(", ")}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" className="w-full" aria-label={`${t("explain.wf_aria")}: ${steps.map(([n, v]) => `${label(n)} ${v}`).join(", ")}`}>
       <line x1="8" x2={W - 8} y1={y(0)} y2={y(0)} stroke="var(--line)" />
       {bars.map((b) => (
         <g key={b.name}>
-          <rect x={b.x} y={b.top} width={bw} height={b.h} rx="4" fill={b.color} opacity={b.total ? 0.9 : 1} />
+          <rect x={b.x} y={b.top} width={bw} height={b.h} rx="4" fill={b.color} />
           <text x={b.x + bw / 2} y={b.top - 5} textAnchor="middle" className="num" fontSize="12" fill="var(--fg)">
             {b.total ? b.v : `${b.v > 0 ? "+" : b.v < 0 ? "−" : ""}${Math.abs(b.v)}`}
           </text>
-          <text x={b.x + bw / 2} y={H - 6} textAnchor="middle" fontSize="11" fill="var(--fg-muted)">{b.name}</text>
+          <text x={b.x + bw / 2} y={H - 6} textAnchor="middle" fontSize="11" fill="var(--fg-muted)">{label(b.name)}</text>
         </g>
       ))}
     </svg>
@@ -55,9 +57,11 @@ export function useScore(): { score: ScoreResult | null; source: "server" | "cli
   const rotation = useApp((s) => s.rotation);
   const opts = useApp((s) => s.opts);
   const farmId = useApp((s) => s.farmId);
+  const { rotation: label } = useNames();
+  const text = label(rotation);
   const local = useMemo(
-    () => (base && margin && rotation.length ? computeScore({ label: rotationLabel(rotation), rotation, base, margin }) : null),
-    [base, margin, rotation],
+    () => (base && margin && rotation.length ? computeScore({ label: text, rotation, base, margin }) : null),
+    [base, margin, rotation, text],
   );
   const [remote, setRemote] = useState<ScoreResult | null>(null);
   useEffect(() => {
@@ -71,43 +75,50 @@ export function useScore(): { score: ScoreResult | null; source: "server" | "cli
   return local ? { score: local, source: "client" } : { score: null, source: null };
 }
 
+function ruleText(t: ReturnType<typeof useT>, r: ScoreResult["rules"][number]) {
+  const k = `explain.rule_${r.id}`; const s = t(k);
+  return s === k ? r.reason : s;
+}
+
 export function ScoreCard() {
+  const t = useT();
   const { score, source } = useScore();
-  if (!score) return <p className="text-sm text-fg-muted">Computing score…</p>;
-  const tone = score.score >= 70 ? "text-leaf" : score.score >= 45 ? "text-gold" : "text-heat";
+  if (!score) return <p className="text-sm text-fg-muted">{t("explain.score_computing")}</p>;
+  const tone = score.score >= 70 ? "text-ok" : score.score >= 45 ? "text-warn" : "text-danger";
   return (
-    <section aria-label="FieldShift Score" className="grid gap-5 md:grid-cols-2">
+    <section aria-label={t("explain.score_title")} className="grid gap-5 md:grid-cols-2" data-tour="score-card">
       <div>
         <div className="flex items-end gap-4">
           <span className={cn("display num text-7xl", tone)}>{score.score}</span>
           <div className="pb-1 text-sm text-fg-muted">
-            <div>/ 100 · FieldShift Score</div>
-            <div>confidence <strong className="text-fg">{score.confidence}</strong></div>
+            <div>{t("explain.score_of")} · {t("explain.score_title")}</div>
+            <div>{t("explain.score_confidence")} <strong className="text-fg">{t(`explain.conf_${score.confidence}`)}</strong></div>
           </div>
         </div>
         <ul className="mt-4 space-y-2">
           {SUB.map((s) => (
-            <li key={s.key} className="grid grid-cols-[96px_1fr_28px] items-center gap-2 text-xs">
-              <span className="text-fg-muted">{s.en}</span>
-              <span className="h-2 overflow-hidden rounded-full bg-line" role="presentation">
-                <span className="block h-full rounded-full" style={{ width: `${score.subscores[s.key]}%`, background: s.color }} />
-              </span>
+            <li key={s.key} className="grid grid-cols-[110px_1fr_28px] items-center gap-2 text-xs">
+              <span className="text-fg-muted">{t(`explain.sub_${s.key}`)}</span>
+              <svg viewBox="0 0 100 8" preserveAspectRatio="none" className="h-2 w-full" role="presentation" aria-hidden>
+                <rect width="100" height="8" rx="4" fill="var(--surface-2)" />
+                <rect width={Math.max(2, score.subscores[s.key])} height="8" rx="4" fill={s.color} />
+              </svg>
               <span className="num text-right">{score.subscores[s.key]}</span>
             </li>
           ))}
         </ul>
       </div>
       <div>
-        <h4 className="text-sm font-medium">How the score is built</h4>
+        <h4 className="text-sm font-medium">{t("explain.built")}</h4>
         <Waterfall steps={score.waterfall} />
         <ul className="mt-1 space-y-1 text-xs text-fg-muted">
           {score.rules.map((r) => (
-            <li key={r.id}><span className={cn("num", r.delta >= 0 ? "text-leaf" : "text-heat")}>{r.delta > 0 ? "+" : "−"}{Math.abs(r.delta)}</span> {r.reason}</li>
+            <li key={r.id}><span className={cn("num", r.delta >= 0 ? "text-ok" : "text-danger")}>{r.delta > 0 ? "+" : "−"}{Math.abs(r.delta)}</span> {ruleText(t, r)}</li>
           ))}
-          {score.llm ? <li><span className="num">{score.llm.delta > 0 ? "+" : "−"}{Math.abs(score.llm.delta)}</span> AI adjustment (bounded ±10): {score.llm.reason}</li> : null}
+          {score.llm ? <li><span className="num">{score.llm.delta > 0 ? "+" : "−"}{Math.abs(score.llm.delta)}</span> {t("explain.llm_adjust")}: {score.llm.reason}</li> : null}
         </ul>
         <p className="mt-2 text-[11px] text-fg-muted">
-          Score from {source === "server" ? "the FieldShift server" : "client-side calculation"}; weights climate 30 %, financial risk 25 %, profit 25 %, soil 10 %, water 5 %, feasibility 5 %. The engine computes it; the AI only adjusts within ±10.
+          {source === "server" ? t("explain.score_from_server") : t("explain.score_from_client")}. {t("explain.score_weights")} {t("explain.score_note")}
         </p>
       </div>
     </section>

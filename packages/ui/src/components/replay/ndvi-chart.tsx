@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import type { FarmPack } from "@/lib/engine";
+import { useT } from "@/lib/i18n";
 
 const W = 600, H = 130, L = 26, R = 6, T = 8, B = 16;
 const MONTHS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
@@ -13,6 +14,7 @@ function median(v: number[]) {
 
 /** MODIS NDVI of the replayed year against the median of all years. Renders nothing if the pack has no NDVI. */
 export function NdviChart({ ndvi, year, doy }: { ndvi: FarmPack["ndvi"]; year: number; doy: number | null }) {
+  const t = useT();
   const data = useMemo(() => {
     if (!ndvi || !ndvi[String(year)]) return null;
     const byDoy = new Map<number, number[]>();
@@ -28,15 +30,15 @@ export function NdviChart({ ndvi, year, doy }: { ndvi: FarmPack["ndvi"]; year: n
   const y = (v: number) => T + (1 - v) * (H - T - B);
   const path = (pts: [number, number][]) => pts.map(([d, v], i) => `${i ? "L" : "M"}${x(d).toFixed(1)} ${y(v).toFixed(1)}`).join("");
   return (
-    <figure className="rounded-xl border border-line bg-bg p-3">
+    <figure className="rounded-xl border border-line bg-surface-2 p-3">
       <figcaption className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 text-xs">
-        <span className="font-medium">Greenness from space (MODIS NDVI)</span>
+        <span className="font-medium">{t("replay.ndvi_title")}</span>
         <span className="flex items-center gap-3 text-fg-muted">
           <span className="flex items-center gap-1"><i className="inline-block h-0.5 w-4 bg-leaf" />{year}</span>
-          <span className="flex items-center gap-1"><i className="inline-block h-0.5 w-4 bg-fg-muted/60" />median of all years</span>
+          <span className="flex items-center gap-1"><i className="inline-block h-0.5 w-4 bg-fg-muted/60" />{t("replay.ndvi_median")}</span>
         </span>
       </figcaption>
-      <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label={`NDVI ${year} compared with the median year`}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label={t("replay.ndvi_aria", { year })}>
         {[0, 0.25, 0.5, 0.75, 1].map((v) => (
           <g key={v}>
             <line x1={L} x2={W - R} y1={y(v)} y2={y(v)} stroke="var(--line)" strokeWidth={1} vectorEffect="non-scaling-stroke" />
@@ -50,7 +52,7 @@ export function NdviChart({ ndvi, year, doy }: { ndvi: FarmPack["ndvi"]; year: n
         <path d={path(data.cur)} fill="none" stroke="var(--leaf)" strokeWidth={1.8} vectorEffect="non-scaling-stroke" />
         {data.cur.map(([d, v]) => <circle key={d} cx={x(d)} cy={y(v)} r={1.8} fill="var(--leaf)" />)}
         {doy != null && (
-          <line x1={x(Math.min(365, doy))} x2={x(Math.min(365, doy))} y1={T} y2={H - B} stroke="var(--gold)" strokeWidth={2} vectorEffect="non-scaling-stroke" />
+          <line x1={x(Math.min(365, doy))} x2={x(Math.min(365, doy))} y1={T} y2={H - B} stroke="var(--primary)" strokeWidth={2} vectorEffect="non-scaling-stroke" />
         )}
       </svg>
     </figure>

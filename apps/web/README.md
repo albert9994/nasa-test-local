@@ -23,7 +23,7 @@ pnpm --filter web test && pnpm --filter web typecheck && pnpm --filter web build
 | `components/hero/*` | Adaptation Margin hero + yearly chart | O3 |
 | `components/replay/*` | drought replay | O4 |
 | `components/explain/*` | AI explanation, FieldShift Score, plan | O7 |
-| `app/page.tsx`, `app/(site)/*`, `components/site/*`, `components/three/*` | light site + 3D | O6 |
+| `app/[locale]/*` (`/ro`, `/en`: landing, `/map` free tool, `/pricing`, `/signin`), `proxy.ts` (`/` → locale), `components/{site,landpick,field-snapshot}/*`, `lib/geo/*` | public SaaS site + free map tool | V2-B1 |
 | `#compare`, `#frontier`, `#science`, `#marginYear` slots | Ionut's components | I3b, I5, I6, I7 |
 
 `public/data/mock/farms/*.json` are real data (NASA POWER 2001–2025, SoilGrids, MODIS NDVI) for Iowa, Kansas and the Bărăgan,
