@@ -1,6 +1,8 @@
 export { SatelliteLayers } from "./satellite-layers";
 export { CropMapLayer, CropMapBadge, CropMapMeta } from "./crop-map-layer";
 export { SatellitePanel } from "./satellite-panel";
+export { SatelliteControls } from "./satellite-controls";
+export { CROPMAP_FARMS, cropMapFarmAt } from "./farm-layers";
 export { GIBS_LAYERS, gibsTileUrl, latestDate, snapDate, clampDate, type GibsLayer } from "./gibs";
 export {
   parseCropMap, parseCropMeta, parseHlsSeries, cropShares, seriesForYear, yearsOf, isPrithvi,

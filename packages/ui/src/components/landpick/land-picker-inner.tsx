@@ -3,7 +3,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MapGL, { Layer, NavigationControl, Source, type MapMouseEvent, type MapRef } from "react-map-gl/maplibre";
-import { setWorkerUrl, type StyleSpecification } from "maplibre-gl";
+import { setWorkerUrl, type Map as MlMap, type StyleSpecification } from "maplibre-gl";
 import { Check, Circle, Hand, Pencil, Undo2, Trash2, Sprout } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -11,7 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { closeRing, pointInRing, ringBBox, type LngLat } from "@/lib/geo/area";
 import { landFromCircle, landFromRing, type Land } from "@/lib/geo/land";
 import { fetchParcels, parcelAt, type Parcel } from "@/lib/geo/overpass";
-import { lateJulyComposite, ndviTiles, NDVI_YEARS } from "@/lib/geo/gibs";
+import { SatelliteControls, cropMapFarmAt } from "@/components/satellite";
 import type { PlaceHit } from "@/lib/geo/nominatim";
 import { SearchBox } from "./search-box";
 
@@ -22,8 +22,6 @@ export interface LandPickerProps {
   onLandChange(land: Land | null): void;
   initialView?: MapView;
   onViewChange?(v: MapView): void;
-  ndvi?: boolean;
-  onNdviChange?(on: boolean): void;
   className?: string;
 }
 
@@ -66,7 +64,7 @@ const parcelsFC = (ps: Parcel[]): FC => ({ type: "FeatureCollection", features: 
 
 type ParcelStatus = "zoom" | "loading" | "ok" | "none" | "error";
 
-export default function LandPickerInner({ land, onLandChange, initialView, onViewChange, ndvi = false, onNdviChange, className }: LandPickerProps) {
+export default function LandPickerInner({ land, onLandChange, initialView, onViewChange, className }: LandPickerProps) {
   const t = useT();
   ensureWorker();
   const ref = useRef<MapRef>(null);
@@ -78,7 +76,8 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
   const [status, setStatus] = useState<ParcelStatus>("zoom");
   const [missHint, setMissHint] = useState(false);
   const [hover, setHover] = useState<Parcel | null>(null);
-  const [ndviYear, setNdviYear] = useState(2025);
+  const [map, setMap] = useState<MlMap | null>(null);
+  const [center, setCenter] = useState<{ lat: number; lon: number } | null>(null);
   const seen = useRef(new Map<number, Parcel>());
   const initialLand = useRef(land); // only a land that came with the first render (URL) frames the map on load
   const own = useRef<Land | null>(null); // last land produced by this component (so external changes can re-frame the map)
@@ -126,6 +125,7 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
     if (!m) return;
     const c = m.getCenter(), z = m.getZoom();
     setZoom(z);
+    setCenter({ lat: c.lat, lon: c.lng });
     onViewChange?.({ lat: c.lat, lon: c.lng, zoom: z });
     clearTimeout(loadTimer.current);
     loadTimer.current = setTimeout(loadParcels, 700);
@@ -193,7 +193,8 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
 
   const draftRing = draft.length >= 3 ? draft : null;
   const modes: [PickMode, string, typeof Hand][] = [["parcel", "mapTool.modeParcel", Sprout], ["draw", "mapTool.modeDraw", Pencil], ["circle", "mapTool.modeCircle", Circle]];
-  const date = lateJulyComposite(ndviYear);
+  // AI crop map: only where a precomputed map exists (Iowa and Bărăgan blocks), judged by the selected land or the map centre
+  const cropFarm = useMemo(() => { const c = land?.centroid ?? center ?? view; return cropMapFarmAt(c.lat, c.lon); }, [land, center, view]);
   const cursor = mode === "parcel" ? (hover ? "pointer" : "grab") : "crosshair";
 
   return (
@@ -211,17 +212,13 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
         onMouseMove={onMouseMove}
         onMoveEnd={onMoveEnd}
         onLoad={() => {
+          setMap(ref.current?.getMap() ?? null);
           const l0 = initialLand.current;
           if (l0) { const b = ringBBox(l0.ring); ref.current?.fitBounds([[b.west, b.south], [b.east, b.north]], { padding: fitPadding(), maxZoom: 17, duration: 0 }); }
           onMoveEnd();
         }}
       >
         <NavigationControl showCompass={false} position="top-right" />
-        {ndvi && (
-          <Source key={date} id="ndvi" type="raster" tiles={[ndviTiles(date)]} tileSize={256} maxzoom={9} attribution="NASA GIBS">
-            <Layer id="ndvi" type="raster" paint={{ "raster-opacity": 0.72 }} />
-          </Source>
-        )}
         <Source id="parcels" type="geojson" data={parcelsFC(parcels)}>
           <Layer id="parcels-fill" type="fill" minzoom={PARCEL_MIN_ZOOM - 0.5} layout={{ visibility: mode === "parcel" ? "visible" : "none" }} paint={{ "fill-color": "#ffffff", "fill-opacity": 0.08 }} />
           <Layer id="parcels-line" type="line" minzoom={PARCEL_MIN_ZOOM - 0.5} layout={{ visibility: mode === "parcel" ? "visible" : "none" }} paint={{ "line-color": "#ffffff", "line-width": 1.4, "line-opacity": 0.85 }} />
@@ -272,26 +269,8 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
             </div>
           )}
         </div>
+        <SatelliteControls map={map} cropFarm={cropFarm} beforeId="parcels-fill" className="max-h-[max(8rem,calc(42dvh-14rem))] md:max-h-[50dvh]" />
       </div>
-
-      {/* NDVI layer toggle */}
-      {onNdviChange && (
-        <div className="pointer-events-auto absolute bottom-8 left-3 hidden items-center gap-2 rounded-full border border-line bg-surface/95 px-3 py-1.5 text-[13px] shadow-[var(--shadow)] sm:left-4 md:flex">
-          <label className="flex cursor-pointer items-center gap-2" title={t("mapTool.layerNdviNote")}>
-            <input type="checkbox" checked={ndvi} onChange={(e) => onNdviChange(e.target.checked)} className="accent-[var(--primary)]" />{t("mapTool.layerNdvi")}
-          </label>
-          {ndvi && (
-            <select aria-label={t("mapTool.layerNdviYear")} value={ndviYear} onChange={(e) => setNdviYear(Number(e.target.value))} className="rounded-md border border-line bg-surface px-1.5 py-0.5 text-xs">
-              {NDVI_YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
-            </select>
-          )}
-        </div>
-      )}
-      {ndvi && onNdviChange && (
-        <div className="pointer-events-auto absolute right-3 top-28 hidden rounded-lg border border-line bg-surface/95 px-2.5 py-1.5 text-[11px] text-fg-muted shadow md:block">
-          <span className="flex items-center gap-1.5"><i className="inline-block h-2 w-16 rounded-full" style={{ background: "linear-gradient(90deg,#b08968,#d9c27a,#7cb342,#2e7d32)" }} />NDVI {ndviYear}</span>
-        </div>
-      )}
     </div>
   );
 }

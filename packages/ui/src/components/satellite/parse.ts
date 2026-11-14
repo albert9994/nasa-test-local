@@ -38,6 +38,9 @@ export interface CropMeta {
   accuracy: number | null;
   macroF1: number | null;
   agreement: number | null; // k-means vs reference labels (Baragan)
+  /** Plain spectral classifier on the same split (no foundation model); null when not reported. */
+  baselineMacroF1: number | null;
+  baselineAccuracy: number | null;
   beta: boolean;
   patchMeters: number | null;
   note: string;
@@ -104,6 +107,8 @@ export function parseCropMeta(raw: unknown): CropMeta | null {
     accuracy: num(o.accuracy),
     macroF1: num(o.macro_f1),
     agreement: num(o.agreement),
+    baselineMacroF1: num(o.baseline_spectral_macro_f1),
+    baselineAccuracy: num(o.baseline_spectral_accuracy),
     beta: o.beta !== false,
     patchMeters: num(o.patch_m),
     note: String(o.note ?? ""),

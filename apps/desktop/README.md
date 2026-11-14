@@ -32,6 +32,18 @@ Installers are built in CI: `.github/workflows/desktop.yml` (tag `v*` or manual 
 Farm data is stored by the Tauri store plugin (`fieldshift.json` in the app data folder); data packs of custom fields are
 cached as files in `<app data>/packs/` so the app works offline after the first load. Demo-farm packs ship inside the app.
 
+## Server URL (`VITE_API_URL`)
+The AI advisor and the server-side FieldShift Score use the Axum server (`crates/fieldshift-server`). Point the app at it with a Vite env
+var at dev/build time; empty (default) means offline mode: template text instead of the AI answer, score computed locally.
+
+```bash
+VITE_API_URL=https://api.example.com pnpm --filter desktop dev --port 3116
+VITE_API_URL=https://api.example.com pnpm --filter desktop tauri build
+```
+
+`vite.config.ts` maps `VITE_API_URL` onto `process.env.NEXT_PUBLIC_API_URL`, which `packages/ui/src/lib/platform/api-url.ts` reads, so web
+and desktop share the same code path and fallback. Satellite layers and the weather alerts work without the server (NASA GIBS, Open-Meteo).
+
 ## Switching the native Rust engine on
 
 By default the app uses the TypeScript engine (Web Worker). The native engine runs `fieldshift-core` in Rust.

@@ -4,7 +4,8 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Map, { Layer, Marker, NavigationControl, Source, type MapRef } from "react-map-gl/maplibre";
-import type { StyleSpecification } from "maplibre-gl";
+import type { Map as MlMap, StyleSpecification } from "maplibre-gl";
+import { SatelliteControls, cropMapFarmAt } from "@/components/satellite";
 import type { FieldMapProps } from "./field-map";
 
 const STYLE: StyleSpecification = {
@@ -28,9 +29,12 @@ function bounds(coords: [number, number][]): [[number, number], [number, number]
   return [[w, s], [e, n]];
 }
 
-export default function FieldMapInner({ center, zoom = 12, fields, selectedId, riskById, marker, onMapClick, onSelect, fitFields, className }: FieldMapProps) {
+export default function FieldMapInner({ center, zoom = 12, fields, selectedId, riskById, marker, onMapClick, onSelect, fitFields, satellite, className }: FieldMapProps) {
   const ref = useRef<MapRef>(null);
   const [ready, setReady] = useState(false);
+  const [map, setMap] = useState<MlMap | null>(null);
+  const focus = fields.find((f) => f.id === selectedId)?.centroid ?? center;
+  const cropFarm = satellite ? cropMapFarmAt(focus.lat, focus.lon) : null;
   const data = useMemo(() => ({
     type: "FeatureCollection" as const,
     features: fields.filter((f) => f.geometry).map((f) => ({
@@ -62,7 +66,7 @@ export default function FieldMapInner({ center, zoom = 12, fields, selectedId, r
         initialViewState={{ longitude: center.lon, latitude: center.lat, zoom }}
         style={{ width: "100%", height: "100%" }}
         interactiveLayerIds={["fields-fill"]}
-        onLoad={() => setReady(true)}
+        onLoad={(e) => { setMap(e.target); setReady(true); }}
         cursor={onMapClick ? "crosshair" : "grab"}
         onClick={(e) => {
           const hit = e.features?.[0]?.properties?.id as string | undefined;
@@ -92,6 +96,7 @@ export default function FieldMapInner({ center, zoom = 12, fields, selectedId, r
           </Marker>
         )}
       </Map>
+      {satellite && <SatelliteControls map={map} cropFarm={cropFarm} beforeId="fields-fill" className="absolute left-2 top-2" />}
     </div>
   );
 }

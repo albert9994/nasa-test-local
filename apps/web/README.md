@@ -8,6 +8,17 @@ pnpm --filter web test && pnpm --filter web typecheck && pnpm --filter web build
 
 > Next.js 16 differs from older docs: read `node_modules/next/dist/docs/` before using a new API (see AGENTS.md).
 
+## Server URL (`NEXT_PUBLIC_API_URL`)
+The Axum server (`crates/fieldshift-server`: AI advisor `/api/explain`, FieldShift Score `/api/score`) is optional. Set its base URL
+at build/dev time and the app uses it; leave it empty and the advisor falls back to template text and the score is computed in the browser.
+
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:8787 pnpm dev      # no trailing slash needed
+```
+
+All server calls go through `packages/ui/src/lib/platform/api-url.ts` (`API_URL`, `apiUrl("/api/...")`). The server answers 429 when
+its rate limit is hit (the UI then shows the template text with a note); its LLM key never reaches the browser.
+
 ## Where things live (one owner per file, so PRs don't collide)
 | Path | What | Owner / task |
 |---|---|---|

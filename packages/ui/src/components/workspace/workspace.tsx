@@ -59,7 +59,7 @@ export function Workspace() {
           </div>
         </div>
         <div className="h-[300px] px-6">
-          <FieldMap center={center} zoom={11} fields={mapFields} selectedId={farm.selectedId} riskById={riskById} fitFields={farm.fields.length > 0}
+          <FieldMap center={center} zoom={11} fields={mapFields} selectedId={farm.selectedId} riskById={riskById} fitFields={farm.fields.length > 0} satellite
             onSelect={farm.select} />
         </div>
         <div className="px-6 py-4">

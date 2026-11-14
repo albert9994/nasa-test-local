@@ -14,6 +14,7 @@ import { FrontierPanel } from "./frontier";
 import { FuturesTab } from "./futures-tab";
 import { OverviewTab } from "./overview-tab";
 import { RotationsTab } from "./rotations-tab";
+import { SatelliteTab } from "./satellite-tab";
 import { StressTab } from "./stress-tab";
 import { Tabs, type TabDef } from "./tabs";
 
@@ -47,7 +48,7 @@ export function FieldAnalysis({ className, tabs: only }: { className?: string; /
           : active === "rotations" ? <RotationsTab />
           : active === "replay" ? <DroughtReplay />
           : active === "report" ? <ExplainPanel />
-          : <div data-slot="satellite" />}
+          : <SatelliteTab />}
       </div>
       <ReportDialog />
     </div>
