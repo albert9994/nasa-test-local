@@ -1,0 +1,17 @@
+name: Bug
+description: Ceva nu merge
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: Ce s-a întâmplat, description: "Pași, ce ai așteptat, ce ai văzut. Captură de ecran dacă e UI." }
+    validations: { required: true }
+  - type: input
+    id: where
+    attributes: { label: Unde, placeholder: "fermă / pagină / branch / browser" }
+  - type: dropdown
+    id: sev
+    attributes:
+      label: Cât de grav
+      options: ["P0: demo-ul nu merge", "P1: important", "P2: cosmetic"]

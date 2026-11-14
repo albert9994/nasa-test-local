@@ -10,6 +10,12 @@ runs on 25 years of NASA data for the exact field.
 ## Status
 🚧 Building from zero during the hackathon. Start with **[docs/team/README.md](docs/team/README.md)**.
 
+## How we work (team)
+- **Read first:** [CONTRIBUTING.md](CONTRIBUTING.md) (branches, PRs, commits) and [docs/team/README.md](docs/team/README.md) (who does what).
+- **One short branch per task** → Pull Request → CI green → squash merge. Nobody pushes directly to `main`.
+- **Tasks = GitHub Issues**, grouped by checkpoint (**Milestones CP0–CP6**) and labelled by area. Filter: `assignee:@me`.
+- Secrets live only in `.env` (copy `.env.example`); never commit keys.
+
 ## Planned structure
 ```
 web/            static app (HTML + JS modules + Leaflet), hosted on GitHub Pages

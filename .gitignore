@@ -223,3 +223,26 @@ __marimo__/
 .DS_Store
 node_modules/
 .claude/settings.local.json
+
+# --- FieldShift: Rust / WASM ---
+target/
+packages/engine-wasm/
+**/pkg/
+# --- Node / Next.js ---
+.next/
+out/
+.turbo/
+.vercel/
+*.tsbuildinfo
+# --- secrets ---
+.env
+.env.*
+!.env.example
+# --- big raw data (keep in Drive / bucket) ---
+*.nc
+*.tif
+*.tiff
+pipeline/cache/
+pipeline/raw/
+# --- editors ---
+.idea/

@@ -1,0 +1,10 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.webp binary
+*.tif binary
+*.nc binary
+*.parquet binary
+*.wasm binary
+pnpm-lock.yaml merge=ours linguist-generated
+Cargo.lock linguist-generated
