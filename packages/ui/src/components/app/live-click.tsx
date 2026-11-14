@@ -2,7 +2,7 @@
 // O5: popup "Analyse this field" for the point in useMap().picked → buildLivePack → useApp().usePack.
 // Also handles the deep link /app?lat=..&lon=.. (inside Suspense, as Next 16 requires for useSearchParams).
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useQueryParam } from "@/lib/platform/client-only";
 import { MapPin, X } from "lucide-react";
 import { useMap } from "@/lib/store/map";
 import { useApp } from "@/lib/store/app";
@@ -27,9 +27,8 @@ async function analyse(lat: number, lon: number): Promise<boolean> {
 }
 
 function DeepLink() {
-  const sp = useSearchParams();
   const done = useRef("");
-  const lat = sp.get("lat"), lon = sp.get("lon");
+  const lat = useQueryParam("lat"), lon = useQueryParam("lon");
   useEffect(() => {
     if (lat == null || lon == null || done.current === `${lat},${lon}`) return;
     const la = Number(lat), lo = Number(lon);

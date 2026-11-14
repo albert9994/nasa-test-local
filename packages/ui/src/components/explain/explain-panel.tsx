@@ -90,7 +90,7 @@ export function ExplainPanel() {
         <div role="group" aria-label="Language" className="flex rounded-full border border-line p-0.5 text-xs">
           {(["en", "ro"] as Lang[]).map((l) => (
             <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)}
-              className={cn("rounded-full px-3 py-1 uppercase", lang === l ? "bg-gold text-[#0b0c09]" : "text-fg-muted hover:text-fg")}>{l}</button>
+              className={cn("rounded-full px-3 py-1 uppercase", lang === l ? "bg-gold text-primary-fg" : "text-fg-muted hover:text-fg")}>{l}</button>
           ))}
         </div>
       </div>

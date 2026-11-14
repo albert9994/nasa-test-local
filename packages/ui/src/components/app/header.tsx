@@ -10,7 +10,7 @@ function useTheme() {
   useEffect(() => {
     let saved: string | null = null;
     try { saved = localStorage.getItem("fs-theme"); } catch { /* private mode */ }
-    const t = saved === "dark" || saved === "light" ? saved : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    const t = saved === "dark" ? "dark" : "light"; // light by default (agri-SaaS look); dark only on request
     document.documentElement.dataset.theme = t;
     setTheme(t);
   }, []);
