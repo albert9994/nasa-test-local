@@ -2,9 +2,13 @@
 //! `/api/explain` (SSE). Requests name a farm either by `farmId` (a real C1 pack from disk) or inline `pack`.
 //! Weather is never synthesized: an unknown farm is a 404.
 
+pub mod advisor;
 pub mod llm;
+pub mod ratelimit;
 
-use axum::extract::State;
+use advisor::{HistoryTurn, Prompts};
+use axum::extract::{ConnectInfo, FromRequestParts, State};
+use axum::http::request::Parts;
 use axum::http::{header, Method, StatusCode};
 use axum::response::sse::{Event, KeepAlive, Sse};
 use axum::response::{IntoResponse, Response};
@@ -16,7 +20,7 @@ use fieldshift_core::explain::{
 use fieldshift_core::optimize::{optimize, pick_three, PickResult};
 use fieldshift_core::quant::{quant_simulate, QuantConfig};
 use fieldshift_core::rotation::simulate_rotation;
-use fieldshift_core::score::{compute_score, LlmAdjustment};
+use fieldshift_core::score::{compute_score, LlmAdjustment, ScoreResult};
 use fieldshift_core::season::simulate_season;
 use fieldshift_core::stress::{
     adaptation_margin, frontier, margin_year, market_shock, MarketShockParams,
@@ -25,13 +29,19 @@ use fieldshift_core::{
     prepare_farm, Constraints, EngineError, FarmPack, PreparedFarm, RotationStep, ScenarioPoint,
     SimOptions, Weights,
 };
-use llm::{LlmClient, NoLlm};
+use llm::{ChatMessage, ChatOpts, HttpLlm, LlmClient, NoLlm};
+use lru::LruCache;
+use ratelimit::RateLimiter;
 use serde::Deserialize;
 use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::convert::Infallible;
+use std::hash::{Hash, Hasher};
+use std::net::SocketAddr;
+use std::num::NonZeroUsize;
 use std::path::PathBuf;
-use std::sync::{Arc, RwLock};
+use std::pin::Pin;
+use std::sync::{Arc, Mutex, RwLock};
 use tower_http::cors::{Any, CorsLayer};
 
 /// Shared server state: where packs live, a cache of prepared farms and the LLM client.
@@ -40,7 +50,21 @@ pub struct AppState {
     data_dirs: Vec<PathBuf>,
     farms: Arc<RwLock<HashMap<String, Arc<PreparedFarm>>>>,
     llm: Arc<dyn LlmClient>,
+    prompts: Arc<Prompts>,
+    cache: Arc<Mutex<LruCache<u64, CacheEntry>>>,
+    limiter: Arc<RateLimiter>,
+    trust_proxy: bool,
 }
+
+/// What the advisor remembers per (fact sheet, question, lang, mode).
+#[derive(Clone)]
+enum CacheEntry {
+    Explain { text: String, used: Vec<f64> },
+    Score(LlmAdjustment),
+}
+
+const CACHE_SIZE: usize = 256;
+const DEFAULT_RATE_PER_HOUR: usize = 20;
 
 impl AppState {
     /// `FIELDSHIFT_DATA_DIR` = directory holding `<id>.json` packs; fallbacks are the repo's real packs
@@ -52,7 +76,22 @@ impl AppState {
         }
         dirs.push(PathBuf::from("apps/web/public/data/farms"));
         dirs.push(PathBuf::from("apps/web/public/data/mock/farms"));
-        Self::new(dirs)
+        let mut st = Self::new(dirs);
+        st.prompts = Arc::new(Prompts::from_env());
+        if let Some(l) = HttpLlm::from_env() {
+            eprintln!("advisor LLM: {} (key hidden)", l.describe());
+            st.llm = Arc::new(l);
+        } else {
+            eprintln!("advisor LLM: not configured, serving template explanations");
+        }
+        if let Some(n) = std::env::var("FIELDSHIFT_RATE_LIMIT_PER_HOUR")
+            .ok()
+            .and_then(|v| v.parse().ok())
+        {
+            st.limiter = Arc::new(RateLimiter::per_hour(n));
+        }
+        st.trust_proxy = std::env::var("FIELDSHIFT_TRUST_PROXY").is_ok_and(|v| v == "1");
+        st
     }
 
     pub fn new(data_dirs: Vec<PathBuf>) -> Self {
@@ -60,12 +99,39 @@ impl AppState {
             data_dirs,
             farms: Arc::default(),
             llm: Arc::new(NoLlm),
+            prompts: Arc::new(Prompts::embedded()),
+            cache: Arc::new(Mutex::new(LruCache::new(
+                NonZeroUsize::new(CACHE_SIZE).unwrap_or(NonZeroUsize::MIN),
+            ))),
+            limiter: Arc::new(RateLimiter::per_hour(DEFAULT_RATE_PER_HOUR)),
+            trust_proxy: false,
         }
     }
 
     pub fn with_llm(mut self, llm: Arc<dyn LlmClient>) -> Self {
         self.llm = llm;
         self
+    }
+
+    pub fn with_prompts(mut self, prompts: Prompts) -> Self {
+        self.prompts = Arc::new(prompts);
+        self
+    }
+
+    /// Per-IP limit for LLM calls (cache hits and template answers are free).
+    pub fn with_rate_limit(mut self, per_hour: usize) -> Self {
+        self.limiter = Arc::new(RateLimiter::per_hour(per_hour));
+        self
+    }
+
+    fn cache_get(&self, key: u64) -> Option<CacheEntry> {
+        self.cache.lock().ok()?.get(&key).cloned()
+    }
+
+    fn cache_put(&self, key: u64, e: CacheEntry) {
+        if let Ok(mut c) = self.cache.lock() {
+            c.put(key, e);
+        }
     }
 
     pub fn data_dirs_display(&self) -> String {
@@ -126,6 +192,12 @@ impl ApiError {
             message: m.into(),
         }
     }
+    fn too_many(retry_after: u64) -> Self {
+        Self {
+            status: StatusCode::TOO_MANY_REQUESTS,
+            message: format!("rate limit reached, retry in {retry_after} s"),
+        }
+    }
     fn internal(m: impl Into<String>) -> Self {
         Self {
             status: StatusCode::INTERNAL_SERVER_ERROR,
@@ -144,6 +216,41 @@ impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         (self.status, Json(json!({ "error": self.message }))).into_response()
     }
+}
+
+/// Client key for rate limiting: the socket peer, or `X-Forwarded-For` when `FIELDSHIFT_TRUST_PROXY=1`.
+struct ClientIp(String);
+
+impl FromRequestParts<AppState> for ClientIp {
+    type Rejection = Infallible;
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> Result<Self, Self::Rejection> {
+        let fwd = state
+            .trust_proxy
+            .then(|| parts.headers.get("x-forwarded-for"))
+            .flatten()
+            .and_then(|v| v.to_str().ok())
+            .and_then(|v| v.split(',').next())
+            .map(|v| v.trim().to_string());
+        let peer = parts
+            .extensions
+            .get::<ConnectInfo<SocketAddr>>()
+            .map(|c| c.0.ip().to_string());
+        Ok(ClientIp(
+            fwd.or(peer).unwrap_or_else(|| "unknown".to_string()),
+        ))
+    }
+}
+
+fn hash_key(parts: &[&str]) -> u64 {
+    let mut h = std::collections::hash_map::DefaultHasher::new();
+    for p in parts {
+        p.hash(&mut h);
+        0u8.hash(&mut h);
+    }
+    h.finish()
 }
 
 type ApiResult = Result<Json<Value>, ApiError>;
@@ -324,22 +431,87 @@ struct ScoreReq {
     constraints: Constraints,
     #[serde(default, alias = "llmAdjust")]
     llm: Option<LlmAdjustment>,
+    #[serde(default = "default_lang")]
+    lang: String,
 }
 
-async fn score(State(s): State<AppState>, Json(r): Json<ScoreReq>) -> ApiResult {
-    blocking(move || {
-        let farm = r.farm.resolve(&s)?;
-        let rot = rotation_or_default(r.rotation, &farm);
-        to_json(&compute_score(
-            &farm,
-            &rot,
-            &r.opts,
-            &r.weights,
-            &r.constraints,
-            r.llm,
-        )?)
+async fn score(State(s): State<AppState>, ip: ClientIp, Json(r): Json<ScoreReq>) -> ApiResult {
+    let ScoreReq {
+        farm,
+        rotation,
+        opts,
+        weights,
+        constraints,
+        llm,
+        lang,
+    } = r;
+    let state = s.clone();
+    let (farm, rot) = blocking(move || {
+        let f = farm.resolve(&state)?;
+        let rot = rotation_or_default(rotation, &f);
+        Ok((f, rot))
     })
-    .await
+    .await?;
+    let ctx: ScoreCtx = (farm, rot, opts, weights, constraints);
+    let run = |ctx: &ScoreCtx, adj: Option<LlmAdjustment>| {
+        let (f, rot, o, w, c) = ctx.clone();
+        blocking(move || Ok(compute_score(&f, &rot, &o, &w, &c, adj)?))
+    };
+    let ask_llm = llm.is_none() && s.llm.enabled();
+    let mut result = run(&ctx, llm).await?;
+    if ask_llm {
+        if let Some(adj) = llm_adjustment(&s, &ip.0, &ctx, &lang, &result).await {
+            result = run(&ctx, Some(adj)).await?;
+        }
+    }
+    to_json(&result)
+}
+
+type ScoreCtx = (
+    Arc<PreparedFarm>,
+    Vec<RotationStep>,
+    SimOptions,
+    Weights,
+    Constraints,
+);
+
+/// Asks the model for a bounded nudge of the base score. `None` = no LLM answer (score stays deterministic);
+/// an invalid or out-of-range answer becomes an explicit `delta = 0`.
+async fn llm_adjustment(
+    s: &AppState,
+    ip: &str,
+    ctx: &ScoreCtx,
+    lang: &str,
+    base: &ScoreResult,
+) -> Option<LlmAdjustment> {
+    let (farm, rot, opts) = (ctx.0.clone(), ctx.1.clone(), ctx.2.clone());
+    let sheet = blocking(move || Ok(build_fact_sheet(&farm, &rot, &opts, &[], None)?))
+        .await
+        .ok()?;
+    let breakdown = serde_json::to_string(base).ok()?;
+    let sheet_json = serde_json::to_string(&sheet).ok()?;
+    let key = hash_key(&["score", &sheet_json, &breakdown, lang]);
+    if let Some(CacheEntry::Score(a)) = s.cache_get(key) {
+        return Some(a);
+    }
+    if s.limiter.check(ip).is_err() {
+        return None;
+    }
+    let msgs = vec![
+        ChatMessage::new("system", s.prompts.get("score_adjust")),
+        ChatMessage::new(
+            "user",
+            format!("lang: {lang}\nfactSheet:\n{sheet_json}\n\nscore:\n{breakdown}"),
+        ),
+    ];
+    let opts = ChatOpts {
+        temperature: 0.2,
+        max_tokens: 200,
+    };
+    let reply = s.llm.complete(msgs, opts).await.ok()?;
+    let adj = advisor::parse_adjustment(&reply, &sheet, &breakdown);
+    s.cache_put(key, CacheEntry::Score(adj.clone()));
+    Some(adj)
 }
 
 #[derive(Deserialize)]
@@ -361,6 +533,9 @@ struct ExplainReq {
     lang: String,
     #[serde(default = "default_mode")]
     mode: String,
+    /// Earlier chat turns (chat mode only; the last 6 are used).
+    #[serde(default)]
+    history: Vec<HistoryTurn>,
 }
 
 #[derive(Deserialize, Default)]
@@ -396,11 +571,37 @@ fn chunks(text: &str) -> Vec<String> {
     out
 }
 
+type EventStream = Pin<Box<dyn futures_util::Stream<Item = Result<Event, Infallible>> + Send>>;
+
+fn json_event(v: Value) -> Event {
+    Event::default().data(v.to_string())
+}
+
+fn text_event(t: &str) -> Event {
+    json_event(json!({ "text": t }))
+}
+
+/// A complete (already verified) text as sentence chunks + the final `done` event.
+fn static_events(text: &str, used: &[f64]) -> Vec<Event> {
+    let mut ev: Vec<Event> = chunks(text).iter().map(|t| text_event(t)).collect();
+    ev.push(json_event(json!({ "done": true, "usedNumbers": used })));
+    ev
+}
+
+fn sse(events: Vec<Event>) -> Response {
+    let st: EventStream = Box::pin(futures_util::stream::iter(events.into_iter().map(Ok)));
+    Sse::new(st)
+        .keep_alive(KeepAlive::default())
+        .into_response()
+}
+
 async fn explain(
     State(s): State<AppState>,
+    ip: ClientIp,
     Json(r): Json<ExplainReq>,
-) -> Result<Sse<impl futures_util::Stream<Item = Result<Event, Infallible>>>, ApiError> {
+) -> Result<Response, ApiError> {
     let (lang, mode, question) = (r.lang.clone(), r.mode.clone(), r.question.clone());
+    let history = r.history.clone();
     let state = s.clone();
     let sheet: FactSheet = match r.fact_sheet {
         Some(sheet) => sheet,
@@ -423,25 +624,149 @@ async fn explain(
             .await?
         }
     };
-    // Optional model text; anything that fails the C10 number check falls back to the template.
     let template = render_template_explanation(&sheet, &lang, &mode, question.as_deref());
-    let candidate = match s
-        .llm
-        .explain(&sheet, &lang, &mode, question.as_deref())
-        .await
-    {
-        Ok(Some(t)) if verify_numbers_in_text(&sheet, &t).0 => t,
-        _ => template,
-    };
-    let (_, used) = verify_numbers_in_text(&sheet, &candidate);
-    let mut events: Vec<Result<Event, Infallible>> = chunks(&candidate)
-        .into_iter()
-        .map(|t| Ok(Event::default().data(json!({ "text": t }).to_string())))
-        .collect();
-    events.push(Ok(
-        Event::default().data(json!({ "done": true, "usedNumbers": used }).to_string())
+    if !s.llm.enabled() {
+        let used = verify_numbers_in_text(&sheet, &template).1;
+        return Ok(sse(static_events(&template, &used)));
+    }
+
+    // cache first (free), then the per-IP limit, then the model
+    let sheet_json = serde_json::to_string(&sheet).unwrap_or_default();
+    let hist_json = serde_json::to_string(
+        &history
+            .iter()
+            .rev()
+            .take(advisor::MAX_HISTORY)
+            .map(|h| (&h.role, &h.content))
+            .collect::<Vec<_>>(),
+    )
+    .unwrap_or_default();
+    let key = hash_key(&[
+        "explain",
+        &sheet_json,
+        question.as_deref().unwrap_or(""),
+        &lang,
+        &mode,
+        &hist_json,
+    ]);
+    if let Some(CacheEntry::Explain { text, used }) = s.cache_get(key) {
+        return Ok(sse(static_events(&text, &used)));
+    }
+    s.limiter.check(&ip.0).map_err(ApiError::too_many)?;
+
+    let (tx, rx) = tokio::sync::mpsc::channel::<Event>(64);
+    tokio::spawn(run_llm_explain(
+        s, sheet, lang, mode, question, history, key, tx,
     ));
-    Ok(Sse::new(futures_util::stream::iter(events)).keep_alive(KeepAlive::default()))
+    let st: EventStream = Box::pin(futures_util::stream::unfold(rx, |mut rx| async move {
+        rx.recv().await.map(|e| (Ok(e), rx))
+    }));
+    Ok(Sse::new(st)
+        .keep_alive(KeepAlive::default())
+        .into_response())
+}
+
+/// Streams the model's tokens while buffering them, then verifies the whole answer (numbers, crops, judge) and
+/// emits the final `done` event, with `replaced: true` + the cleaned text when something was unsupported.
+#[allow(clippy::too_many_arguments)]
+async fn run_llm_explain(
+    s: AppState,
+    sheet: FactSheet,
+    lang: String,
+    mode: String,
+    question: Option<String>,
+    history: Vec<HistoryTurn>,
+    key: u64,
+    tx: tokio::sync::mpsc::Sender<Event>,
+) {
+    use futures_util::StreamExt;
+    let msgs = advisor::explain_messages(
+        &s.prompts,
+        &sheet,
+        &lang,
+        &mode,
+        question.as_deref(),
+        &history,
+    );
+    let opts = ChatOpts {
+        temperature: 0.2,
+        max_tokens: advisor::max_tokens(&mode),
+    };
+    let mut buf = String::new();
+    let mut failed = false;
+    match s.llm.stream(msgs, opts).await {
+        Ok(mut st) => {
+            while let Some(item) = st.next().await {
+                match item {
+                    Ok(tok) => {
+                        buf.push_str(&tok);
+                        if tx.send(text_event(&tok)).await.is_err() {
+                            return; // client went away
+                        }
+                    }
+                    Err(e) => {
+                        eprintln!("advisor: stream aborted: {e}");
+                        failed = true;
+                        break;
+                    }
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("advisor: llm unavailable: {e}");
+            failed = true;
+        }
+    }
+
+    let template = render_template_explanation(&sheet, &lang, &mode, question.as_deref());
+    if buf.trim().is_empty() {
+        // nothing reached the browser yet: serve the template as a normal answer
+        let used = verify_numbers_in_text(&sheet, &template).1;
+        for e in static_events(&template, &used) {
+            if tx.send(e).await.is_err() {
+                return;
+            }
+        }
+        return;
+    }
+    if failed {
+        let used = verify_numbers_in_text(&sheet, &template).1;
+        let _ = tx
+            .send(json_event(json!({
+                "done": true, "replaced": true, "text": template,
+                "usedNumbers": used, "unsupported": ["(model stream interrupted)"],
+            })))
+            .await;
+        return;
+    }
+
+    let flags = advisor::judge(s.llm.as_ref(), &s.prompts, &sheet, &buf).await;
+    let judged = flags.is_some();
+    let v = advisor::assess(
+        &sheet,
+        &lang,
+        &mode,
+        question.as_deref(),
+        &buf,
+        flags.as_deref(),
+    );
+    let done = if v.replaced {
+        json!({
+            "done": true, "replaced": true, "text": v.text,
+            "usedNumbers": v.used, "unsupported": v.unsupported, "judged": judged,
+        })
+    } else {
+        json!({ "done": true, "usedNumbers": v.used, "judged": judged })
+    };
+    let _ = tx.send(json_event(done)).await;
+    // the cache only ever holds the verified final text
+    s.cache_put(
+        key,
+        CacheEntry::Explain {
+            text: v.text,
+            used: v.used,
+        },
+    );
 }
 
 async fn health() -> Json<Value> {

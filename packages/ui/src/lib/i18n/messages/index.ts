@@ -1,4 +1,5 @@
 // Register each namespace here: one import line and one entry line per feature (keeps parallel PRs from colliding).
+import { alerts } from "./alerts";
 import { analysis } from "./analysis";
 import { common, crops, glossary, units } from "./common";
 import { explain } from "./explain";
@@ -28,4 +29,5 @@ export const MESSAGES: Record<string, Dict> = {
   site,
   mapTool,
   textures,
+  alerts,
 };
