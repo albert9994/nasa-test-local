@@ -149,9 +149,11 @@ async fn validate_reports_per_crop_statistics() {
     assert_eq!(v["maize"]["n"], 4);
     assert!(v["maize"]["rmse"].as_f64().unwrap() > 0.0);
     assert!(v["maize"]["r"].is_number() && v["maize"]["bias"].is_number());
-    // no observed data and no validation file on disk: a clear 404, never invented numbers
-    let (s, _) = call("POST", "/api/validate", json!({ "farmId": "iowa" })).await;
-    assert_eq!(s, StatusCode::NOT_FOUND);
+    // no observed data in the request: the server reads the farm's validation file (C5, real county yields)
+    let (s, b) = call("POST", "/api/validate", json!({ "farmId": "iowa" })).await;
+    assert_eq!(s, StatusCode::OK, "{b}");
+    let v: Value = serde_json::from_str(&b).unwrap();
+    assert!(v["maize"]["n"].as_u64().unwrap() > 0);
 }
 
 #[tokio::test]
