@@ -39,3 +39,14 @@ its rate limit is hit (the UI then shows the template text with a note); its LLM
 
 `public/data/mock/farms/*.json` are real data (NASA POWER 2001–2025, SoilGrids, MODIS NDVI) for Iowa, Kansas and the Bărăgan,
 cached by the old prototype. They follow C1, so the real packs can replace them 1:1.
+
+## Deploy on Cloudflare (Workers, via OpenNext)
+```bash
+pnpm --filter web exec wrangler login      # once, opens Cloudflare in the browser
+pnpm --filter web cf:build                 # builds .open-next/ (also builds the WASM engine if wasm-pack is installed)
+pnpm --filter web cf:preview               # optional: run the Worker locally (workerd) on http://localhost:8787
+pnpm --filter web cf:deploy                # deploys the Worker "fieldshift" (see wrangler.jsonc) → https://fieldshift.<account>.workers.dev
+```
+- `cacheComponents`/PPR are off: on Workers they share promises across requests, which the runtime rejects.
+- `/` → `/ro` or `/en` uses `redirects()` in `next.config.ts` (no middleware needed on Workers).
+- The AI advisor server (`crates/fieldshift-server`) is separate; without `NEXT_PUBLIC_API_URL` the site uses the built-in template explanations.
