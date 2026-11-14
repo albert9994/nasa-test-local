@@ -334,6 +334,85 @@ pub fn verify_numbers_in_text(sheet: &FactSheet, text: &str) -> (bool, Vec<f64>)
     (ok, used)
 }
 
+/// Crop vocabulary (EN + RO, diacritics folded, lower case): canonical id -> spellings a model might use.
+const CROP_TERMS: &[(&str, &[&str])] = &[
+    (
+        "maize",
+        &["maize", "corn", "porumb", "porumbul", "porumbului"],
+    ),
+    ("soybean", &["soybean", "soybeans", "soy", "soia", "soiei"]),
+    ("wheat", &["wheat", "grau", "graul", "graului"]),
+    ("barley", &["barley", "orz", "orzul", "orzului"]),
+    ("sorghum", &["sorghum", "sorg", "sorgul", "sorgului"]),
+    (
+        "sunflower",
+        &[
+            "sunflower",
+            "sunflowers",
+            "floarea soarelui",
+            "floarea-soarelui",
+        ],
+    ),
+    ("pea", &["pea", "peas", "mazare", "mazarea", "mazarii"]),
+    ("millet", &["millet", "mei", "meiul", "meiului"]),
+    ("rye", &["rye", "secara", "secarei"]),
+    ("rapeseed", &["rapeseed", "canola", "rapita", "rapitei"]),
+    (
+        "potato",
+        &["potato", "potatoes", "cartof", "cartofi", "cartofii"],
+    ),
+    (
+        "sugar_beet",
+        &["sugar beet", "sugar beets", "sfecla", "sfecla de zahar"],
+    ),
+    ("oats", &["oat", "oats", "ovaz", "ovazul"]),
+    ("alfalfa", &["alfalfa", "lucerna", "lucerne"]),
+    ("cotton", &["cotton", "bumbac"]),
+    ("rice", &["rice", "orez", "orezul"]),
+];
+
+fn fold_ascii(s: &str) -> String {
+    s.chars()
+        .map(|c| match c {
+            'ă' | 'â' | 'Ă' | 'Â' => 'a',
+            'î' | 'Î' => 'i',
+            'ș' | 'ş' | 'Ș' | 'Ş' => 's',
+            'ț' | 'ţ' | 'Ț' | 'Ţ' => 't',
+            c => c.to_ascii_lowercase(),
+        })
+        .map(|c| if c.is_alphanumeric() { c } else { ' ' })
+        .collect()
+}
+
+/// Canonical ids of crops named in `text` (EN/RO spellings, word-boundary match).
+pub fn crops_mentioned(text: &str) -> Vec<&'static str> {
+    let words: Vec<String> = fold_ascii(text)
+        .split_whitespace()
+        .map(str::to_string)
+        .collect();
+    let hay = format!(" {} ", words.join(" "));
+    CROP_TERMS
+        .iter()
+        .filter(|(_, terms)| {
+            terms.iter().any(|t| {
+                let t = fold_ascii(t);
+                let t = t.split_whitespace().collect::<Vec<_>>().join(" ");
+                hay.contains(&format!(" {t} "))
+            })
+        })
+        .map(|(id, _)| *id)
+        .collect()
+}
+
+/// Crops named in `text` that the fact sheet never mentions (rotation, alternatives, why-text). Empty = ok.
+pub fn unverified_crops(sheet: &FactSheet, text: &str) -> Vec<&'static str> {
+    let allowed = crops_mentioned(&serde_json::to_string(sheet).unwrap_or_default());
+    crops_mentioned(text)
+        .into_iter()
+        .filter(|c| !allowed.contains(c))
+        .collect()
+}
+
 /// Deterministic fallback explanation (`"ro"` / `"en"`; modes `short`, `plan`, `chat`).
 pub fn render_template_explanation(
     sheet: &FactSheet,
@@ -404,5 +483,23 @@ pub fn render_template_explanation(
             sheet.soil.score, sheet.soil.carbon_trend_pct_yr, sheet.soil.erosion_t_ha_yr, alt,
             if long { &extra } else { "" }
         )
+    }
+}
+
+#[cfg(test)]
+mod crop_tests {
+    use super::*;
+
+    #[test]
+    fn finds_crops_in_both_languages() {
+        assert_eq!(
+            crops_mentioned("Plantează porumb și soia."),
+            vec!["maize", "soybean"]
+        );
+        assert_eq!(
+            crops_mentioned("Winter wheat then sugar-beet"),
+            vec!["wheat", "sugar_beet"]
+        );
+        assert!(crops_mentioned("peak heat, cornerstone").is_empty());
     }
 }

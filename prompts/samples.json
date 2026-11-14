@@ -1,0 +1,222 @@
+[
+  {
+    "id": "baragan_sample",
+    "factSheet": {
+      "farm": {
+        "name": "Bărăgan Plain (Romania)",
+        "lat": 44.55,
+        "lon": 27.45,
+        "soil": "silty clay loam",
+        "climate": "12.4 °C, 518 mm/yr"
+      },
+      "rotation": "maize → winter wheat",
+      "rule": {
+        "badYear": "net < 0 $/ha",
+        "tolerance": "1 year in 5"
+      },
+      "today": {
+        "badYears": "8/24",
+        "meanNet": 276,
+        "worstYear": 2007
+      },
+      "margin": {
+        "dT": 0.0,
+        "dP": 0.0,
+        "status": "already_over",
+        "safeUntil": {
+          "ssp245": "now",
+          "ssp585": "now"
+        }
+      },
+      "worstYearWhy": [
+        "maize: drought (64 stress days)",
+        "maize: 14 days above 35 °C at flowering"
+      ],
+      "alternatives": [
+        {
+          "label": "Drought shield",
+          "rotation": "winter wheat → sorghum → pea",
+          "badYears": "1/24",
+          "deltaNet": 64,
+          "margin": {
+            "dT": 3.4
+          },
+          "soilScore": 68,
+          "fitsBudget": true,
+          "missingEquipment": []
+        },
+        {
+          "label": "Best balance",
+          "rotation": "winter wheat → sunflower → pea",
+          "badYears": "2/24",
+          "deltaNet": 92,
+          "margin": {
+            "dT": 2.6
+          },
+          "soilScore": 64,
+          "fitsBudget": true,
+          "missingEquipment": []
+        },
+        {
+          "label": "Soil builder",
+          "rotation": "winter wheat + rye → soybean → barley",
+          "badYears": "2/24",
+          "deltaNet": 35,
+          "margin": {
+            "dT": 2.8
+          },
+          "soilScore": 79,
+          "fitsBudget": true,
+          "missingEquipment": []
+        }
+      ],
+      "soil": {
+        "score": 39,
+        "carbonTrendPctYr": -0.54,
+        "erosionTHaYr": 1.4
+      },
+      "market": {
+        "pricePct": -30,
+        "badYearsUnderShock": "13/24"
+      },
+      "quant": {
+        "paths": 1000,
+        "horizon": "2026–2050",
+        "pBadYear2035": 0.31,
+        "cvar95": -410,
+        "pRuin": 0.18,
+        "marginYearP50": 2034
+      },
+      "sources": [
+        "NASA POWER",
+        "SoilGrids",
+        "MODIS NDVI",
+        "NEX-GDDP-CMIP6"
+      ]
+    },
+    "expected_ro": "Pentru Bărăgan Plain (Romania) (silty clay loam, 12.4 °C, 518 mm/yr), rotația actuală maize → winter wheat a înregistrat 8/24 ani proști (net < 0 $/ha) în ultimele 24 de sezoane NASA — depășind deja pragul tău de 1 year in 5 — cu un venit net mediu de 276 $/ha. Cel mai dificil an a fost 2007 (64 zile de stres hidric și 14 zile peste 35 °C la înflorirea porumbului), iar scorul de sănătate a solului este 39/100 (tendință carbon organic -0.54 %/an, eroziune 1.4 t/ha/an). Trecerea la Drought shield (winter wheat → sorghum → pea) scade numărul de ani proști la 1/24, crește venitul mediu cu +64 $/ha și oferă o marjă de încălzire de +3.4 °C (scor sol 68/100), încadrându-se în bugetul și utilajele existente. Acesta este un instrument de planificare bazat pe scenarii, nu o garanție.",
+    "expected_en": "On Bărăgan Plain (Romania) (silty clay loam, 12.4 °C, 518 mm/yr), your current maize → winter wheat rotation had 8/24 money-losing years (net < 0 $/ha) over the past 24 NASA seasons — already exceeding your 1 year in 5 limit — with an average net income of 276 $/ha. The worst season was 2007 (64 drought stress days and 14 days above 35 °C at maize flowering), while soil health stands at 39/100 (carbon trend -0.54 %/yr, erosion 1.4 t/ha/yr). Switching to Drought shield (winter wheat → sorghum → pea) cuts bad years to 1/24, raises average net income by +64 $/ha, and expands your warming margin to +3.4 °C (soil score 68/100) with no missing equipment. This is a scenario-based planning aid, not a guarantee."
+  },
+  {
+    "id": "iowa_sample",
+    "factSheet": {
+      "farm": {
+        "name": "Story County, Iowa (USA)",
+        "lat": 42.03,
+        "lon": -93.62,
+        "soil": "silty clay loam",
+        "climate": "9.6 °C, 912 mm/yr"
+      },
+      "rotation": "maize → soybean",
+      "rule": {
+        "badYear": "net < 0 $/ha",
+        "tolerance": "1 year in 5"
+      },
+      "today": {
+        "badYears": "2/24",
+        "meanNet": 512,
+        "worstYear": 2012
+      },
+      "margin": {
+        "dT": 2.1,
+        "dP": -0.24,
+        "status": "safe",
+        "safeUntil": {
+          "ssp245": "2049",
+          "ssp585": "2042"
+        }
+      },
+      "worstYearWhy": [
+        "maize: drought (48 stress days)",
+        "maize: 9 days above 35 °C at flowering"
+      ],
+      "alternatives": [
+        {
+          "label": "Best balance",
+          "rotation": "maize + rye → soybean → winter wheat",
+          "badYears": "0/24",
+          "deltaNet": 28,
+          "margin": {
+            "dT": 3.5
+          },
+          "soilScore": 74,
+          "fitsBudget": true,
+          "missingEquipment": []
+        }
+      ],
+      "soil": {
+        "score": 52,
+        "carbonTrendPctYr": 0.03,
+        "erosionTHaYr": 1.8
+      },
+      "sources": [
+        "NASA POWER",
+        "SoilGrids",
+        "MODIS NDVI",
+        "NEX-GDDP-CMIP6"
+      ]
+    },
+    "expected_en": "On Story County, Iowa (USA) (silty clay loam, 9.6 °C, 912 mm/yr), your maize → soybean rotation had 2/24 bad years (net < 0 $/ha) with an average net income of 512 $/ha, and can absorb +2.1 °C of warming (-0.24 rainfall shift) before exceeding your 1 year in 5 limit (safe until 2049 under SSP2-4.5 and 2042 under SSP5-8.5). Its worst historical year was 2012 due to 48 drought stress days and 9 days above 35 °C during maize flowering, with a soil health score of 52/100 (erosion 1.8 t/ha/yr). Diversifying to Best balance (maize + rye → soybean → winter wheat) cuts bad years to 0/24, adds +28 $/ha to mean net income, and boosts your warming margin to +3.5 °C (soil score 74/100). This is a scenario-based planning aid, not a guarantee."
+  },
+  {
+    "id": "kansas_sample",
+    "factSheet": {
+      "farm": {
+        "name": "Finney County, Kansas (USA)",
+        "lat": 37.95,
+        "lon": -100.85,
+        "soil": "loam",
+        "climate": "13.1 °C, 468 mm/yr"
+      },
+      "rotation": "winter wheat → fallow",
+      "rule": {
+        "badYear": "net < 0 $/ha",
+        "tolerance": "1 year in 5"
+      },
+      "today": {
+        "badYears": "4/24",
+        "meanNet": 168,
+        "worstYear": 2022
+      },
+      "margin": {
+        "dT": 1.1,
+        "dP": -0.11,
+        "status": "tight",
+        "safeUntil": {
+          "ssp245": "2036",
+          "ssp585": "2033"
+        }
+      },
+      "worstYearWhy": [
+        "winter wheat: drought (72 stress days)",
+        "winter wheat: 6 days above 32 °C at flowering"
+      ],
+      "alternatives": [
+        {
+          "label": "Drought shield",
+          "rotation": "winter wheat → sorghum → fallow",
+          "badYears": "1/24",
+          "deltaNet": 74,
+          "margin": {
+            "dT": 2.9
+          },
+          "soilScore": 58,
+          "fitsBudget": true,
+          "missingEquipment": []
+        }
+      ],
+      "soil": {
+        "score": 37,
+        "carbonTrendPctYr": -0.22,
+        "erosionTHaYr": 1.5
+      },
+      "sources": [
+        "NASA POWER",
+        "SoilGrids",
+        "MODIS NDVI",
+        "NEX-GDDP-CMIP6"
+      ]
+    },
+    "expected_en": "On Finney County, Kansas (USA) (loam, 13.1 °C, 468 mm/yr), your winter wheat → fallow rotation had 4/24 bad years (net < 0 $/ha) averaging 168 $/ha, leaving a tight margin of +1.1 °C warming (-0.11 rainfall shift), which climate projections reach around 2036 (SSP2-4.5). The worst year was 2022 (72 drought stress days and 6 flowering days above 32 °C), while bare fallow leaves soil health at 37/100 (carbon trend -0.22 %/yr, erosion 1.5 t/ha/yr). Switching to Drought shield (winter wheat → sorghum → fallow) reduces bad years to 1/24, increases mean income by +74 $/ha, expands your warming headroom to +2.9 °C, and raises soil health to 58/100. This is a scenario-based planning aid, not a guarantee."
+  }
+]
