@@ -1,0 +1,91 @@
+[
+  {
+    "id": "iowa",
+    "name": "Story County, Iowa (USA)",
+    "nameRo": "Comitatul Story, Iowa (SUA)",
+    "country": "US",
+    "lat": 42.03,
+    "lon": -93.62,
+    "slope": 2.2,
+    "rotation": [
+      "maize",
+      "soybean"
+    ],
+    "note": "Corn Belt rain-fed; 2012 drought & heat wave benchmark"
+  },
+  {
+    "id": "kansas",
+    "name": "Finney County, Kansas (USA)",
+    "nameRo": "Comitatul Finney, Kansas (SUA)",
+    "country": "US",
+    "lat": 37.95,
+    "lon": -100.85,
+    "slope": 2.9,
+    "rotation": [
+      "wheat",
+      "sorghum",
+      "fallow"
+    ],
+    "note": "Dryland wheat-sorghum-fallow on the High Plains; 2011 & 2022 droughts"
+  },
+  {
+    "id": "baragan",
+    "name": "Ialomița, Bărăgan Plain (Romania)",
+    "nameRo": "Ialomița, Câmpia Bărăganului (România)",
+    "country": "RO",
+    "lat": 44.55,
+    "lon": 27.45,
+    "slope": 0.0,
+    "rotation": [
+      "maize",
+      "wheat",
+      "sunflower"
+    ],
+    "note": "Chernozem steppe, rain-fed; 2007, 2020, 2022 & 2024 summer droughts"
+  },
+  {
+    "id": "vaslui",
+    "name": "Vaslui, Moldavian Plateau (Romania)",
+    "nameRo": "Vaslui, Podișul Moldovei (România)",
+    "country": "RO",
+    "lat": 46.51,
+    "lon": 27.79,
+    "slope": 4.4,
+    "rotation": [
+      "maize",
+      "sunflower",
+      "wheat"
+    ],
+    "note": "Sloped plateau rain-fed; severe erosion risk + 2007, 2022 & 2024 pedological droughts"
+  },
+  {
+    "id": "dolj",
+    "name": "Dolj, Oltenian Sands (Romania)",
+    "nameRo": "Dolj, Nisipurile Olteniei (România)",
+    "country": "RO",
+    "lat": 43.91,
+    "lon": 24.12,
+    "slope": 0.6,
+    "rotation": [
+      "maize",
+      "wheat",
+      "sunflower"
+    ],
+    "note": "Sandy, drought-prone Danube terrace near Dăbuleni; low water-holding capacity"
+  },
+  {
+    "id": "teleorman",
+    "name": "Teleorman, Burnas Plain (Romania)",
+    "nameRo": "Teleorman, Câmpia Burnazului (România)",
+    "country": "RO",
+    "lat": 44.0,
+    "lon": 25.3,
+    "slope": 2.4,
+    "rotation": [
+      "maize",
+      "wheat",
+      "sunflower"
+    ],
+    "note": "Chernozem/luvisol cereal plain, rain-fed; 2007 & 2022 droughts"
+  }
+]

@@ -1,0 +1,84 @@
+{
+  "id": "kansas",
+  "name": "Finney County, Kansas (USA)",
+  "nameRo": "Comitatul Finney, Kansas (SUA)",
+  "country": "US",
+  "region": "US High Plains (Dryland)",
+  "lat": 37.95,
+  "lon": -100.85,
+  "elev": 864,
+  "slope": 2.9,
+  "rotation": [
+    "wheat",
+    "sorghum",
+    "fallow"
+  ],
+  "note": "Dryland wheat-sorghum-fallow on the High Plains; 2011 & 2022 droughts",
+  "droughtYears": [
+    2011,
+    2022,
+    2012,
+    2002
+  ],
+  "sowingMonths": {
+    "wheat": "mid September – early October",
+    "sorghum": "late May – mid June",
+    "maize": "early May",
+    "sunflower": "late May – mid June",
+    "millet": "early June – late June",
+    "pea": "mid March – early April",
+    "soybean": "mid May",
+    "barley": "late March"
+  },
+  "cropPool": [
+    "wheat",
+    "sorghum",
+    "sunflower",
+    "millet",
+    "pea",
+    "maize",
+    "soybean",
+    "barley",
+    "fallow"
+  ],
+  "defaultEquipment": [
+    "grain_drill",
+    "row_planter",
+    "corn_header",
+    "sunflower_header"
+  ],
+  "costs": {
+    "wheat": 410,
+    "sorghum": 445,
+    "maize": 690,
+    "soybean": 510,
+    "sunflower": 455,
+    "millet": 320,
+    "pea": 390,
+    "barley": 385,
+    "fallow": 75,
+    "rye_cover": 80
+  },
+  "prices": {
+    "wheat": 230,
+    "sorghum": 182,
+    "maize": 195,
+    "soybean": 425,
+    "sunflower": 505,
+    "millet": 235,
+    "pea": 305,
+    "barley": 200,
+    "fallow": 0
+  },
+  "calib": {},
+  "economics": {
+    "status": "illustrative",
+    "note": "Reference per-hectare costs and farm-gate prices (USD/EUR-equivalent) rounded from the cited public budgets/price series; not extracted programmatically. Edit in the UI."
+  },
+  "sources": {
+    "costs": "https://agmanager.info/farm-management-guides-0/cost-return-budgets (Kansas State University Extension — Western Kansas Dryland Crop Budgets)",
+    "prices": "https://quickstats.nass.usda.gov/ & https://www.ers.usda.gov/ (USDA NASS Kansas Dryland Marketing Prices)",
+    "yields": "https://quickstats.nass.usda.gov/ (USDA NASS Finney County, KS)"
+  },
+  "terrainSource": "SRTM 1 arc-sec (OpenTopoData srtm30m), Horn 3x3 gradient at ~90 m spacing, percent"
+}
