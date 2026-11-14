@@ -1,0 +1,29 @@
+{
+  "_note": "Static mock of POST /api/explain (C9/C10). The real endpoint streams text/event-stream; the same content here is the concatenated text plus the final event.",
+  "request": {
+    "factSheet": {
+      "farm": { "name": "Bărăgan", "lat": 44.55, "lon": 27.45, "soil": "silty clay loam", "climate": "13.2 °C, 524 mm/yr" },
+      "rotation": "maize → winter wheat",
+      "rule": { "badYear": "net < 0 $/ha", "tolerance": "1 year in 5" },
+      "today": { "badYears": "8/24", "meanNet": 276, "worstYear": 2007 },
+      "margin": { "dT": 0.0, "dP": 0.0, "status": "already_over", "safeUntil": { "ssp245": "now", "ssp585": "now" } },
+      "worstYearWhy": ["drought at flowering", "14 days > 35 °C"],
+      "alternatives": [
+        { "label": "Drought shield", "rotation": "winter wheat → sorghum → fallow", "badYears": "0/24", "deltaNet": 48, "margin": { "dT": 6.0 }, "soilScore": 37, "fitsBudget": true, "missingEquipment": [] }
+      ],
+      "soil": { "score": 39, "carbonTrendPctYr": -0.54, "erosionTHaYr": 1.4 },
+      "sources": ["NASA POWER", "SoilGrids", "MODIS NDVI", "NEX-GDDP-CMIP6"]
+    },
+    "lang": "en",
+    "mode": "short"
+  },
+  "sse": [
+    { "text": "Maize followed by winter wheat on Bărăgan already breaks your risk rule: 8/24 years ended below 0 $/ha, while you accept 1 year in 5. " },
+    { "text": "The worst year, 2007, had drought at flowering and 14 days above 35 °C. " },
+    { "text": "Switching to winter wheat → sorghum → fallow (Drought shield) gives 0/24 bad years and +$48/ha mean net, with a 6.0 °C margin. " },
+    { "text": "Planning aid, not a guarantee." },
+    { "done": true, "usedNumbers": ["8/24", "2007", 14, 35, "0/24", 48, 6.0] }
+  ],
+  "text": "Maize followed by winter wheat on Bărăgan already breaks your risk rule: 8/24 years ended below 0 $/ha, while you accept 1 year in 5. The worst year, 2007, had drought at flowering and 14 days above 35 °C. Switching to winter wheat → sorghum → fallow (Drought shield) gives 0/24 bad years and +$48/ha mean net, with a 6.0 °C margin. Planning aid, not a guarantee.",
+  "usedNumbers": ["8/24", "2007", 14, 35, "0/24", 48, 6.0]
+}
