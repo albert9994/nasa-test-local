@@ -88,3 +88,9 @@ export function useFormat() {
     temp: (dT: number, d = 1) => `${dT >= 0 ? "+" : "−"}${formatNumber(locale, Math.abs(dT), d)} °C`,
   };
 }
+
+/** Farm/place names: use the Romanian name when the UI is in Romanian and the data has one. */
+export function localName(x: { name: string; nameRo?: string } | null | undefined, locale: Locale): string {
+  if (!x) return "";
+  return locale === "ro" && x.nameRo ? x.nameRo : x.name;
+}

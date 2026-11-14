@@ -8,7 +8,7 @@ export type CropId =
 
 // ---------- C1 · farm pack ----------
 export interface FarmMeta {
-  id: string; name: string; lat: number; lon: number;
+  id: string; name: string; nameRo?: string; country?: string; lat: number; lon: number;
   elev?: number; slope?: number; rotation: CropId[]; note?: string;
   cropPool?: CropId[];
   costs?: Partial<Record<CropId, number>>; prices?: Partial<Record<CropId, number>>;
@@ -34,7 +34,7 @@ export interface FarmPack {
   ndvi?: Record<string, [number, number | null][]>;
   scenarios?: Scenarios;
 }
-export type FarmIndexEntry = Pick<FarmMeta, "id" | "name" | "lat" | "lon" | "slope" | "rotation" | "note">;
+export type FarmIndexEntry = Pick<FarmMeta, "id" | "name" | "nameRo" | "country" | "lat" | "lon" | "slope" | "rotation" | "note">;
 
 // ---------- C2 · rotation + options ----------
 export interface RotationStep { crop: CropId; cover: boolean }

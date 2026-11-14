@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Segmented } from "@/components/field/segmented";
 import { LocaleSwitch } from "@/components/ui/locale-switch";
-import { useCurrency, useT, type Currency } from "@/lib/i18n";
+import { localName, useCurrency, useT, type Currency } from "@/lib/i18n";
 import { useApp } from "@/lib/store/app";
 import { getEngine, engineVia } from "@/lib/engine";
 import { nativeInfo } from "@/lib/engine/tauri";
@@ -46,7 +46,7 @@ export function AppHeader() {
       <select aria-label={t("farm.farm")} className="h-10 min-w-0 max-w-full flex-1 rounded-lg border border-line bg-surface px-2 text-sm sm:max-w-xs"
         value={farmId ?? ""} onChange={(e) => selectFarm(e.target.value)} data-tour="farm-picker">
         {!index.some((f) => f.id === farmId) && <option value={farmId ?? ""}>{farmId ?? t("farm.loading")}</option>}
-        {index.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+        {index.map((f) => <option key={f.id} value={f.id}>{localName(f, t.locale)}</option>)}
       </select>
       <div className="ml-auto flex flex-wrap items-center gap-2">
         <LocaleSwitch />
