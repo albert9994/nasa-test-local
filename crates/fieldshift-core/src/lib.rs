@@ -19,6 +19,27 @@ pub mod soil_health;
 pub mod stress;
 pub mod validate;
 
+/// Structured, language-neutral companion of an engine-produced English reason string: a stable `code` plus its
+/// variables (camelCase keys, flattened next to `code`). The UI renders it through i18n and falls back to the English text.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub struct ReasonCode {
+    pub code: String,
+    #[serde(flatten)]
+    pub vars: std::collections::BTreeMap<String, serde_json::Value>,
+}
+
+impl ReasonCode {
+    pub fn new(code: &str, vars: &[(&str, serde_json::Value)]) -> Self {
+        Self {
+            code: code.to_string(),
+            vars: vars
+                .iter()
+                .map(|(k, v)| ((*k).to_string(), v.clone()))
+                .collect(),
+        }
+    }
+}
+
 use climate::{month_of, MonthlyShift};
 use crops::{canonical_id, season_crop, SeasonCrop};
 use serde::{Deserialize, Serialize};

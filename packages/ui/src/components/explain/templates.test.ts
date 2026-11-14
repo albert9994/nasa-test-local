@@ -56,3 +56,16 @@ describe("number highlighting", () => {
     expect(segmentText("12760 and 20070", reg).some((s) => s.ref)).toBe(false);
   });
 });
+
+describe("template localisation", () => {
+  it("shows money in the app currency, not always USD", () => {
+    const t = buildTemplate(fs, "en", "EUR");
+    expect(t).toContain("€254/ha");
+    expect(t).not.toContain("$276");
+  });
+  it("renders worst-year reasons from codes in Romanian", () => {
+    const t = buildTemplate({ ...fs, worstYearWhyCodes: [{ code: "drought", crop: "maize", stressDays: 31 }, { code: "heat_flowering", crop: "maize", days: 14 }] }, "ro");
+    expect(t).toContain("porumb: secetă (31 zile de stres hidric)");
+    expect(t).not.toContain("stress days");
+  });
+});

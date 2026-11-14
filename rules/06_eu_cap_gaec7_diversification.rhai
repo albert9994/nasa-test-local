@@ -45,6 +45,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -10,
+            code: "gaec7_violation",
+            vars: #{  },
             reason: "Violates EU CAP GAEC 7 crop-rotation conditionality (monoculture risks losing APIA direct subsidy)"
         };
     }
@@ -53,6 +55,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: 5,
+            code: "gaec7_qualifies",
+            vars: #{  },
             reason: "Qualifies for EU CAP GAEC 7 and APIA PD-04 eco-scheme subsidy (3+ crops with legume + winter cover)"
         };
     }

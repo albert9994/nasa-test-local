@@ -4,6 +4,7 @@ import { Moon, Plus, RotateCcw, Sun, Trash2 } from "lucide-react";
 import { useCurrency, useLocale, useT, LOCALES, type Currency } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useFarm } from "@/lib/store/farm";
+import { getEngine } from "@/lib/engine";
 import { nativeInfo } from "@/lib/engine/tauri";
 import { useTour } from "@/components/tour/tour";
 import { useRisk } from "./risk";
@@ -85,7 +86,7 @@ export function Sidebar({ onAdd }: { onAdd: () => void }) {
             <button aria-pressed={farm.theme === "light"} className={cn(segBtn(farm.theme === "light"), "flex items-center justify-center gap-1")} onClick={() => farm.setTheme("light")}><Sun size={12} />{t("workspace.light")}</button>
             <button aria-pressed={farm.theme === "dark"} className={cn(segBtn(farm.theme === "dark"), "flex items-center justify-center gap-1")} onClick={() => farm.setTheme("dark")}><Moon size={12} />{t("workspace.dark")}</button>
           </div></div>
-        <div className="flex items-center justify-between text-xs text-fg-muted"><span>{t("workspace.engine")}</span><span className="num">{nativeInfo ? t("workspace.engineNative") : t("workspace.engineTs")}</span></div>
+        <div className="flex items-center justify-between text-xs text-fg-muted"><span>{t("workspace.engine")}</span><span className="num">{nativeInfo && getEngine().kind === "native" ? t("workspace.engineNative") : t("workspace.engineTs")}</span></div>
         <div className="flex flex-col items-start gap-1 text-xs">
           <button className="text-primary hover:underline" onClick={() => start("workspace")}>{t("workspace.showGuide")}</button>
           <button className="flex items-center gap-1 text-fg-muted hover:text-heat" onClick={() => { if (window.confirm(t("workspace.resetConfirm"))) farm.reset(); }}><RotateCcw size={12} />{t("workspace.resetFarm")}</button>

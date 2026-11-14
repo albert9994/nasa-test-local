@@ -33,6 +33,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: true,
             delta: -25,
+            code: "sunflower_back_to_back",
+            vars: #{  },
             reason: "Back-to-back sunflower causes severe Sclerotinia white mold and Orobanche (broomrape) infestation"
         };
     }
@@ -42,6 +44,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -10,
+            code: "sunflower_every_2",
+            vars: #{  },
             reason: "Sunflower grown every 2nd year increases Sclerotinia stalk rot and broomrape pressure (recommended break: 4+ years)"
         };
     }
@@ -50,6 +54,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -4,
+            code: "sunflower_every_3",
+            vars: #{  },
             reason: "Sunflower every 3rd year carries moderate Sclerotinia carry-over risk; 4-year break is optimal"
         };
     }

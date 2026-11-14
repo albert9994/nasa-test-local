@@ -95,7 +95,14 @@ export interface RankedRotation {
   score: number; parts: Record<string, number>; viable: boolean;
 }
 export type PickLabel = "Best balance" | "Drought shield" | "Soil builder";
-export interface PickResult { rot: Rotation; label: PickLabel; why: string; base: RotationResult; stress: RotationResult }
+/** Language-neutral companion of an engine reason string: a stable `code` plus its variables (rendered through i18n, `reasons.ts`). */
+export interface ReasonCode { code: string; [var_: string]: string | number | boolean | null }
+export interface PickResult {
+  rot: Rotation; label: PickLabel; why: string;
+  /** Structured `why` (`best_vs_baseline` | `best_score` | `drought_shield` | `soil_builder`); absent on old engines. */
+  whyCode?: ReasonCode;
+  base: RotationResult; stress: RotationResult;
+}
 export interface MarginYearResult { year: number | null | "now"; path: ScenarioPoint[] }
 export interface QuantParams {
   paths: number; fromYear: number; toYear: number; ssp: "ssp245" | "ssp585"; cashReserve: number; seed: number;
@@ -134,6 +141,8 @@ export interface FactSheet {
   today: { badYears: string; meanNet: number; worstYear: number };
   margin: { dT: number; dP: number; status: "safe" | "tight" | "already_over"; safeUntil: { ssp245: string; ssp585: string } };
   worstYearWhy: string[];
+  /** Same reasons as `worstYearWhy`, structured: `{code:"drought", crop, stressDays}` | `{code:"heat_flowering", crop, days}`. */
+  worstYearWhyCodes?: ReasonCode[];
   alternatives: {
     label: string; rotation: string; badYears: string; deltaNet: number;
     margin: { dT: number }; soilScore: number; fitsBudget: boolean; missingEquipment: string[];
@@ -149,7 +158,7 @@ export interface ScoreResult {
   rotation: string; score: number; confidence: "low" | "medium" | "high";
   subscores: { climate: number; financialRisk: number; profit: number; soil: number; water: number; feasibility: number };
   weights: Record<string, number>; base: number;
-  rules: { id: string; delta: number; reason: string }[];
+  rules: { id: string; delta: number; reason: string; /** stable code of the rule branch, for i18n */ code?: string; vars?: Record<string, string | number | boolean> }[];
   excludedBy: string | null;
   llm: { delta: number; reason: string; confidence: string } | null;
   waterfall: [string, number][];
@@ -158,7 +167,7 @@ export interface ScoreResult {
 // ---------- the interface the UI uses ----------
 export type FarmHandle = string;
 export interface Engine {
-  kind: "mock" | "wasm" | "server";
+  kind: "mock" | "wasm" | "native" | "server";
   prepareFarm(pack: FarmPack): Promise<FarmHandle>;
   simulateSeason(h: FarmHandle, crop: CropId, year: number, opts: Opts, trace?: boolean): Promise<SeasonResult>;
   simulateRotation(h: FarmHandle, rot: Rotation, opts: Opts, traceYear?: number): Promise<RotationResult>;
@@ -173,4 +182,6 @@ export interface Engine {
   factSheet(h: FarmHandle, rot: Rotation, opts: Opts, picks: PickResult[]): Promise<FactSheet>;
   /** Calibration report vs observed county yields (Rust engine only). */
   validate?(h: FarmHandle, observed: ObservedYields, opts?: Opts): Promise<Record<string, CropValidation>>;
+  /** C12 FieldShift Score computed by the Rust engine (native desktop only). */
+  score?(h: FarmHandle, rot: Rotation, opts: Opts, w?: Weights, c?: Constraints): Promise<ScoreResult>;
 }

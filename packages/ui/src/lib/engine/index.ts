@@ -14,9 +14,12 @@ export function setEngine(e: Engine) {
   current = e;
 }
 
-export type EngineVia = "main thread" | "web worker";
+export type EngineVia = "main thread" | "web worker" | "native";
 export { createWasmEngine } from "./wasm";
 let via: EngineVia = "main thread";
+export function setEngineVia(v: EngineVia) {
+  via = v;
+}
 export function engineVia(): EngineVia {
   return via;
 }

@@ -29,6 +29,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -6,
+            code: "all_cereal",
+            vars: #{  },
             reason: "All-cereal (Poaceae) rotation without a broadleaf or legume break increases grassy weeds and Fusarium carry-over"
         };
     }
@@ -37,6 +39,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -3,
+            code: "grass_back_to_back",
+            vars: #{  },
             reason: "Back-to-back grass crops share root pathogens and grass-weed herbicide pressures"
         };
     }

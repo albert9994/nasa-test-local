@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ScoreResult } from "@/lib/engine/types";
 import { useT } from "@/lib/i18n";
+import { useReasons } from "@/lib/i18n/reasons";
 import { useApp } from "@/lib/store/app";
 import { useNames } from "@/components/field/hooks";
 import { cn } from "@/lib/utils";
@@ -75,13 +76,16 @@ export function useScore(): { score: ScoreResult | null; source: "server" | "cli
   return local ? { score: local, source: "client" } : { score: null, source: null };
 }
 
-function ruleText(t: ReturnType<typeof useT>, r: ScoreResult["rules"][number]) {
+/** Engine rules carry a code (localised in reasons.ts); the client-side fallback rules have `explain.rule_<id>`; else the English reason. */
+function ruleText(t: ReturnType<typeof useT>, reasons: ReturnType<typeof useReasons>, r: ScoreResult["rules"][number]) {
+  if (r.code) return reasons.rule(r);
   const k = `explain.rule_${r.id}`; const s = t(k);
   return s === k ? r.reason : s;
 }
 
 export function ScoreCard() {
   const t = useT();
+  const reasons = useReasons();
   const { score, source } = useScore();
   if (!score) return <p className="text-sm text-fg-muted">{t("explain.score_computing")}</p>;
   const tone = score.score >= 70 ? "text-ok" : score.score >= 45 ? "text-warn" : "text-danger";
@@ -113,7 +117,7 @@ export function ScoreCard() {
         <Waterfall steps={score.waterfall} />
         <ul className="mt-1 space-y-1 text-xs text-fg-muted">
           {score.rules.map((r) => (
-            <li key={r.id}><span className={cn("num", r.delta >= 0 ? "text-ok" : "text-danger")}>{r.delta > 0 ? "+" : "−"}{Math.abs(r.delta)}</span> {ruleText(t, r)}</li>
+            <li key={r.id}><span className={cn("num", r.delta >= 0 ? "text-ok" : "text-danger")}>{r.delta > 0 ? "+" : "−"}{Math.abs(r.delta)}</span> {ruleText(t, reasons, r)}</li>
           ))}
           {score.llm ? <li><span className="num">{score.llm.delta > 0 ? "+" : "−"}{Math.abs(score.llm.delta)}</span> {t("explain.llm_adjust")}: {score.llm.reason}</li> : null}
         </ul>

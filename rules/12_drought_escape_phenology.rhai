@@ -29,6 +29,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: 5,
+            code: "drought_escape",
+            vars: #{  },
             reason: "Spreads climate risk across seasons: winter/spring crop harvests before July heatwaves while drought-tolerant summer crop handles dry Augusts"
         };
     }

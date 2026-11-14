@@ -25,17 +25,13 @@ tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
-# Native engine: the same Engine contract as the TypeScript engine, computed by fieldshift-core in Rust.
-# Off by default. To switch it on (see apps/desktop/README.md):
-#   1. uncomment the fieldshift-core line below once crates/fieldshift-core exists,
-#   2. build with `--features native-engine` (e.g. `pnpm --filter desktop tauri build -- --features native-engine`).
-# (Cargo needs the path to exist even for an optional dependency, so it stays commented until the crate lands.)
-# fieldshift-core = { path = "../../../crates/fieldshift-core", optional = true }
+# Native engine: the same Engine contract as the TypeScript/WASM engine, computed by fieldshift-core in Rust (rayon on).
+# On by default; `--no-default-features` builds the shell without it (the UI then keeps the TypeScript engine).
+fieldshift-core = { path = "../../../crates/fieldshift-core", optional = true }
 
 [features]
-default = []
-native-engine = []
-# native-engine = ["dep:fieldshift-core"]   # <- use this line instead of the one above when fieldshift-core is enabled
+default = ["native-engine"]
+native-engine = ["dep:fieldshift-core"]
 
 [profile.release]
 opt-level = "s"

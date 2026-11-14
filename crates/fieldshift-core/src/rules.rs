@@ -16,7 +16,7 @@ use crate::{Constraints, PreparedFarm, ResolvedRotation, SimOptions};
 use once_cell::sync::Lazy;
 use rhai::{Array, Dynamic, Engine, Map, Scope, AST};
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 macro_rules! embedded_rules {
     ($($name:literal),* $(,)?) => {
@@ -48,6 +48,12 @@ pub struct RuleHit {
     pub id: String,
     pub delta: i32,
     pub reason: String,
+    /// Stable code of this rule branch (e.g. `continuous_maize`), for i18n; the UI falls back to `reason`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+    /// Variables of the reason text (slope, crop, ph, ...).
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub vars: BTreeMap<String, serde_json::Value>,
     /// Rule excludes the rotation outright (surfaces as `excludedBy`).
     #[serde(skip)]
     pub exclude: bool,
@@ -158,6 +164,18 @@ fn rot_array(rot: &ResolvedRotation) -> Array {
         .collect()
 }
 
+fn dynamic_to_json(v: &Dynamic) -> Option<serde_json::Value> {
+    if let Ok(i) = v.as_int() {
+        Some(serde_json::json!(i))
+    } else if let Ok(f) = v.as_float() {
+        Some(serde_json::json!((f * 100.0).round() / 100.0))
+    } else if let Ok(b) = v.as_bool() {
+        Some(serde_json::json!(b))
+    } else {
+        v.clone().into_string().ok().map(serde_json::Value::String)
+    }
+}
+
 /// Runs the 13 rule scripts plus the numeric feasibility checks for one rotation.
 pub fn evaluate_rules(
     farm: &PreparedFarm,
@@ -196,6 +214,14 @@ pub fn evaluate_rules(
                 "average input cost ({avg_cost_per_ha:.0} $/ha) exceeds the farmer's budget ({:.0} $/ha)",
                 constraints.max_cost_per_ha.unwrap_or(0.0)
             ),
+            code: Some("over_budget".to_string()),
+            vars: BTreeMap::from([
+                ("cost".to_string(), serde_json::json!(avg_cost_per_ha.round())),
+                (
+                    "budget".to_string(),
+                    serde_json::json!(constraints.max_cost_per_ha.unwrap_or(0.0).round()),
+                ),
+            ]),
             exclude: true,
         });
     }
@@ -234,6 +260,19 @@ pub fn evaluate_rules(
             .get("reason")
             .and_then(|v| v.clone().into_string().ok())
             .unwrap_or_default();
+        let code = map
+            .get("code")
+            .and_then(|v| v.clone().into_string().ok())
+            .filter(|c| !c.is_empty());
+        let vars: BTreeMap<String, serde_json::Value> = map
+            .get("vars")
+            .and_then(|v| v.clone().try_cast::<Map>())
+            .map(|m| {
+                m.into_iter()
+                    .filter_map(|(k, v)| dynamic_to_json(&v).map(|j| (k.to_string(), j)))
+                    .collect()
+            })
+            .unwrap_or_default();
         if exclude || delta != 0 {
             if exclude && excluded_by.is_none() {
                 excluded_by = Some((*id).to_string());
@@ -242,6 +281,8 @@ pub fn evaluate_rules(
                 id: (*id).to_string(),
                 delta,
                 reason,
+                code,
+                vars,
                 exclude,
             });
         }

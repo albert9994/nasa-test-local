@@ -10,6 +10,7 @@ import { useF, useNames } from "@/components/field/hooks";
 import { fitCheck, pickKey, rotationCost } from "@/components/field/numbers";
 import { getEngine, type MarginResult, type PickResult, type Rotation, type RotationResult } from "@/lib/engine";
 import { useT } from "@/lib/i18n";
+import { useReasons } from "@/lib/i18n/reasons";
 import { useApp } from "@/lib/store/app";
 import { useAnalysis } from "@/lib/store/analysis";
 import { useScore } from "./score-card";
@@ -49,6 +50,7 @@ export function ReportSheet() {
   const { score } = useScore();
   const attention = useAttention();
   const attText = useAttentionText();
+  const reasons = useReasons();
   const [pickMargins, setPickMargins] = useState<Record<string, MarginResult>>({});
   useEffect(() => {
     if (!handle || !picks.length) return;
@@ -109,6 +111,7 @@ export function ReportSheet() {
           ))}
         </div>
         <p className="mt-2">{marginLine}</p>
+        {fact.worstYearWhy.length > 0 && <p className="mt-1">{t("reasons.worst_line", { year: base.worstYear, list: reasons.worstWhy(fact).join("; ") })}</p>}
       </Section>
 
       <Section title={t("explain.r_risks")}>

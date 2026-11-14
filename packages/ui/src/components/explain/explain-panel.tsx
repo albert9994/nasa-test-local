@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { FileText, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useT } from "@/lib/i18n";
+import { useCurrency, useT } from "@/lib/i18n";
 import { useAnalysis } from "@/lib/store/analysis";
 import { API_URL, RateLimitError, streamExplain } from "./api";
 import { ChatBox } from "./chat-box";
@@ -62,7 +62,7 @@ export function ExplainPanel() {
       if (my !== run.current) return;
       if (e instanceof RateLimitError) setNote("rate");
       // fallback: template text with a typing effect so it feels the same
-      const full = buildTemplate(fact, l);
+      const full = buildTemplate(fact, l, useCurrency.getState().currency);
       setSource("template"); setText(""); setTyping(true);
       const reduce = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
       if (reduce) { setText(full); setTyping(false); setBusy(false); return; }

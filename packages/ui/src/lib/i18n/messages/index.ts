@@ -7,6 +7,7 @@ import { farm } from "./farm";
 import { inputs } from "./inputs";
 import { mapTool, textures } from "./mapTool";
 import { onboarding } from "./onboarding";
+import { reasons } from "./reasons";
 import { replay } from "./replay";
 import { satellite } from "./satellite";
 import { site } from "./site";
@@ -32,4 +33,5 @@ export const MESSAGES: Record<string, Dict> = {
   textures,
   alerts,
   satellite,
+  reasons,
 };

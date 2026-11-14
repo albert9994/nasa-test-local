@@ -4,6 +4,7 @@ import { Check, Package, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { getEngine, type MarginResult, type PickResult, type Rotation, type RotationResult } from "@/lib/engine";
 import { useT } from "@/lib/i18n";
+import { useReasons } from "@/lib/i18n/reasons";
 import { useApp } from "@/lib/store/app";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -99,13 +100,14 @@ export function RotationsTab() {
   const computing = useApp((s) => s.computing);
   const setRotation = useApp((s) => s.setRotation);
   const margins = usePickMargins(picks);
+  const reasons = useReasons();
   const same = (a: Rotation, b: Rotation) => a.length === b.length && a.every((s, i) => s.crop === b[i].crop && s.cover === b[i].cover);
 
   const cards = useMemo<CardData[]>(() => {
     if (!base) return [];
     const cur: CardData = { id: "current", title: t("analysis.rot_current"), rot: rotation, base, margin, current: true };
-    return [cur, ...picks.map((p) => ({ id: p.label, title: t(`analysis.pick_${pickKey(p.label)}`), why: t(`analysis.pick_why_${pickKey(p.label)}`), rot: p.rot, base: p.base, margin: margins[p.label] ?? null }))];
-  }, [base, margin, rotation, picks, margins, t]);
+    return [cur, ...picks.map((p) => ({ id: p.label, title: t(`analysis.pick_${pickKey(p.label)}`), why: reasons.pickWhy(p) ?? t(`analysis.pick_why_${pickKey(p.label)}`), rot: p.rot, base: p.base, margin: margins[p.label] ?? null }))];
+  }, [base, margin, rotation, picks, margins, t, reasons]);
 
   return (
     <div className="flex flex-col gap-4">

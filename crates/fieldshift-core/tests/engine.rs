@@ -417,6 +417,7 @@ fn fact_sheet_numbers_verify_and_have_ts_shape() {
             "today",
             "margin",
             "worstYearWhy",
+            "worstYearWhyCodes",
             "alternatives",
             "soil",
             "market",
@@ -437,6 +438,44 @@ fn fact_sheet_numbers_verify_and_have_ts_shape() {
         }
     }
     assert!(!verify_numbers_in_text(&sheet, "yield was 98765.43 t/ha").0);
+
+    // structured reasons travel next to the English text, one code per reason
+    assert_eq!(
+        v["worstYearWhy"].as_array().unwrap().len(),
+        v["worstYearWhyCodes"].as_array().unwrap().len()
+    );
+    for c in v["worstYearWhyCodes"].as_array().unwrap() {
+        let code = c["code"].as_str().unwrap();
+        assert!(code == "drought" || code == "heat_flowering", "{code}");
+        assert!(c["crop"].is_string());
+        assert!(c["stressDays"].is_number() || c["days"].is_number());
+    }
+    for p in serde_json::to_value(&picks).unwrap().as_array().unwrap() {
+        assert!(p["whyCode"]["code"].is_string(), "{p}");
+    }
+}
+
+#[test]
+fn rule_hits_carry_a_code_and_vars() {
+    let f = load("baragan");
+    let r = compute_score(
+        &f,
+        &rot(&[("maize", false)]),
+        &SimOptions::default(),
+        &Weights::default(),
+        &Constraints::default(),
+        None,
+    )
+    .unwrap();
+    let v = serde_json::to_value(&r).unwrap();
+    let hit = v["rules"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|h| h["id"] == "03_continuous_corn")
+        .expect("continuous maize rule fires");
+    assert_eq!(hit["code"], "continuous_maize");
+    assert!(hit["reason"].as_str().unwrap().contains("rootworm"));
 }
 
 #[test]

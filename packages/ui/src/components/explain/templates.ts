@@ -1,6 +1,8 @@
 // Client-side explanation (template fallback) + the registry that maps numbers in a text back to fact-sheet fields (C10).
 // Rule: only numbers that exist in the fact sheet are written here. The engine computes; the text only restates.
 import type { FactSheet } from "@/lib/engine/types";
+import { FX, formatMoney, type Currency } from "@/lib/i18n";
+import { reasonText } from "@/lib/i18n/reasons";
 
 export type Lang = "en" | "ro";
 
@@ -10,14 +12,15 @@ export const DISCLAIMER: Record<Lang, string> = {
 };
 
 const n1 = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
-const money = (v: number) => `$${Math.abs(Math.round(v)).toLocaleString("en-US")}`;
-const signedMoney = (v: number) => `${v < 0 ? "−" : "+"}${money(v)}`;
 const years = (s: string) => Number(s.split("/")[1]) || 0;
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export function buildTemplate(f: FactSheet, lang: Lang): string {
+/** `currency` is the app's currency setting (engine money is USD/ha); the default USD keeps the engine's own numbers. */
+export function buildTemplate(f: FactSheet, lang: Lang, currency: Currency = "USD"): string {
   const en = lang === "en";
+  const money = (v: number) => formatMoney(lang, Math.abs(v), currency);
+  const signedMoney = (v: number) => `${v < 0 ? "−" : "+"}${money(v)}`;
   const out: string[] = [];
 
   // 1. What the margin means
@@ -35,9 +38,11 @@ export function buildTemplate(f: FactSheet, lang: Lang): string {
 
   // 2. Why the worst year was bad
   if (f.worstYearWhy.length) {
+    // structured codes -> text in the template language; the engine's English text when a code is unknown
+    const why = f.worstYearWhy.map((text, i) => reasonText(lang, currency, f.worstYearWhyCodes?.[i], "worst", text));
     out.push(en
-      ? `The worst year was ${f.today.worstYear}. Why: ${f.worstYearWhy.join("; ")}.`
-      : `Cel mai slab an a fost ${f.today.worstYear}. De ce: ${f.worstYearWhy.join("; ")}.`);
+      ? `The worst year was ${f.today.worstYear}. Why: ${why.join("; ")}.`
+      : `Cel mai slab an a fost ${f.today.worstYear}. De ce: ${why.join("; ")}.`);
   } else {
     out.push(en ? `The worst year was ${f.today.worstYear}.` : `Cel mai slab an a fost ${f.today.worstYear}.`);
   }
@@ -64,7 +69,7 @@ export function buildTemplate(f: FactSheet, lang: Lang): string {
 export interface NumberRef { field: string; value: string; explain: Record<Lang, string> }
 
 /** Maps every number we know to the fact-sheet field it comes from, with a plain-language "where from". */
-export function numberRegistry(f: FactSheet): { needle: string; ref: NumberRef }[] {
+export function numberRegistry(f: FactSheet, currency: Currency = "USD"): { needle: string; ref: NumberRef }[] {
   const out: { needle: string; ref: NumberRef }[] = [];
   const seen = new Set<string>();
   const add = (needle: string, field: string, en: string, ro: string) => {
@@ -72,17 +77,21 @@ export function numberRegistry(f: FactSheet): { needle: string; ref: NumberRef }
     seen.add(needle);
     out.push({ needle, ref: { field, value: needle, explain: { en, ro } } });
   };
-  const num = (v: number, field: string, en: string, ro: string) => {
-    const a = Math.abs(v);
-    const forms = [n1(a), String(Math.round(a)), Math.round(a).toLocaleString("en-US"), a.toFixed(2)];
-    forms.forEach((s) => add(s, field, en, ro));
+  const num = (v: number, field: string, en: string, ro: string, isMoney = false) => {
+    // money is shown in the app currency (FX from USD), so register that value too
+    for (const x of isMoney && currency !== "USD" ? [v, v * FX[currency]] : [v]) {
+      const a = Math.abs(x);
+      const r = Math.round(a);
+      const forms = [n1(a), String(r), r.toLocaleString("en-US"), r.toLocaleString("ro-RO"), a.toFixed(2)];
+      forms.forEach((s) => add(s, field, en, ro));
+    }
   };
   const nYears = years(f.today.badYears);
   const w = nYears ? `${nYears} years of NASA POWER weather` : "NASA POWER weather";
   const wr = nYears ? `${nYears} ani de vreme NASA POWER` : "vremea NASA POWER";
 
   add(f.today.badYears, "today.badYears", `Years below your risk threshold, simulated on ${w}.`, `Anii sub pragul tău de risc, simulați pe ${wr}.`);
-  num(f.today.meanNet, "today.meanNet", `Mean net margin per hectare over ${w}.`, `Marja netă medie pe hectar, pe ${wr}.`);
+  num(f.today.meanNet, "today.meanNet", `Mean net margin per hectare over ${w}.`, `Marja netă medie pe hectar, pe ${wr}.`, true);
   num(f.today.worstYear, "today.worstYear", `The year with the lowest simulated net in ${w}.`, `Anul cu cea mai mică marjă netă simulată în ${wr}.`);
   num(f.margin.dT, "margin.dT", "Warming (°C) the rotation absorbs before bad years pass your rule, found by the stress search.", "Încălzirea (°C) pe care o absoarbe rotația înainte ca anii răi să depășească regula, găsită prin căutarea de stres.");
   num(f.margin.dP, "margin.dP", "Rain change (%) the rotation absorbs before bad years pass your rule.", "Schimbarea ploii (%) pe care o absoarbe rotația înainte ca anii răi să depășească regula.");
@@ -90,7 +99,7 @@ export function numberRegistry(f: FactSheet): { needle: string; ref: NumberRef }
   add(f.margin.safeUntil.ssp585, "margin.safeUntil.ssp585", "Year the margin is used up on the hot climate scenario (SSP5-8.5, NEX-GDDP-CMIP6).", "Anul în care marja se consumă în scenariul climatic cald (SSP5-8.5, NEX-GDDP-CMIP6).");
   f.alternatives.forEach((a, i) => {
     add(a.badYears, `alternatives[${i}].badYears`, `Bad years for "${a.label}", simulated on the same weather years.`, `Ani răi pentru „${a.label}”, simulați pe aceiași ani de vreme.`);
-    num(a.deltaNet, `alternatives[${i}].deltaNet`, `Change in mean net per hectare for "${a.label}" versus the current rotation.`, `Schimbarea marjei nete medii pe hectar pentru „${a.label}” față de rotația actuală.`);
+    num(a.deltaNet, `alternatives[${i}].deltaNet`, `Change in mean net per hectare for "${a.label}" versus the current rotation.`, `Schimbarea marjei nete medii pe hectar pentru „${a.label}” față de rotația actuală.`, true);
     num(a.margin.dT, `alternatives[${i}].margin.dT`, `Warming margin (°C) of "${a.label}".`, `Marja de încălzire (°C) pentru „${a.label}”.`);
     num(a.soilScore, `alternatives[${i}].soilScore`, `Soil score (0–100) of "${a.label}" from the soil model (SoilGrids inputs).`, `Scor sol (0–100) pentru „${a.label}” din modelul de sol (date SoilGrids).`);
   });
@@ -103,7 +112,7 @@ export function numberRegistry(f: FactSheet): { needle: string; ref: NumberRef }
   }
   if (f.quant) {
     num(f.quant.pBadYear2035, "quant.pBadYear2035", `Probability of a bad year in 2035 across ${f.quant.paths} simulated paths (scenario probability, not a forecast).`, `Probabilitatea unui an rău în 2035 pe ${f.quant.paths} traiectorii simulate (probabilitate de scenariu, nu prognoză).`);
-    num(f.quant.cvar95, "quant.cvar95", "Average loss in the worst 5 % of simulated outcomes.", "Pierderea medie în cele mai rele 5 % dintre rezultatele simulate.");
+    num(f.quant.cvar95, "quant.cvar95", "Average loss in the worst 5 % of simulated outcomes.", "Pierderea medie în cele mai rele 5 % dintre rezultatele simulate.", true);
     num(f.quant.pRuin, "quant.pRuin", "Probability of running out of cash reserve in the simulation.", "Probabilitatea de a epuiza rezerva de numerar în simulare.");
     if (f.quant.marginYearP50 != null) num(f.quant.marginYearP50, "quant.marginYearP50", "Median year the margin is used up across simulated paths.", "Anul median în care marja se consumă pe traiectoriile simulate.");
   }

@@ -41,6 +41,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -7,
+            code: "groundwater_decline",
+            vars: #{ trend: grace_trend },
             reason: "NASA GRACE-FO shows regional groundwater declining (" + grace_trend + " cm/yr); water-intensive crops risk aquifer/moisture exhaustion"
         };
     }

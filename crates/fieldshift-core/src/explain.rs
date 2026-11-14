@@ -112,6 +112,9 @@ pub struct FactSheet {
     pub today: FactToday,
     pub margin: FactMargin,
     pub worst_year_why: Vec<String>,
+    /// Same reasons as `worst_year_why`, structured (`drought` + `stressDays`, `heat_flowering` + `days`), for i18n.
+    #[serde(default)]
+    pub worst_year_why_codes: Vec<crate::ReasonCode>,
     pub alternatives: Vec<FactAlternative>,
     pub soil: FactSoil,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -148,11 +151,19 @@ pub fn build_fact_sheet(
         .traced
         .unwrap_or_default();
     let mut why = Vec::new();
+    let mut why_codes = Vec::new();
     for s in &traced {
         if s.factors.water < 0.75 {
             why.push(format!(
                 "{}: drought ({} stress days)",
                 s.crop, s.stress_days
+            ));
+            why_codes.push(crate::ReasonCode::new(
+                "drought",
+                &[
+                    ("crop", s.crop.to_string().into()),
+                    ("stressDays", s.stress_days.into()),
+                ],
             ));
         }
         if s.heat_days > 0 {
@@ -160,9 +171,17 @@ pub fn build_fact_sheet(
                 "{}: {} days of flowering heat",
                 s.crop, s.heat_days
             ));
+            why_codes.push(crate::ReasonCode::new(
+                "heat_flowering",
+                &[
+                    ("crop", s.crop.to_string().into()),
+                    ("days", s.heat_days.into()),
+                ],
+            ));
         }
     }
     why.truncate(3);
+    why_codes.truncate(3);
 
     let safe = |ssp: &str| year_text(margin_year_with(opts, &farm.scenario_series(ssp), &sim).year);
     let status = if margin.already {
@@ -257,6 +276,7 @@ pub fn build_fact_sheet(
             },
         },
         worst_year_why: why,
+        worst_year_why_codes: why_codes,
         alternatives,
         soil: FactSoil {
             score: base.soil_score,

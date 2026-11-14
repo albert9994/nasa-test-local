@@ -46,6 +46,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: 6,
+            code: "cover_protects_slope",
+            vars: #{ slope: slope },
             reason: "Winter rye cover crop protects sloped soil (" + slope + "% gradient) after row crops, cutting winter runoff and erosion by ~45%"
         };
     }
@@ -54,6 +56,8 @@ fn apply(rot, farm, profile) {
         return #{
             exclude: false,
             delta: -6,
+            code: "bare_wide_row_slope",
+            vars: #{ slope: slope },
             reason: "All wide-row crops without winter cover on a " + slope + "% slope expose topsoil to spring snowmelt and rainstorm erosion"
         };
     }

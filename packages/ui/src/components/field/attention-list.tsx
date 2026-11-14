@@ -4,6 +4,8 @@ import { AlertTriangle, CheckCircle2, ChevronRight, Flame } from "lucide-react";
 import { useMemo } from "react";
 import { use2050 } from "@/components/hero/hero-card";
 import { useT } from "@/lib/i18n";
+import { useReasons } from "@/lib/i18n/reasons";
+import { useFactSheet } from "@/components/explain/use-fact-sheet";
 import { useApp } from "@/lib/store/app";
 import { useAnalysis, type TabId } from "@/lib/store/analysis";
 import { cn } from "@/lib/utils";
@@ -33,14 +35,18 @@ export function useAttention(): AttentionItem[] | null {
   return useMemo(() => (base && margin ? buildAttention({ base, margin, picks, failShare, t2050, heat, alert }) : null), [base, margin, picks, failShare, t2050, heat, alert]);
 }
 
-export function useAttentionText() {
+/** `worstWhy`: localised reasons of the worst year (from the fact sheet); appended to the "worst year" item. */
+export function useAttentionText(worstWhy?: string[]) {
   const t = useT();
   const f = useF();
   return (it: AttentionItem) => {
     const v = { ...it.vars };
     if (it.id === "soil") v.pct = `${f.num(Number(it.vars.pct), 2)} %`;
     if (it.id === "erosion") v.t = f.num(Number(it.vars.t), 1);
-    if (it.id === "worst") v.amount = f.money(Number(it.vars.usd));
+    if (it.id === "worst") {
+      v.amount = f.money(Number(it.vars.usd));
+      if (worstWhy?.length) return `${t("analysis.att_worst", v)} ${t("reasons.why_intro", { list: worstWhy.join("; ") })}`;
+    }
     if (it.id === "margin_tight") { v.dT = f.warm(Number(it.vars.dT)); v.t2050 = f.warm(Number(it.vars.t2050)); }
     if (it.id === "weather") {
       const k = String(it.vars.kind);
@@ -57,7 +63,9 @@ export function AttentionList() {
   const items = useAttention();
   const setTab = useAnalysis((s) => s.setTab);
 
-  const text = useAttentionText();
+  const fact = useFactSheet();
+  const reasons = useReasons();
+  const text = useAttentionText(fact ? reasons.worstWhy(fact) : undefined);
 
   return (
     <Panel title={t("analysis.att_title")} sub={t("analysis.att_sub")} tour="attention">
