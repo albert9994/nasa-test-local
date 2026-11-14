@@ -2,7 +2,7 @@
 // until Luca's pipeline (LU1) writes public/data/farms/. Switch DATA_ROOT then.
 import type { FarmIndexEntry, FarmPack } from "@/lib/engine/types";
 
-export const DATA_ROOT = "/data/mock/farms";
+export const DATA_ROOT = "/data/farms"; // real packs (A3): NASA POWER + SoilGrids + MODIS + NEX-GDDP-CMIP6
 const cache = new Map<string, Promise<FarmPack>>();
 
 export async function loadIndex(): Promise<FarmIndexEntry[]> {
