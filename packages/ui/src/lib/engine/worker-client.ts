@@ -6,10 +6,11 @@ import type { WorkerApi } from "./worker";
 export async function createWorkerEngine(): Promise<Engine> {
   const worker = new Worker(new URL("./worker.ts", import.meta.url), { type: "module" });
   const api = Comlink.wrap<WorkerApi>(worker);
-  // Fail fast (and let the caller fall back) if the worker did not boot.
+  // Fail fast (and let the caller fall back) if the worker did not boot. The worker resolves `kind` only after its
+  // WASM start-up finished, so this is the engine that will actually answer ("wasm", or "mock" after a fallback).
   const kind = await Promise.race([
     Promise.resolve(api.kind),
-    new Promise<never>((_, rej) => setTimeout(() => rej(new Error("engine worker timeout")), 8000)),
+    new Promise<never>((_, rej) => setTimeout(() => rej(new Error("engine worker timeout")), 20000)),
   ]);
   const e = api;
   return {
@@ -25,5 +26,6 @@ export async function createWorkerEngine(): Promise<Engine> {
     marketShock: (...a) => e.marketShock(...a),
     quantSimulate: (...a) => e.quantSimulate(...a),
     factSheet: (...a) => e.factSheet(...a),
+    validate: (...a) => (e as unknown as Required<Engine>).validate(...a),
   };
 }

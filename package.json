@@ -5,7 +5,8 @@
     "dev": "pnpm --filter web dev",
     "build": "pnpm -r --if-present run build",
     "typecheck": "pnpm -r --if-present run typecheck",
-    "test": "pnpm -r --if-present run test"
+    "test": "pnpm -r --if-present run test",
+    "wasm": "wasm-pack build crates/fieldshift-wasm --target web --out-dir ../../packages/engine-wasm"
   },
   "packageManager": "pnpm@11.22.0"
 }

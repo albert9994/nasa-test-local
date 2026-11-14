@@ -121,6 +121,13 @@ fs.factSheet(farmHandle, rotation, opts, picks) → C10 fact sheet
   "ssp585": { … } }
 ```
 
+**Optional additions (B4):** `scenarios.<ssp>.monthly = { "dT": [12 °C, Jan..Dec], "dP": [12 fractions] }` (2050 anchor; rescaled
+along the trajectory) and `scenarios.<ssp>.perModel = { "<model>": { "dT", "dP", "series"?, "monthly"? } }` (per-model 2050 anchor
+and/or trajectory). The engine uses them when present and falls back to the ensemble series. Opts gain optional `co2ppm`,
+`monthly`, `ssp`; QuantParams gain optional `debtService`, `livingCost`, `sensitivity`, `co2`, `real`, `blockYears`, `tDf`;
+QuantResult gains `cumulative`, `var95Cum`, `cvar95Cum`, `maxDrawdownPctP50`, `pRuinByYear`, `mcSe`, `meanDtEnd`,
+`meanCo2End`, `sensitivity?`. New export `validate(handle, observed, opts?)` and `POST /api/validate`. See `docs/SCIENCE.md`.
+
 ## C5 · County yields (`apps/web/public/data/validation/<farm>.json`)
 ```json
 { "farm": "iowa", "region": "Story County, IA", "source": "USDA NASS Quick Stats", "url": "…",
