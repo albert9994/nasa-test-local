@@ -22,7 +22,7 @@
 **Meet the Adaptation Margin: one number every farmer understands.**
 
 ### Hero Quote on Slide
-> *"Your **maize → soybean** rotation can absorb **+2.1 °C** of warming or **24 % less rain** before money-losing years exceed **1 year in 5**. Under NASA mid-century projections, that margin runs out around **~2049** (or **already today** on unbuffered monocultures in the Bărăgan Plain)."*
+> *"Your **maize → soybean** rotation can absorb **+X °C** of warming or **Y % less rain** before money-losing years exceed **1 year in 5**. Under NASA mid-century projections, that margin runs out around **~20XX** (TODO: engine output); example numbers on this slide are storyboard placeholders."*
 
 ### Why It Wins vs. Existing Tools
 | Existing Tools | Limitation | FieldShift |
@@ -70,17 +70,22 @@ Adaptation Margin &         1,000 Quant Futures 2026–2050     Hybrid FieldShif
 ### Headline
 **Validated across 24 historical seasons against official county yields and independent MODIS satellite greenness.**
 
-### Real Validation Table (`apps/web/public/data/validation/summary.json`, LU8)
-| Demo Farm (`2001–2024`) | Primary Crops | Yield Skill (`r`) | Yield `RMSE` (`t/ha`) | MODIS Peak NDVI Skill (`r`) | CMIP6 `2050` Growing-Season Shift (`SSP2-4.5` / `SSP5-8.5`) |
-|---|---|---|---|---|---|
-| **Story County, Iowa (USA)** (`42.03°N, 93.62°W`) | Maize / Soybean | **`r = 0.52`** | `2.24 t/ha` | **`r = 0.63`** (`n = 25`) | **`+2.06 °C, −4 % rain`** / `+2.74 °C, −7 % rain` |
-| **Finney County, Kansas (USA)** (`37.95°N, 100.85°W`) | Winter Wheat / Sorghum | **`r = 0.85`** (wheat) · **`0.69`** (sorghum) | **`0.39 t/ha`** (wheat) | Drought years `2011, 2014, 2022` flagged | **`+2.20 °C, −9 % rain`** / `+2.90 °C, −12 % rain` |
-| **Bărăgan Plain, Romania** (`44.55°N, 27.45°E`) | Maize / Winter Wheat | **`r = 0.75`** (maize) · **`0.89`** (wheat) | **`1.14 t/ha`** (maize) · **`0.48 t/ha`** (wheat) | **`r = 0.62`** (`n = 25`) | **`+2.39 °C, −11 % rain`** / `+3.12 °C, −16 % rain` |
+### Real data table (`validation/summary.json`, `layers/*/scenarios.json`)
+Real yield skill of the Rust engine against county yields: **TODO** (not yet computed; the old `r = 0.52 / 0.75 / 0.85 / 0.89` figures came from a throw-away Python model and were removed).
 
-### 3 Key Validation Takeaways
-1. **Honest out-of-sample skill:** Without per-year tuning, the daily screening model tracks official county/regional yields up to **`r = 0.85–0.89`** for winter wheat and **`r = 0.75`** for dryland maize in Romania.
-2. **Drought-year precision:** Independently identifies the worst historical droughts in every region (`2012` in Iowa; `2011, 2014, 2022` in Kansas; `2007, 2012, 2022, 2024` in Bărăgan).
-3. **Why relative margin is even more robust:** Because Adaptation Margin measures *headroom to failure* under shifted weather on the same soil, constant local biases cancel out.
+| Demo farm | Observed yields | CMIP6 2050 growing-season shift, SSP2-4.5 / SSP5-8.5 (NEX-GDDP-CMIP6, 5-model mean vs 1995-2014) |
+|---|---|---|
+| Story County, Iowa (USA) | NASS table, unverified | +2.76 °C, -2 % rain / +3.17 °C, +0 % rain |
+| Finney County, Kansas (USA) | NASS table, unverified | +2.38 °C, -2 % rain / +3.21 °C, -9 % rain |
+| Ialomița, Bărăgan (Romania) | INS TEMPO 1990-2025 | +2.71 °C, -9 % rain / +3.19 °C, -11 % rain |
+| Vaslui (Romania) | INS TEMPO 1990-2025 | +2.69 °C, -9 % rain / +3.14 °C, -9 % rain |
+| Dolj, Oltenian sands (Romania) | INS TEMPO 1990-2025 | +2.71 °C, -8 % rain / +3.20 °C, -11 % rain |
+| Teleorman (Romania) | INS TEMPO 1990-2025 | +2.75 °C, -10 % rain / +3.20 °C, -10 % rain |
+
+### Validation takeaways (TODO: refresh once the engine skill is computed)
+1. Climate shifts above are real NASA NEX-GDDP-CMIP6 ensemble means; individual models disagree widely on rain (see `perModel`).
+2. Romanian county yields are real INS TEMPO values; the worst years (2007, 2012, 2020, 2022, 2024) are visible in them.
+3. `validation/summary.json` reports only measured correlations (yield anomaly vs POWER rain and MODIS NDVI).
 
 ---
 
@@ -89,7 +94,7 @@ Adaptation Margin &         1,000 Quant Futures 2026–2050     Hybrid FieldShif
 **Diverse rotations cut drought losses by up to 90 % — FieldShift makes that actionable for any farmer, free.**
 
 - **Peer-Reviewed Agronomy:** Across 347 site-years in North America, diverse rotations raised maize yields by **+28 %** on average and reduced drought-year yield losses by **14–90 %** *(Bowles et al. 2020, One Earth)*; legume pre-crops boost subsequent cereal yields by **+20–23 %** *(Zhao et al. 2022; Mudare et al. 2025, Nature Communications)*.
-- **Concrete Example on Our Bărăgan Farm:** Replacing `Maize → Winter Wheat` (`8/24` bad years) with `Winter Wheat → Sorghum → Pea` cuts bad years to **`1/24`**, raises average net income by **`+$64/ha/yr`**, expands warming headroom by **`+3.4 °C`**, and turns soil organic carbon trend from **`−0.54 %/yr`** to positive — using the farmer's existing machinery.
+- **Concrete Example on Our Bărăgan Farm:** Replacing `Maize → Winter Wheat` with `Winter Wheat → Sorghum → Pea` cuts bad years, raises net income and expands warming headroom (TODO: numbers from the engine; earlier figures were placeholders) — using the farmer's existing machinery.
 
 ---
 
@@ -108,4 +113,4 @@ Adaptation Margin &         1,000 Quant Futures 2026–2050     Hybrid FieldShif
 - **Free Light Site:** Instant browser WASM demo + 1-page printable plan for farmers worldwide.
 - **Farmer Pro (`~€199/yr`) & Advisor (`~€990/yr`):** Multi-parcel farm polygons, 10,000-path quant risk, bank/APIA PDF reports.
 - **Enterprise Terminal (`€10k–30k/yr`):** Regional VaR/CVaR portfolio map for agricultural banks, crop insurers, and input cooperatives.
-- **Next Technical Milestones:** Harmonized Landsat–Sentinel-2 (`HLS 30 m`) field boundary ingestion, `OpenET` irrigation cross-check, daily quantile-mapped CMIP6 + `CO₂` fertilization toggle, and swapping the screening core with `AquaCrop-OS` for parcel-level prescription.
+- **Next Technical Milestones:** Field boundary ingestion on HLS 30 m, `OpenET` irrigation cross-check, daily quantile-mapped CMIP6 + `CO₂` fertilization toggle, and swapping the screening core with `AquaCrop-OS` for parcel-level prescription.

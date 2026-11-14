@@ -1,0 +1,369 @@
+{
+  "version": 1,
+  "datasets": [
+    {
+      "id": "power",
+      "name": "NASA POWER daily weather",
+      "nameRo": "Meteo zilnică NASA POWER",
+      "provider": "NASA Langley Research Center (POWER, MERRA-2 / CERES)",
+      "url": "https://power.larc.nasa.gov/",
+      "resolution": "0.5 x 0.625 deg grid, daily",
+      "period": "2001-2025",
+      "usedFor": "Daily Tmax/Tmin, rain, root-zone wetness, radiation, humidity, wind for the crop-water simulation",
+      "status": "real"
+    },
+    {
+      "id": "modis_ndvi",
+      "name": "MODIS Terra NDVI (MOD13Q1 v061)",
+      "nameRo": "NDVI MODIS Terra (MOD13Q1 v061)",
+      "provider": "NASA LP DAAC via ORNL DAAC MODIS subsets",
+      "url": "https://modis.ornl.gov/data/modis_webservice.html",
+      "resolution": "250 m pixel at the farm point, 16-day composite",
+      "period": "2001-2025 (growing season, DOY 113-257)",
+      "usedFor": "Satellite greenness in the drought replay and yield validation; cloudy/snow pixels masked",
+      "status": "real"
+    },
+    {
+      "id": "nex_gddp_cmip6",
+      "name": "NEX-GDDP-CMIP6 climate projections",
+      "nameRo": "Proiecții climatice NEX-GDDP-CMIP6",
+      "provider": "NASA Earth Exchange (NCCS THREDDS)",
+      "url": "https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6",
+      "resolution": "0.25 deg (~25 km) cell, daily, 5-model ensemble",
+      "period": "baseline 1995-2014; ssp245/ssp585 2021-2100 (headline 2041-2060)",
+      "usedFor": "Growing-season (Apr-Sep) and monthly temperature / rainfall change for the climate-scenario sliders",
+      "status": "real"
+    },
+    {
+      "id": "soilgrids",
+      "name": "SoilGrids 2.0 soil properties",
+      "nameRo": "Proprietăți sol SoilGrids 2.0",
+      "provider": "ISRIC - World Soil Information (not NASA)",
+      "url": "https://soilgrids.org/",
+      "resolution": "250 m, 5 depths to 1 m",
+      "period": "static (modelled from 2020 observations)",
+      "usedFor": "Water-holding capacity, runoff, erodibility, carbon, pH",
+      "status": "real"
+    },
+    {
+      "id": "srtm",
+      "name": "SRTM elevation and slope",
+      "nameRo": "Altitudine și pantă SRTM",
+      "provider": "NASA/NGA SRTM 1 arc-sec via OpenTopoData",
+      "url": "https://www.opentopodata.org/datasets/srtm/",
+      "resolution": "30 m; slope from Horn 3x3 at ~90 m",
+      "period": "2000 (static)",
+      "usedFor": "Farm elevation and slope (runoff, erosion)",
+      "status": "real"
+    },
+    {
+      "id": "ins_tempo",
+      "name": "INS TEMPO county crop yields",
+      "nameRo": "Producții județene INS TEMPO",
+      "provider": "Institutul Național de Statistică (România), tables AGR110A / AGR108A",
+      "url": "http://statistici.insse.ro:8077/tempo-online/",
+      "resolution": "county, annual",
+      "period": "1990-2025",
+      "usedFor": "Observed average yield per crop to validate the model and show historical bad years",
+      "status": "real"
+    },
+    {
+      "id": "nass_curated",
+      "name": "USDA NASS county yields (curated table)",
+      "nameRo": "Producții județene USDA NASS (tabel curatat)",
+      "provider": "USDA National Agricultural Statistics Service, Quick Stats",
+      "url": "https://quickstats.nass.usda.gov/",
+      "resolution": "county, annual",
+      "period": "2001-2024",
+      "usedFor": "US county yield history; typed in from Quick Stats, NOT machine-verified (needs NASS_API_KEY)",
+      "status": "illustrative"
+    },
+    {
+      "id": "economics",
+      "name": "Crop costs and farm-gate prices",
+      "nameRo": "Costuri și prețuri la poarta fermei",
+      "provider": "Reference values rounded from university-extension budgets and market series (ISU, K-State, MADR/IEA)",
+      "url": "https://www.extension.iastate.edu/agdm/crops/html/a1-20.html",
+      "resolution": "per farm and crop",
+      "period": "2024-2025 level",
+      "usedFor": "Margin and risk calculation; editable by the farmer",
+      "status": "illustrative"
+    },
+    {
+      "id": "quant_params",
+      "name": "Price and cost risk parameters",
+      "nameRo": "Parametri de risc pentru prețuri și costuri",
+      "provider": "Literature-style defaults (not fitted to downloaded price series)",
+      "url": "https://www.worldbank.org/en/research/commodity-markets",
+      "resolution": "per crop",
+      "period": "n/a",
+      "usedFor": "Monte Carlo of price volatility, mean reversion, cross-crop correlation, input-cost jumps",
+      "status": "illustrative"
+    },
+    {
+      "id": "gibs",
+      "name": "NASA GIBS satellite imagery tiles",
+      "nameRo": "Imagini satelit NASA GIBS",
+      "provider": "NASA EOSDIS GIBS",
+      "url": "https://gibs.earthdata.nasa.gov/",
+      "resolution": "250 m - 500 m, daily",
+      "period": "2000-present",
+      "usedFor": "Map background / greenness overlay (display only, no numbers derived)",
+      "status": "real"
+    },
+    {
+      "id": "hls-v2",
+      "name": "HLS v2.0 (Harmonized Landsat Sentinel-2)",
+      "nameRo": "HLS v2.0 (Landsat + Sentinel-2 armonizate)",
+      "provider": "NASA / USGS, via Microsoft Planetary Computer",
+      "url": "https://planetarycomputer.microsoft.com/dataset/hls2-s30",
+      "resolution": "30 m, 2-3 day revisit",
+      "period": "2013-present",
+      "usedFor": "NDVI/NDMI series per farm block; input to the Prithvi crop map",
+      "status": "real",
+      "statusDetail": "live-precomputed"
+    },
+    {
+      "id": "prithvi-eo-2",
+      "name": "Prithvi-EO-2.0-100M-TL (crop map, beta)",
+      "nameRo": "Prithvi-EO-2.0-100M-TL (harta culturilor, beta)",
+      "provider": "IBM + NASA (Apache-2.0), Hugging Face",
+      "url": "https://huggingface.co/ibm-nasa-geospatial/Prithvi-EO-2.0-100M-TL",
+      "resolution": "480 m patches from 30 m HLS",
+      "period": "one growing season (2021 demo farms)",
+      "usedFor": "AI crop map: frozen encoder + probe (Iowa) or k-means named by WorldCereal (Baragan)",
+      "status": "illustrative",
+      "statusDetail": "beta-precomputed"
+    },
+    {
+      "id": "usda-cdl",
+      "name": "USDA Cropland Data Layer",
+      "nameRo": "USDA Cropland Data Layer",
+      "provider": "USDA NASS, via Microsoft Planetary Computer",
+      "url": "https://planetarycomputer.microsoft.com/dataset/usda-cdl",
+      "resolution": "30 m",
+      "period": "2008-2021 (on Planetary Computer)",
+      "usedFor": "Training/validation labels for the Iowa crop map",
+      "status": "real",
+      "statusDetail": "live-precomputed"
+    },
+    {
+      "id": "worldcereal-2021",
+      "name": "ESA WorldCereal 2021 v100",
+      "nameRo": "ESA WorldCereal 2021 v100",
+      "provider": "ESA WorldCereal consortium (CC-BY-4.0), Zenodo 7875105",
+      "url": "https://zenodo.org/records/7875105",
+      "resolution": "10 m",
+      "period": "2021",
+      "usedFor": "Reference labels (maize, winter cereals) for the Baragan crop map",
+      "status": "real",
+      "statusDetail": "live-precomputed"
+    },
+    {
+      "id": "gibs-modis-ndvi",
+      "name": "MODIS Terra NDVI 16-day (GIBS)",
+      "nameRo": "MODIS Terra NDVI 16 zile (GIBS)",
+      "provider": "NASA GIBS / LP DAAC",
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_L3_NDVI_16Day/",
+      "resolution": "250 m",
+      "period": "2000-present",
+      "usedFor": "Satellite layer on the map",
+      "status": "real",
+      "statusDetail": "live-tiles"
+    },
+    {
+      "id": "gibs-modis-truecolor",
+      "name": "MODIS Terra true colour (GIBS)",
+      "nameRo": "MODIS Terra culori reale (GIBS)",
+      "provider": "NASA GIBS",
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/",
+      "resolution": "250 m, daily",
+      "period": "2000-present",
+      "usedFor": "Satellite layer on the map",
+      "status": "real",
+      "statusDetail": "live-tiles"
+    },
+    {
+      "id": "gibs-modis-lst",
+      "name": "MODIS Terra land surface temperature, day (GIBS)",
+      "nameRo": "MODIS Terra temperatura suprafeței, zi (GIBS)",
+      "provider": "NASA GIBS / LP DAAC",
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_Land_Surface_Temp_Day/",
+      "resolution": "1 km, daily",
+      "period": "2000-present",
+      "usedFor": "Satellite layer on the map",
+      "status": "real",
+      "statusDetail": "live-tiles"
+    },
+    {
+      "id": "gibs-viirs-truecolor",
+      "name": "VIIRS SNPP true colour (GIBS)",
+      "nameRo": "VIIRS SNPP culori reale (GIBS)",
+      "provider": "NASA GIBS",
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/",
+      "resolution": "250 m, daily",
+      "period": "2015-present",
+      "usedFor": "Satellite layer on the map",
+      "status": "real",
+      "statusDetail": "live-tiles"
+    },
+    {
+      "id": "gibs-smap-l4",
+      "name": "SMAP L4 analysed surface soil moisture (GIBS)",
+      "nameRo": "SMAP L4 umiditatea solului la suprafață (GIBS)",
+      "provider": "NASA GIBS / NSIDC",
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/SMAP_L4_Analyzed_Surface_Soil_Moisture/",
+      "resolution": "9 km, daily",
+      "period": "2015-present",
+      "usedFor": "Satellite layer on the map (regional context only; GIBS has no SMAP L3 soil-moisture layer)",
+      "status": "real",
+      "statusDetail": "live-tiles"
+    }
+  ],
+  "farms": {
+    "iowa": {
+      "name": "Story County, Iowa (USA)",
+      "nameRo": "Comitatul Story, Iowa (SUA)",
+      "country": "US",
+      "layers": [
+        "economics",
+        "power",
+        "soilgrids",
+        "modis_ndvi",
+        "nex_gddp_cmip6",
+        "srtm",
+        "hls-v2",
+        "prithvi-eo-2",
+        "nass_curated"
+      ],
+      "layerStatus": {
+        "economics": "illustrative",
+        "power": "real",
+        "soilgrids": "real",
+        "modis_ndvi": "real",
+        "nex_gddp_cmip6": "real",
+        "srtm": "real",
+        "hls-v2": "real",
+        "prithvi-eo-2": "illustrative",
+        "nass_curated": "illustrative"
+      }
+    },
+    "kansas": {
+      "name": "Finney County, Kansas (USA)",
+      "nameRo": "Comitatul Finney, Kansas (SUA)",
+      "country": "US",
+      "layers": [
+        "economics",
+        "power",
+        "soilgrids",
+        "modis_ndvi",
+        "nex_gddp_cmip6",
+        "srtm",
+        "nass_curated"
+      ],
+      "layerStatus": {
+        "economics": "illustrative",
+        "power": "real",
+        "soilgrids": "real",
+        "modis_ndvi": "real",
+        "nex_gddp_cmip6": "real",
+        "srtm": "real",
+        "nass_curated": "illustrative"
+      }
+    },
+    "baragan": {
+      "name": "Ialomița, Bărăgan Plain (Romania)",
+      "nameRo": "Ialomița, Câmpia Bărăganului (România)",
+      "country": "RO",
+      "layers": [
+        "economics",
+        "power",
+        "soilgrids",
+        "modis_ndvi",
+        "nex_gddp_cmip6",
+        "srtm",
+        "hls-v2",
+        "prithvi-eo-2",
+        "ins_tempo"
+      ],
+      "layerStatus": {
+        "economics": "illustrative",
+        "power": "real",
+        "soilgrids": "real",
+        "modis_ndvi": "real",
+        "nex_gddp_cmip6": "real",
+        "srtm": "real",
+        "hls-v2": "real",
+        "prithvi-eo-2": "illustrative",
+        "ins_tempo": "real"
+      }
+    },
+    "vaslui": {
+      "name": "Vaslui, Moldavian Plateau (Romania)",
+      "nameRo": "Vaslui, Podișul Moldovei (România)",
+      "country": "RO",
+      "layers": [
+        "economics",
+        "power",
+        "soilgrids",
+        "nex_gddp_cmip6",
+        "srtm",
+        "ins_tempo"
+      ],
+      "layerStatus": {
+        "economics": "illustrative",
+        "power": "real",
+        "soilgrids": "real",
+        "nex_gddp_cmip6": "real",
+        "srtm": "real",
+        "ins_tempo": "real"
+      }
+    },
+    "dolj": {
+      "name": "Dolj, Oltenian Sands (Romania)",
+      "nameRo": "Dolj, Nisipurile Olteniei (România)",
+      "country": "RO",
+      "layers": [
+        "economics",
+        "power",
+        "soilgrids",
+        "modis_ndvi",
+        "nex_gddp_cmip6",
+        "srtm",
+        "ins_tempo"
+      ],
+      "layerStatus": {
+        "economics": "illustrative",
+        "power": "real",
+        "soilgrids": "real",
+        "modis_ndvi": "real",
+        "nex_gddp_cmip6": "real",
+        "srtm": "real",
+        "ins_tempo": "real"
+      }
+    },
+    "teleorman": {
+      "name": "Teleorman, Burnas Plain (Romania)",
+      "nameRo": "Teleorman, Câmpia Burnazului (România)",
+      "country": "RO",
+      "layers": [
+        "economics",
+        "power",
+        "soilgrids",
+        "modis_ndvi",
+        "nex_gddp_cmip6",
+        "srtm",
+        "ins_tempo"
+      ],
+      "layerStatus": {
+        "economics": "illustrative",
+        "power": "real",
+        "soilgrids": "real",
+        "modis_ndvi": "real",
+        "nex_gddp_cmip6": "real",
+        "srtm": "real",
+        "ins_tempo": "real"
+      }
+    }
+  }
+}

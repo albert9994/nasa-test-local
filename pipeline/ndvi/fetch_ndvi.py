@@ -70,7 +70,7 @@ def fetch_window(farm_id: str, lat: float, lon: float, year: int, d0: int, d1: i
     return out
 
 
-def build_farm(farm: dict[str, Any], workers: int = 6) -> Path:
+def build_farm(farm: dict[str, Any], workers: int = 6, partial: bool = False) -> Path:
     lat, lon = float(farm["lat"]), float(farm["lon"])
     result: dict[str, list[list[Any]]] = {str(y): [] for y in range(START_YEAR, END_YEAR + 1)}
     with ThreadPoolExecutor(max_workers=workers) as pool:
@@ -80,9 +80,13 @@ def build_farm(farm: dict[str, Any], workers: int = 6) -> Path:
             for d0, d1 in WINDOWS
         }
         for fut in as_completed(futs):
-            result[str(futs[fut])].extend(fut.result())
-    for series in result.values():
-        series.sort(key=lambda p: p[0])
+            try:
+                result[str(futs[fut])].extend(fut.result())
+            except RuntimeError as exc:
+                if not partial:
+                    raise
+                print(f"[ndvi] {farm['id']} {futs[fut]}: skipped ({str(exc)[:60]})", file=sys.stderr)
+    result = {y: sorted(v, key=lambda p: p[0]) for y, v in result.items() if v}
     path = LAYERS_DIR / farm["id"] / "ndvi.json"
     atomic_write_json(path, result)
     peaks = [max((v for _, v in s if v is not None), default=0) for s in result.values()]
@@ -94,11 +98,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Fetch real MODIS MOD13Q1 NDVI (ORNL DAAC).")
     parser.add_argument("--farm")
     parser.add_argument("--workers", type=int, default=6)
+    parser.add_argument("--partial", action="store_true", help="write the seasons that could be fetched; skip failures")
     args = parser.parse_args(argv)
     for farm in load_farms():
         if args.farm and farm["id"] != args.farm:
             continue
-        build_farm(farm, workers=args.workers)
+        build_farm(farm, workers=args.workers, partial=args.partial)
     return 0
 
 

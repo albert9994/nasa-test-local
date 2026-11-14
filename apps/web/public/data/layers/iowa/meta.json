@@ -1,56 +1,81 @@
 {
   "id": "iowa",
   "name": "Story County, Iowa (USA)",
+  "nameRo": "Comitatul Story, Iowa (SUA)",
+  "country": "US",
+  "region": "Central Iowa Corn Belt",
   "lat": 42.03,
   "lon": -93.62,
-  "elev": 310.22,
-  "slope": 2.0,
+  "elev": 285,
+  "slope": 2.2,
   "rotation": [
     "maize",
     "soybean"
   ],
-  "note": "Corn Belt. 2012 flash drought + heat.",
+  "note": "Corn Belt rain-fed; 2012 drought & heat wave benchmark",
+  "droughtYears": [
+    2012,
+    2003,
+    2023
+  ],
+  "sowingMonths": {
+    "maize": "late April – mid May",
+    "soybean": "early May – late May",
+    "wheat": "late September – mid October",
+    "sorghum": "mid May – early June",
+    "pea": "early April",
+    "barley": "early April",
+    "sunflower": "mid May – early June",
+    "millet": "June"
+  },
   "cropPool": [
     "maize",
     "soybean",
     "wheat",
     "sorghum",
-    "sunflower",
     "pea",
     "barley",
+    "sunflower",
+    "millet",
     "fallow"
   ],
+  "defaultEquipment": [
+    "row_planter",
+    "grain_drill",
+    "corn_header"
+  ],
   "costs": {
-    "maize": 950,
-    "soybean": 620,
-    "wheat": 700,
-    "sorghum": 580,
-    "sunflower": 540,
-    "pea": 500,
-    "barley": 600,
-    "millet": 340,
-    "fallow": 60
+    "maize": 980,
+    "soybean": 640,
+    "wheat": 520,
+    "barley": 480,
+    "sorghum": 590,
+    "sunflower": 560,
+    "pea": 470,
+    "millet": 390,
+    "fallow": 85,
+    "rye_cover": 95
   },
   "prices": {
     "maize": 190,
-    "soybean": 420,
-    "wheat": 230,
-    "sorghum": 175,
-    "sunflower": 430,
-    "pea": 300,
-    "barley": 200,
-    "millet": 260
+    "soybean": 435,
+    "wheat": 225,
+    "barley": 205,
+    "sorghum": 180,
+    "sunflower": 490,
+    "pea": 310,
+    "millet": 220,
+    "fallow": 0
   },
-  "calib": {
-    "maize": 1.16,
-    "soybean": 1.09
+  "calib": {},
+  "economics": {
+    "status": "illustrative",
+    "note": "Reference per-hectare costs and farm-gate prices (USD/EUR-equivalent) rounded from the cited public budgets/price series; not extracted programmatically. Edit in the UI."
   },
   "sources": {
-    "weather": "NASA POWER daily, community=AG (MERRA-2 meteorology, CERES/MERRA-2 solar)",
-    "ndvi": "MODIS MOD13Q1 v061 250 m 16-day NDVI via ORNL DAAC",
-    "soil": "ISRIC SoilGrids 2.0 250 m (mean, Q0.05, Q0.95)",
-    "scenarios": "NASA NEX-GDDP-CMIP6 v2.0 0.25 deg ensemble",
-    "costs": "Iowa State University Extension Ag Decision Maker (File A1-20)",
-    "prices": "USDA NASS / FAO GIEWS"
-  }
+    "costs": "https://www.extension.iastate.edu/agdm/crops/html/a1-20.html (Iowa State University Extension — Estimated Costs of Crop Production in Iowa)",
+    "prices": "https://quickstats.nass.usda.gov/ & https://www.worldbank.org/en/research/commodity-markets (USDA NASS Iowa Marketing Year Average & World Bank Pink Sheet)",
+    "yields": "https://quickstats.nass.usda.gov/ (USDA NASS Story County, IA 2001–2025)"
+  },
+  "terrainSource": "SRTM 1 arc-sec (OpenTopoData srtm30m), Horn 3x3 gradient at ~90 m spacing, percent"
 }

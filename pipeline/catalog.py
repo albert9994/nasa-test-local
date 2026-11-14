@@ -104,10 +104,30 @@ LAYER_FILES = {"weather": "weather.json", "soil": "soil.json", "ndvi": "ndvi.jso
                "terrain": "terrain.json"}
 
 
+SATELLITE_PATH = PUBLIC_DATA_DIR / "catalog.satellite.json"
+SATELLITE_LAYER_FILES = {"hls-v2": "hls_ndvi.json", "prithvi-eo-2": "cropmap.json"}
+
+
+def satellite_datasets() -> list[dict[str, Any]]:
+    """Datasets owned by the satellite pipeline (catalog.satellite.json), mapped to real/illustrative."""
+    if not SATELLITE_PATH.exists():
+        return []
+    out = []
+    for d in json.loads(SATELLITE_PATH.read_text(encoding="utf-8")):
+        d = dict(d)
+        raw = d.get("status", "")
+        d["statusDetail"] = raw
+        d["status"] = "illustrative" if "beta" in raw else "real"
+        out.append(d)
+    return out
+
+
 def build_catalog() -> dict[str, Any]:
     by_layer: dict[str, list[dict[str, Any]]] = {}
     for d in DATASETS:
         by_layer.setdefault(d["layer"], []).append(d)
+    sats = satellite_datasets()
+    all_ds = DATASETS + [dict(d, layer="satellite") for d in sats]
     farms: dict[str, Any] = {}
     for farm in load_farms():
         fid = farm["id"]
@@ -115,6 +135,9 @@ def build_catalog() -> dict[str, Any]:
         for layer, fname in LAYER_FILES.items():
             if (LAYERS_DIR / fid / fname).exists():
                 ids += [d["id"] for d in by_layer[layer]]
+        for sid, fname in SATELLITE_LAYER_FILES.items():
+            if (LAYERS_DIR / fid / fname).exists() and any(d["id"] == sid for d in sats):
+                ids.append(sid)
         val_path = VALIDATION_DIR / f"{fid}.json"
         if val_path.exists():
             verified = json.loads(val_path.read_text(encoding="utf-8")).get("verified", False)
@@ -122,9 +145,9 @@ def build_catalog() -> dict[str, Any]:
         farms[fid] = {
             "name": farm["name"], "nameRo": farm.get("nameRo", farm["name"]), "country": farm.get("country", ""),
             "layers": ids,
-            "layerStatus": {i: next(d["status"] for d in DATASETS if d["id"] == i) for i in ids},
+            "layerStatus": {i: next(d["status"] for d in all_ds if d["id"] == i) for i in ids},
         }
-    return {"version": 1, "datasets": [{k: v for k, v in d.items() if k != "layer"} for d in DATASETS], "farms": farms}
+    return {"version": 1, "datasets": [{k: v for k, v in d.items() if k != "layer"} for d in all_ds], "farms": farms}
 
 
 def main() -> int:

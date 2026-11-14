@@ -1,15 +1,36 @@
 {
   "id": "baragan",
-  "name": "Baragan Plain (Romania)",
+  "name": "Ialomița, Bărăgan Plain (Romania)",
+  "nameRo": "Ialomița, Câmpia Bărăganului (România)",
+  "country": "RO",
+  "region": "South-East Romania Steppe (EU)",
   "lat": 44.55,
   "lon": 27.45,
-  "elev": 32.13,
-  "slope": 1.5,
+  "elev": 47,
+  "slope": 0.0,
   "rotation": [
     "maize",
-    "wheat"
+    "wheat",
+    "sunflower"
   ],
-  "note": "Lower Danube. 2022/2024 extreme drought.",
+  "note": "Chernozem steppe, rain-fed; 2007, 2020, 2022 & 2024 summer droughts",
+  "droughtYears": [
+    2007,
+    2022,
+    2024,
+    2020,
+    2012
+  ],
+  "sowingMonths": {
+    "wheat": "October",
+    "barley": "late September – mid October",
+    "maize": "April",
+    "sunflower": "late March – mid April",
+    "soybean": "mid April – early May",
+    "sorghum": "late April – mid May",
+    "pea": "March",
+    "millet": "May"
+  },
   "cropPool": [
     "wheat",
     "maize",
@@ -21,37 +42,44 @@
     "millet",
     "fallow"
   ],
+  "defaultEquipment": [
+    "row_planter",
+    "grain_drill",
+    "corn_header",
+    "sunflower_header"
+  ],
   "costs": {
-    "maize": 620,
-    "wheat": 400,
-    "sunflower": 400,
-    "soybean": 450,
-    "barley": 360,
-    "sorghum": 450,
-    "pea": 340,
-    "millet": 280,
-    "fallow": 50
+    "maize": 860,
+    "wheat": 720,
+    "sunflower": 680,
+    "barley": 650,
+    "sorghum": 620,
+    "soybean": 740,
+    "pea": 590,
+    "millet": 460,
+    "fallow": 90,
+    "rye_cover": 105
   },
   "prices": {
-    "maize": 180,
-    "wheat": 210,
-    "sunflower": 420,
-    "soybean": 400,
-    "barley": 190,
-    "sorghum": 170,
-    "pea": 280,
-    "millet": 240
+    "maize": 205,
+    "wheat": 225,
+    "sunflower": 465,
+    "barley": 195,
+    "sorghum": 188,
+    "soybean": 445,
+    "pea": 295,
+    "millet": 215,
+    "fallow": 0
   },
-  "calib": {
-    "maize": 0.73,
-    "wheat": 0.7
+  "calib": {},
+  "economics": {
+    "status": "illustrative",
+    "note": "Reference per-hectare costs and farm-gate prices (USD/EUR-equivalent) rounded from the cited public budgets/price series; not extracted programmatically. Edit in the UI."
   },
   "sources": {
-    "weather": "NASA POWER daily, community=AG (MERRA-2 meteorology, CERES/MERRA-2 solar)",
-    "ndvi": "MODIS MOD13Q1 v061 250 m 16-day NDVI via ORNL DAAC",
-    "soil": "ISRIC SoilGrids 2.0 250 m (mean, Q0.05, Q0.95)",
-    "scenarios": "NASA NEX-GDDP-CMIP6 v2.0 0.25 deg ensemble",
-    "costs": "MADR / ASAS Romania Crop Technology Budgets",
-    "prices": "Euronext MATIF / INS TEMPO Romania"
-  }
+    "costs": "https://www.madr.ro/ & Institutul de Economie Agrară (IEA-ASAS România) — Bugete cadru pe culturi în regim neirigat (Câmpia Bărăganului)",
+    "prices": "https://live.euronext.com/en/markets/paris/commodities & https://www.madr.ro/cotatii-burse.html (Euronext MATIF / Port Constanța FOB adjusted to farm-gate)",
+    "yields": "http://statistici.insse.ro:8077/tempo-online/ (INS TEMPO AGR110A/AGR108A, județul Ialomița)"
+  },
+  "terrainSource": "SRTM 1 arc-sec (OpenTopoData srtm30m), Horn 3x3 gradient at ~90 m spacing, percent"
 }
