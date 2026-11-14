@@ -5,7 +5,7 @@ import { mockEngine as fs } from "./mock";
 import { DEFAULT_OPTS, type FarmPack, type Rotation } from "./types";
 
 const pack = (id: string): FarmPack =>
-  JSON.parse(readFileSync(join(process.cwd(), "public/data/mock/farms", `${id}.json`), "utf8"));
+  JSON.parse(readFileSync(join(__dirname, "../../../../../apps/web/public/data/mock/farms", `${id}.json`), "utf8"));
 const iowaRot: Rotation = [{ crop: "maize", cover: false }, { crop: "soybean", cover: false }];
 
 describe("mock engine", () => {

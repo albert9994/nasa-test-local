@@ -11,6 +11,10 @@
     "assets": "node scripts/assets/build-all.mjs"
   },
   "dependencies": {
+    "@fieldshift/ui": "workspace:*",
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "@radix-ui/react-slider": "^1.6.1",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
@@ -22,10 +26,7 @@
     "lucide-react": "^1.72.0",
     "maplibre-gl": "^6.18.0",
     "motion": "^14.14.0",
-    "next": "16.4.6",
     "postprocessing": "^6.39.6",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
     "react-map-gl": "^8.1.3",
     "tailwind-merge": "^3.7.0",
     "three": "^0.187.0",

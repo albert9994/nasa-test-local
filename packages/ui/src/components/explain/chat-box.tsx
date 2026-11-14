@@ -27,7 +27,7 @@ export function ChatBox({ fact, lang }: { fact: FactSheet; lang: Lang }) {
       <div className="mt-1 flex gap-2">
         <input id="fs-chat" value={q} onChange={(e) => setQ(e.target.value)} maxLength={300}
           className="h-10 min-w-0 flex-1 rounded-full border border-line bg-bg px-4 text-sm outline-none focus:border-gold" />
-        <button type="submit" disabled={busy || !q.trim()} aria-label="Send" className="grid size-10 place-items-center rounded-full bg-gold text-[#0b0c09] disabled:opacity-50"><Send className="size-4" /></button>
+        <button type="submit" disabled={busy || !q.trim()} aria-label="Send" className="grid size-10 place-items-center rounded-full bg-gold text-primary-fg disabled:opacity-50"><Send className="size-4" /></button>
       </div>
       {a ? <p className="mt-2 whitespace-pre-line text-sm">{a}</p> : null}
       {err ? <p className="mt-2 text-xs text-heat">{lang === "en" ? "The assistant is not available right now." : "Asistentul nu este disponibil acum."}</p> : null}

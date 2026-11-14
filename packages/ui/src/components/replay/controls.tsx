@@ -41,7 +41,7 @@ export function ReplayControls(p: Props) {
           <button
             type="button" onClick={p.onToggle}
             aria-label={p.playing ? "Pause" : atEnd ? "Replay" : "Play"}
-            className="flex size-9 items-center justify-center rounded-full bg-gold text-[#0b0c09] transition-transform active:scale-95"
+            className="flex size-9 items-center justify-center rounded-full bg-gold text-primary-fg transition-transform active:scale-95"
           >
             {p.playing ? <Pause className="size-4" /> : <Play className="size-4" />}
           </button>

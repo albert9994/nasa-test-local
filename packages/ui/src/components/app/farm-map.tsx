@@ -1,8 +1,8 @@
 "use client";
 // O1: map entry. MapLibre is client-only and heavy, so it is lazy-loaded with a skeleton.
-import dynamic from "next/dynamic";
+import { clientOnly } from "@/lib/platform/client-only";
 
-const Inner = dynamic(() => import("./farm-map-inner"), { ssr: false, loading: () => <MapSkeleton /> });
+const Inner = clientOnly(() => import("./farm-map-inner"), <MapSkeleton />);
 
 export function MapSkeleton() {
   return (
