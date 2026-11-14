@@ -6,8 +6,10 @@ import { farm } from "./farm";
 import { inputs } from "./inputs";
 import { replay } from "./replay";
 import { tour } from "./tour";
+import { onboarding } from "./onboarding";
+import { workspace } from "./workspace";
 
 type Dict = { en: Record<string, string>; ro: Record<string, string> };
 export const MESSAGES: Record<string, Dict> = {
-  common, crops, units, glossary, tour, analysis, inputs, replay, explain, farm,
+  common, crops, units, glossary, tour, analysis, inputs, replay, explain, farm, onboarding, workspace,
 };
