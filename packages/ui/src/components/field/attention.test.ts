@@ -56,4 +56,15 @@ describe("buildAttention", () => {
     const warn = items.filter((i) => i.level === "warn").map((i) => i.id);
     expect(warn).toEqual(["heat", "soil", "erosion", "worst"]);
   });
+
+  it("adds a severe weather alert, but not a mild one", () => {
+    const danger = { kind: "frost" as const, severity: "danger" as const, days: [2, 3], value: -2, from: "2026-11-16" };
+    const items = buildAttention(input({ alert: danger }));
+    const w = items.find((i) => i.id === "weather");
+    expect(w?.level).toBe("danger");
+    expect(w?.vars).toEqual({ kind: "frost", n: 2, value: -2, from: "2026-11-16" });
+    expect(items.some((i) => i.id === "ok")).toBe(false);
+    expect(buildAttention(input({ alert: { ...danger, severity: "warn" } })).map((i) => i.id)).toEqual(["ok"]);
+    expect(buildAttention(input({ alert: null })).map((i) => i.id)).toEqual(["ok"]);
+  });
 });

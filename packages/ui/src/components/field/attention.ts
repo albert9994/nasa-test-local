@@ -1,9 +1,10 @@
 // "What needs attention": ranked, plain-language items derived from the engine results. Pure, so it is unit-tested.
 import type { MarginResult, PickResult, RotationResult } from "@/lib/engine";
+import type { Alert } from "@/lib/data/forecast";
 import type { TabId } from "@/lib/store/analysis";
 
 export type Level = "danger" | "warn" | "ok";
-export type AttentionId = "bad_years" | "heat" | "soil" | "stress" | "erosion" | "worst" | "margin_tight" | "ok";
+export type AttentionId = "bad_years" | "heat" | "soil" | "stress" | "erosion" | "worst" | "margin_tight" | "weather" | "ok";
 
 export interface AttentionItem {
   id: AttentionId;
@@ -24,12 +25,14 @@ export interface AttentionInput {
   t2050: number;
   /** worst years in which heat at flowering hit, out of the k worst years looked at; null when not computed */
   heat: { hit: number; of: number } | null;
+  /** The most severe weather alert for the next 7 days, if any (only "danger" ones make it into the list). */
+  alert?: Alert | null;
 }
 
 const LEVEL_RANK: Record<Level, number> = { danger: 0, warn: 1, ok: 2 };
 
 export function buildAttention(i: AttentionInput): AttentionItem[] {
-  const { base, margin, picks, failShare, t2050, heat } = i;
+  const { base, margin, picks, failShare, t2050, heat, alert } = i;
   const items: AttentionItem[] = [];
   const total = base.years.length;
   const tol = Math.max(2, Math.round(1 / (failShare || 0.2)));
@@ -58,6 +61,9 @@ export function buildAttention(i: AttentionInput): AttentionItem[] {
   }
   if (base.minNet < 0) {
     items.push({ id: "worst", level: "warn", weight: 30, vars: { year: base.worstYear, usd: Math.abs(base.minNet) }, go: "replay" });
+  }
+  if (alert && alert.severity === "danger") {
+    items.push({ id: "weather", level: "danger", weight: 95, vars: { kind: alert.kind, n: alert.days.length, value: alert.value, from: alert.from ?? "" }, go: "overview" });
   }
   if (!items.length) items.push({ id: "ok", level: "ok", weight: 0, vars: {}, go: "overview" });
   return items.sort((a, b) => LEVEL_RANK[a.level] - LEVEL_RANK[b.level] || b.weight - a.weight);

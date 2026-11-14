@@ -15,7 +15,7 @@ const RISK_STYLE = {
 } as const;
 
 /** "How you could be affected": typical rotation → traffic light, plain sentence, bad years today vs ~2050, climate analog. */
-export function ImpactCard({ pack, stats }: { pack: FarmPack; stats: ClimateStats }) {
+export function ImpactCard({ pack, stats, onRotation }: { pack: FarmPack; stats: ClimateStats; /** Called with the chosen typical rotation (first crop = this season) whenever it changes. */ onRotation?(crops: CropId[]): void }) {
   const t = useT();
   const f = useFormat();
   const initial = useMemo(() => {
@@ -26,6 +26,7 @@ export function ImpactCard({ pack, stats }: { pack: FarmPack; stats: ClimateStat
   const [impact, setImpact] = useState<Impact | null>(null);
   const [error, setError] = useState(false);
   useEffect(() => setPreset(initial), [initial]);
+  useEffect(() => { const p = ROTATION_PRESETS.find((x) => x.id === preset); if (p) onRotation?.(p.crops); }, [preset, onRotation]);
 
   useEffect(() => {
     let alive = true;

@@ -21,6 +21,8 @@ export interface FieldMapProps {
   onSelect?: (id: string) => void;
   /** Fit the camera to all fields instead of flying to `center`. */
   fitFields?: boolean;
+  /** Show the satellite layers control (NASA GIBS + AI crop map where available). Used by the workspace. */
+  satellite?: boolean;
   className?: string;
 }
 

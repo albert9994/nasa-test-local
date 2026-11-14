@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { Send } from "lucide-react";
 import type { FactSheet } from "@/lib/engine/types";
 import { useT } from "@/lib/i18n";
-import { streamExplain } from "./api";
+import { RateLimitError, streamExplain } from "./api";
 import type { Lang } from "./templates";
 
 export function ChatBox({ fact, lang }: { fact: FactSheet; lang: Lang }) {
@@ -12,15 +12,19 @@ export function ChatBox({ fact, lang }: { fact: FactSheet; lang: Lang }) {
   const [q, setQ] = useState("");
   const [a, setA] = useState("");
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState<"error" | "rate" | null>(null);
+  const [replaced, setReplaced] = useState(false);
   const ref = useRef<AbortController | null>(null);
   async function ask(e: React.FormEvent) {
     e.preventDefault();
     if (!q.trim() || busy) return;
     ref.current?.abort(); ref.current = new AbortController();
-    setBusy(true); setA(""); setErr(false);
-    try { await streamExplain({ factSheet: fact, lang, mode: "chat", question: q.trim() }, (c) => setA((p) => p + c), ref.current.signal); }
-    catch { setErr(true); }
+    setBusy(true); setA(""); setErr(null); setReplaced(false);
+    try {
+      const done = await streamExplain({ factSheet: fact, lang, mode: "chat", question: q.trim() }, (c) => setA((p) => p + c), ref.current.signal);
+      if (done.replaced && done.text) { setA(done.text); setReplaced(true); }
+    }
+    catch (e) { setErr(e instanceof RateLimitError ? "rate" : "error"); }
     finally { setBusy(false); }
   }
   return (
@@ -31,7 +35,8 @@ export function ChatBox({ fact, lang }: { fact: FactSheet; lang: Lang }) {
         <button type="submit" disabled={busy || !q.trim()} aria-label={t("explain.chat_send")} className="grid size-10 place-items-center rounded-full bg-primary text-primary-fg disabled:opacity-50"><Send className="size-4" /></button>
       </div>
       {a ? <p className="mt-2 whitespace-pre-line text-sm">{a}</p> : null}
-      {err ? <p className="mt-2 text-xs text-danger">{t("explain.chat_error")}</p> : null}
+      {replaced ? <p role="note" className="mt-1 text-xs text-fg-muted">{t("explain.note_replaced")}</p> : null}
+      {err ? <p className="mt-2 text-xs text-danger">{t(err === "rate" ? "explain.note_rate" : "explain.chat_error")}</p> : null}
     </form>
   );
 }

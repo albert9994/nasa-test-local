@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useT } from "@/lib/i18n";
 import { useAnalysis } from "@/lib/store/analysis";
-import { API_URL, streamExplain } from "./api";
+import { API_URL, RateLimitError, streamExplain } from "./api";
 import { ChatBox } from "./chat-box";
 import { RichText } from "./rich-text";
 import { ScoreCard } from "./score-card";
@@ -25,6 +25,8 @@ export function ExplainPanel() {
   const [source, setSource] = useState<Source | null>(null);
   const [busy, setBusy] = useState(false);
   const [typing, setTyping] = useState(false);
+  /** "replaced": the server dropped unsupported sentences; "rate": 429, showing the template */
+  const [note, setNote] = useState<"replaced" | "rate" | null>(null);
   const run = useRef(0);
   const ctl = useRef<AbortController | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -40,20 +42,25 @@ export function ExplainPanel() {
     if (!fact) return;
     stop();
     const my = run.current;
-    setBusy(true); setText(""); setSource(null); setTyping(false);
+    setBusy(true); setText(""); setSource(null); setTyping(false); setNote(null);
     ctl.current = new AbortController();
     let acc = "";
     try {
-      await streamExplain({ factSheet: fact, lang: l, mode: "short" }, (c) => {
+      const done = await streamExplain({ factSheet: fact, lang: l, mode: "short" }, (c) => {
         if (my !== run.current) return;
         acc += c; setText(acc); setSource("ai"); setTyping(true);
       }, ctl.current.signal);
       if (my !== run.current) return;
       setTyping(false); setBusy(false);
+      if (done.replaced && done.text) {
+        // the server removed sentences it could not back with the data: show its corrected text, not what streamed
+        acc = done.text; setText(acc); setSource("ai"); setNote("replaced");
+      }
       // the server must end with the disclaimer; add it if the model forgot
       if (!acc.includes(DISCLAIMER[l])) setText(acc.trimEnd() + "\n\n" + DISCLAIMER[l]);
-    } catch {
+    } catch (e) {
       if (my !== run.current) return;
+      if (e instanceof RateLimitError) setNote("rate");
       // fallback: template text with a typing effect so it feels the same
       const full = buildTemplate(fact, l);
       setSource("template"); setText(""); setTyping(true);
@@ -79,7 +86,7 @@ export function ExplainPanel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang]);
   const factKey = fact ? `${fact.farm.name}|${fact.rotation}|${fact.today.badYears}|${fact.today.meanNet}` : "";
-  useEffect(() => { stop(); setText(""); setSource(null); setBusy(false); setTyping(false); }, [factKey, stop]);
+  useEffect(() => { stop(); setText(""); setSource(null); setBusy(false); setTyping(false); setNote(null); }, [factKey, stop]);
 
   return (
     <Card className="flex flex-col gap-5" id="explain" data-tour="advisor">
@@ -101,6 +108,7 @@ export function ExplainPanel() {
           {source ? <span className="text-[11px] text-fg-muted">{source === "ai" ? t("explain.src_ai") : t("explain.src_template")}</span> : null}
         </div>
         {fact && text ? <div className="mt-4"><RichText text={text} fact={fact} lang={lang} caret={typing} /></div> : null}
+        {note && !busy ? <p role="note" data-testid="explain-note" className="mt-2 text-xs text-fg-muted">{t(note === "replaced" ? "explain.note_replaced" : "explain.note_rate")}</p> : null}
         {!fact ? <p className="mt-3 text-sm text-fg-muted">{t("explain.pick_farm")}</p> : null}
         {fact && source === "ai" && !busy && API_URL ? <ChatBox fact={fact} lang={lang} /> : null}
       </div>

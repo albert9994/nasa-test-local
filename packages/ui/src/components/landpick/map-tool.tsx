@@ -28,7 +28,6 @@ export function MapTool({ header, desktopHref, syncUrl = true }: MapToolProps) {
   const [ready, setReady] = useState(false);
   const [tourReady, setTourReady] = useState(false);
   const [land, setLand] = useState<Land | null>(null);
-  const [ndvi, setNdvi] = useState(false);
   const [sheet, setSheet] = useState(false);
   const [copied, setCopied] = useState(false);
   const [initialView, setInitialView] = useState<MapView | undefined>();
@@ -39,7 +38,6 @@ export function MapTool({ header, desktopHref, syncUrl = true }: MapToolProps) {
   useEffect(() => {
     const u = parseMapUrl(window.location.search);
     if (u.land) { setLand(u.land); setFromUrl(true); setSheet(true); }
-    if (u.ndvi) setNdvi(true);
     if (u.lat != null && u.lon != null) setInitialView({ lat: u.lat, lon: u.lon, zoom: u.zoom ?? 14 });
     setReady(true);
   }, []);
@@ -56,19 +54,19 @@ export function MapTool({ header, desktopHref, syncUrl = true }: MapToolProps) {
 
   // write it back (debounced)
   const writeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const writeUrl = useCallback((l: Land | null, nd: boolean) => {
+  const writeUrl = useCallback((l: Land | null) => {
     if (!syncUrl || !view.current) return;
     clearTimeout(writeTimer.current);
     writeTimer.current = setTimeout(() => {
       const v = view.current!;
-      const q = buildMapSearch({ ...v, land: l, ndvi: nd });
+      const q = buildMapSearch({ ...v, land: l });
       try { window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}${window.location.hash}`); } catch { /* ignore */ }
     }, 400);
   }, [syncUrl]);
-  useEffect(() => { writeUrl(land, ndvi); }, [land, ndvi, writeUrl]);
+  useEffect(() => { writeUrl(land); }, [land, writeUrl]);
   useEffect(() => () => clearTimeout(writeTimer.current), []);
 
-  const onView = useCallback((v: MapView) => { view.current = v; writeUrl(land, ndvi); }, [land, ndvi, writeUrl]);
+  const onView = useCallback((v: MapView) => { view.current = v; writeUrl(land); }, [land, writeUrl]);
   const onLand = useCallback((l: Land | null) => { setLand(l); if (l) setSheet(true); }, []);
   const openSaved = useCallback((s: SavedField) => { const l = landOf(s); if (l) { setLand(l); setSheet(true); } }, []);
 
@@ -89,7 +87,7 @@ export function MapTool({ header, desktopHref, syncUrl = true }: MapToolProps) {
       {header}
       <div className="relative min-h-0 flex-1 md:grid md:grid-cols-[minmax(0,1fr)_25rem] lg:grid-cols-[minmax(0,1fr)_28rem]">
         <div className="relative h-full min-h-0">
-          {ready && <LandPicker land={land} onLandChange={onLand} initialView={initialView} onViewChange={onView} ndvi={ndvi} onNdviChange={setNdvi} />}
+          {ready && <LandPicker land={land} onLandChange={onLand} initialView={initialView} onViewChange={onView} />}
         </div>
         <aside
           data-tour="snapshot"
@@ -113,8 +111,6 @@ export function MapTool({ header, desktopHref, syncUrl = true }: MapToolProps) {
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
             <FieldSnapshot
               land={land}
-              ndvi={ndvi}
-              onNdviChange={setNdvi}
               onClear={() => setLand(null)}
               footer={
                 <div className={cn("space-y-3", land ? "px-4 pb-6 sm:px-5" : "px-5 pb-6")}>

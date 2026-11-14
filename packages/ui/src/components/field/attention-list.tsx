@@ -7,6 +7,7 @@ import { useT } from "@/lib/i18n";
 import { useApp } from "@/lib/store/app";
 import { useAnalysis, type TabId } from "@/lib/store/analysis";
 import { cn } from "@/lib/utils";
+import { useFarmAlerts } from "@/components/alerts/use-farm-alerts";
 import { pickKey } from "./numbers";
 import { buildAttention, type AttentionItem, type Level } from "./attention";
 import { useF } from "./hooks";
@@ -27,7 +28,9 @@ export function useAttention(): AttentionItem[] | null {
   const failShare = useApp((s) => s.opts.failShare);
   const heat = useHeatAtFlowering();
   const { dT: t2050 } = use2050();
-  return useMemo(() => (base && margin ? buildAttention({ base, margin, picks, failShare, t2050, heat }) : null), [base, margin, picks, failShare, t2050, heat]);
+  const wx = useFarmAlerts();
+  const alert = wx.status === "ok" ? wx.items.find((a) => a.severity === "danger") ?? null : null;
+  return useMemo(() => (base && margin ? buildAttention({ base, margin, picks, failShare, t2050, heat, alert }) : null), [base, margin, picks, failShare, t2050, heat, alert]);
 }
 
 export function useAttentionText() {
@@ -39,6 +42,10 @@ export function useAttentionText() {
     if (it.id === "erosion") v.t = f.num(Number(it.vars.t), 1);
     if (it.id === "worst") v.amount = f.money(Number(it.vars.usd));
     if (it.id === "margin_tight") { v.dT = f.warm(Number(it.vars.dT)); v.t2050 = f.warm(Number(it.vars.t2050)); }
+    if (it.id === "weather") {
+      const k = String(it.vars.kind);
+      return `${t(`alerts.${k}.title`)}: ${t(`alerts.${k}.body`, v)}`;
+    }
     const label = typeof v.label === "string" ? t(`analysis.pick_${pickKey(v.label)}`) : "";
     if (it.id === "stress") return v.label ? t("analysis.att_stress", { ...v, label }) : t("analysis.att_stress_alone");
     return t(`analysis.att_${it.id === "ok" ? "none" : it.id}`, v);

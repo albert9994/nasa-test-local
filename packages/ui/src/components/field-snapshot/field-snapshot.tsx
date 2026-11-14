@@ -1,6 +1,9 @@
 "use client";
-import type { ReactNode } from "react";
-import { AlertTriangle, Check, Layers, Loader2, MapPin, Minus, X } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { AlertTriangle, Check, Loader2, MapPin, Minus, X } from "lucide-react";
+import { AlertsPanel } from "@/components/alerts/alerts-panel";
+import { stageOn } from "@/lib/data/phenology";
+import type { CropId } from "@/lib/engine/types";
 import { useFormat, useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import type { Land } from "@/lib/geo/land";
@@ -12,9 +15,6 @@ import { useFieldSnapshot, type StepState } from "./use-field-snapshot";
 
 export interface FieldSnapshotProps {
   land: Land | null;
-  /** Show/hide the NASA NDVI overlay on the map (optional; renders a toggle when provided). */
-  ndvi?: boolean;
-  onNdviChange?(on: boolean): void;
   onClear?(): void;
   /** Rendered after the analysis (e.g. the desktop CTA and "save field"). */
   footer?: ReactNode;
@@ -59,10 +59,11 @@ export function EmptySnapshot() {
 }
 
 /** Everything we know about the selected land: area, place, elevation, soil, 25-year climate record and the impact card. */
-export function FieldSnapshot({ land, ndvi, onNdviChange, onClear, footer, className }: FieldSnapshotProps) {
+export function FieldSnapshot({ land, onClear, footer, className }: FieldSnapshotProps) {
   const t = useT();
   const f = useFormat();
   const snap = useFieldSnapshot(land);
+  const [rotation, setRotation] = useState<CropId[] | null>(null);
 
   if (!land) return <div className={className}><EmptySnapshot />{footer}</div>;
   const d = snap.data;
@@ -139,15 +140,13 @@ export function FieldSnapshot({ land, ndvi, onNdviChange, onClear, footer, class
             </dl>
           </section>
 
-          {onNdviChange && (
-            <section className="rounded-2xl border border-line bg-surface p-4">
-              <h3 className="flex items-center gap-0.5 text-sm font-semibold">{t("mapTool.ndviTitle")}<InfoTip text={t("mapTool.srcNdvi")} /></h3>
-              <p className="mt-1 text-sm text-fg-muted">{t("mapTool.ndviBody")}</p>
-              <button type="button" onClick={() => onNdviChange(!ndvi)} className="mt-3 inline-flex h-9 items-center gap-2 rounded-full border border-line-strong px-4 text-[13px] font-medium hover:bg-surface-2"><Layers className="size-4" />{ndvi ? t("mapTool.ndviHide") : t("mapTool.ndviShow")}</button>
+          <ImpactCard pack={d.pack} stats={s} onRotation={setRotation} />
+
+          {rotation?.[0] && (
+            <section className="rounded-2xl border border-line bg-surface p-4" data-tour="alerts">
+              <AlertsPanel lat={land.centroid.lat} lon={land.centroid.lon} crop={rotation[0]} stage={stageOn(rotation[0], new Date())} slopePct={d.pack.meta.slope} />
             </section>
           )}
-
-          <ImpactCard pack={d.pack} stats={s} />
         </>
       )}
       {footer}

@@ -40,8 +40,8 @@ export function CropMapMeta({ meta }: { meta: CropMeta }) {
   );
 }
 
-export function CropMapLayer({ map, farm, dataBase = DEFAULT_DATA_BASE, defaultOn = true, className = "" }: {
-  map: MlMap | null; farm: string; dataBase?: string; defaultOn?: boolean; className?: string;
+export function CropMapLayer({ map, farm, dataBase = DEFAULT_DATA_BASE, defaultOn = true, beforeId, className = "" }: {
+  map: MlMap | null; farm: string; dataBase?: string; defaultOn?: boolean; /** insert below this host layer */ beforeId?: string; className?: string;
 }) {
   const t = useT();
   const cm = useCropMap(farm, dataBase);
@@ -62,7 +62,7 @@ export function CropMapLayer({ map, farm, dataBase = DEFAULT_DATA_BASE, defaultO
               "fill-opacity": ["interpolate", ["linear"], ["coalesce", ["get", "confidence"], 1], 0.4, 0.3, 1, 0.8],
               "fill-outline-color": "rgba(255,255,255,0.35)",
             },
-          });
+          }, beforeId && map.getLayer(beforeId) ? beforeId : undefined);
         }
       } catch { /* style not ready; retried on styledata */ }
     };
@@ -75,7 +75,7 @@ export function CropMapLayer({ map, farm, dataBase = DEFAULT_DATA_BASE, defaultO
         if (map.getSource(ID)) map.removeSource(ID);
       } catch { /* map disposed */ }
     };
-  }, [map, geojson, on]);
+  }, [map, geojson, on, beforeId]);
 
   if (cm.status !== "ok") return null;
   const m = meta.status === "ok" ? meta.data : null;

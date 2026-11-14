@@ -10,7 +10,7 @@ import { GIBS_LAYERS, clampDate, gibsTileUrl, latestDate, type GibsLayer } from 
 type State = Record<string, { on: boolean; date: string }>;
 const srcId = (l: GibsLayer) => `fs-gibs-${l.id}`;
 
-function apply(map: MlMap, l: GibsLayer, s: { on: boolean; date: string }) {
+function apply(map: MlMap, l: GibsLayer, s: { on: boolean; date: string }, beforeId?: string) {
   const id = srcId(l);
   const present = !!map.getSource(id);
   if (!s.on) {
@@ -25,11 +25,12 @@ function apply(map: MlMap, l: GibsLayer, s: { on: boolean; date: string }) {
   if (present) map.removeSource(id);
   map.addSource(id, { type: "raster", tiles: [url], tileSize: 256, maxzoom: l.maxZoom, attribution: "NASA GIBS" });
   // keep the crop map (if any) above the imagery
-  const before = map.getLayer("fs-cropmap") ? "fs-cropmap" : undefined;
+  const before = map.getLayer("fs-cropmap") ? "fs-cropmap" : beforeId && map.getLayer(beforeId) ? beforeId : undefined;
   map.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": l.opacity } }, before);
 }
 
-export function SatelliteLayers({ map, className = "" }: { map: MlMap | null; className?: string }) {
+/** `beforeId`: insert imagery below this layer of the host map (e.g. the host's field outlines) so they stay visible. */
+export function SatelliteLayers({ map, beforeId, className = "" }: { map: MlMap | null; beforeId?: string; className?: string }) {
   const t = useT();
   const [st, setSt] = useState<State>(() =>
     Object.fromEntries(GIBS_LAYERS.map((l) => [l.id, { on: false, date: latestDate(l) }])));
@@ -39,9 +40,9 @@ export function SatelliteLayers({ map, className = "" }: { map: MlMap | null; cl
   const sync = useCallback(() => {
     if (!map) return;
     for (const l of GIBS_LAYERS) {
-      try { apply(map, l, stRef.current[l.id]); } catch { /* style not ready yet; retried on styledata */ }
+      try { apply(map, l, stRef.current[l.id], beforeId); } catch { /* style not ready yet; retried on styledata */ }
     }
-  }, [map]);
+  }, [map, beforeId]);
 
   useEffect(() => {
     if (!map) return;

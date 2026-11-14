@@ -3,7 +3,7 @@ export const explain = {
   en: {
     title: "AI advisor", sub: "The engine computes the numbers. The AI only explains them, and every number links back to its source.",
     explain_btn: "Explain this plan", explaining: "Explaining…", report_btn: "Open report", pick_farm: "Pick a farm to get an explanation.",
-    src_ai: "Answered by AI, numbers checked against the fact sheet", src_template: "Text built from the fact sheet (AI not used)",
+    note_replaced: "Some sentences were removed because they weren't backed by the data.", note_rate: "The AI advisor is busy right now (rate limit), so this text is built from your data instead.", src_ai: "Answered by AI, numbers checked against the fact sheet", src_template: "Text built from the fact sheet (AI not used)",
     chat_label: "Ask about this plan", chat_send: "Send", chat_error: "The assistant is not available right now.",
     num_where: "Where does this number come from?", num_close: "Close", num_from: "fact sheet",
     score_title: "FieldShift Score", score_computing: "Computing score…", score_of: "/ 100", score_confidence: "confidence",
@@ -39,7 +39,7 @@ export const explain = {
   ro: {
     title: "Consilier AI", sub: "Motorul calculează numerele. AI-ul doar le explică, iar fiecare număr trimite la sursa lui.",
     explain_btn: "Explică acest plan", explaining: "Se explică…", report_btn: "Deschide raportul", pick_farm: "Alege o fermă ca să primești o explicație.",
-    src_ai: "Răspuns AI, numerele sunt verificate cu fișa de fapte", src_template: "Text construit din fișa de fapte (fără AI)",
+    note_replaced: "Unele propoziții au fost eliminate pentru că nu erau susținute de date.", note_rate: "Consilierul AI este ocupat acum (limită de cereri), așa că textul este construit din datele tale.", src_ai: "Răspuns AI, numerele sunt verificate cu fișa de fapte", src_template: "Text construit din fișa de fapte (fără AI)",
     chat_label: "Întreabă despre acest plan", chat_send: "Trimite", chat_error: "Asistentul nu este disponibil acum.",
     num_where: "De unde vine acest număr?", num_close: "Închide", num_from: "fișa de fapte",
     score_title: "Scor FieldShift", score_computing: "Se calculează scorul…", score_of: "/ 100", score_confidence: "încredere",
