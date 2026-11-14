@@ -77,14 +77,17 @@ export function AttentionList() {
             const Icon = it.level === "ok" ? CheckCircle2 : it.id === "heat" ? Flame : AlertTriangle;
             const goKey = GO_LABEL[it.go];
             return (
-              <li key={it.id} className="flex items-start gap-3 px-1 py-3 first:pt-1 last:pb-1">
-                <span className={cn("grid size-8 shrink-0 place-items-center rounded-full", TONE[it.level])}><Icon className="size-4" aria-hidden /></span>
-                <div className="min-w-0 flex-1">
-                  <p className="sr-only">{t(`analysis.att_level_${it.level}`)}</p>
-                  <p className="pt-1 text-sm leading-snug text-fg">{text(it)}</p>
+              // Narrow panels (phones): the action goes under the text instead of squeezing it.
+              <li key={it.id} className="flex flex-col gap-2 px-1 py-3 first:pt-1 last:pb-1 @md:flex-row @md:items-start @md:gap-3">
+                <div className="flex min-w-0 flex-1 items-start gap-3">
+                  <span className={cn("grid size-8 shrink-0 place-items-center rounded-full", TONE[it.level])}><Icon className="size-4" aria-hidden /></span>
+                  <div className="min-w-0 flex-1">
+                    <p className="sr-only">{t(`analysis.att_level_${it.level}`)}</p>
+                    <p className="pt-1 text-sm leading-snug text-fg">{text(it)}</p>
+                  </div>
                 </div>
                 {goKey && (
-                  <button type="button" onClick={() => setTab(it.go)} className="mt-0.5 flex shrink-0 items-center gap-0.5 rounded-full border border-line px-2.5 py-1 text-xs font-medium text-fg-muted transition-colors hover:border-line-strong hover:bg-surface-2 hover:text-fg">
+                  <button type="button" onClick={() => setTab(it.go)} className="mt-0.5 flex shrink-0 self-end @md:self-start items-center gap-0.5 rounded-full border border-line px-2.5 py-1 text-xs font-medium text-fg-muted transition-colors hover:border-line-strong hover:bg-surface-2 hover:text-fg">
                     {t(`analysis.${goKey}`)}<ChevronRight className="size-3.5" aria-hidden />
                   </button>
                 )}

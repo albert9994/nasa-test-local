@@ -7,6 +7,7 @@ import { explain } from "./explain";
 import { farm } from "./farm";
 import { inputs } from "./inputs";
 import { mapTool, textures } from "./mapTool";
+import { mobile } from "./mobile";
 import { onboarding } from "./onboarding";
 import { reasons } from "./reasons";
 import { replay } from "./replay";
@@ -36,4 +37,5 @@ export const MESSAGES: Record<string, Dict> = {
   satellite,
   reasons,
   assistant,
+  mobile,
 };
