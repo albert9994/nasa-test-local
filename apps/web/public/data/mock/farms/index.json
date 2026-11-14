@@ -1,0 +1,38 @@
+[
+ {
+  "id": "iowa",
+  "name": "Story County, Iowa (USA)",
+  "lat": 42.03,
+  "lon": -93.62,
+  "slope": 2.0,
+  "rotation": [
+   "maize",
+   "soybean"
+  ],
+  "note": "Corn Belt. 2012 flash drought + heat."
+ },
+ {
+  "id": "kansas",
+  "name": "Finney County, Kansas (USA)",
+  "lat": 37.95,
+  "lon": -100.85,
+  "slope": 1.0,
+  "rotation": [
+   "wheat",
+   "fallow"
+  ],
+  "note": "Dryland High Plains. 2011/2022 droughts."
+ },
+ {
+  "id": "baragan",
+  "name": "Baragan Plain (Romania)",
+  "lat": 44.55,
+  "lon": 27.45,
+  "slope": 1.5,
+  "rotation": [
+   "maize",
+   "wheat"
+  ],
+  "note": ""
+ }
+]

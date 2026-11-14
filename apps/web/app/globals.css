@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/* FieldShift design tokens (first pass by Octa; Ionut owns the design system, I1, and may retune these).
+   Colours come from the field: night soil, corn gold, wheat straw, chlorophyll, heat, water. */
+:root {
+  --bg: #f4efe4;          /* straw paper */
+  --bg-elev: #fffaf0;
+  --fg: #16170f;
+  --fg-muted: #5d5a4c;
+  --line: #16170f1f;
+  --gold: #b9811f;        /* corn */
+  --leaf: #4f7a2c;        /* chlorophyll */
+  --heat: #c8452e;        /* heat stress */
+  --water: #2f78b5;       /* soil water */
+  --soil: #6b4a2f;
+  --accent: var(--gold);
+  --radius: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0c09;
+    --bg-elev: #15160f;
+    --fg: #f1ead8;
+    --fg-muted: #a39d86;
+    --line: #f1ead81f;
+    --gold: #e8b64c;
+    --leaf: #8fbf6a;
+    --heat: #ef6a4c;
+    --water: #5aaee6;
+    --soil: #a77b55;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0c09;
+  --bg-elev: #15160f;
+  --fg: #f1ead8;
+  --fg-muted: #a39d86;
+  --line: #f1ead81f;
+  --gold: #e8b64c;
+  --leaf: #8fbf6a;
+  --heat: #ef6a4c;
+  --water: #5aaee6;
+  --soil: #a77b55;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elev: var(--bg-elev);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-line: var(--line);
+  --color-gold: var(--gold);
+  --color-leaf: var(--leaf);
+  --color-heat: var(--heat);
+  --color-water: var(--water);
+  --color-soil: var(--soil);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-instrument-serif);
+  --radius-card: var(--radius);
+}
+
+html { background: var(--bg); color-scheme: light dark; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+::selection { background: var(--gold); color: #0b0c09; }
+
+.num { font-family: var(--font-geist-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+.display { font-family: var(--font-instrument-serif), Georgia, serif; font-weight: 400; letter-spacing: -0.01em; line-height: 0.95; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "fieldshift",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r --if-present run build",
+    "typecheck": "pnpm -r --if-present run typecheck",
+    "test": "pnpm -r --if-present run test"
+  },
+  "packageManager": "pnpm@11.22.0"
+}
