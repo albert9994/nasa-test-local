@@ -99,8 +99,6 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0(@types/node@20.19.43)(vite@8.3.8(@types/node@20.19.43)(jiti@2.7.0))
 
-  packages/engine-wasm.bak: {}
-
   packages/ui:
     dependencies:
       '@radix-ui/react-slider':
