@@ -24,7 +24,7 @@ const ICON: Record<TabId, ReactNode> = {
   report: <FileText className="size-4" aria-hidden />, satellite: <Satellite className="size-4" aria-hidden />,
 };
 
-export function FieldAnalysis({ className, tabs: only }: { className?: string; /** subset of tabs to show (default all) */ tabs?: TabId[] }) {
+export function FieldAnalysis({ className, tabs: only, tabsClassName }: { className?: string; /** subset of tabs to show (default all) */ tabs?: TabId[]; /** e.g. make the tab bar sticky inside a scrolling panel */ tabsClassName?: string }) {
   const t = useT();
   const prefix = useId();
   const tab = useAnalysis((s) => s.tab);
@@ -37,7 +37,7 @@ export function FieldAnalysis({ className, tabs: only }: { className?: string; /
 
   return (
     <div className={cn("flex min-w-0 flex-col gap-4", className)} data-tour="field-analysis">
-      <Tabs tabs={defs} value={active} onChange={setTab} label={t("analysis.tabs_label")} idPrefix={prefix} />
+      <div className={tabsClassName}><Tabs tabs={defs} value={active} onChange={setTab} label={t("analysis.tabs_label")} idPrefix={prefix} /></div>
       <div role="tabpanel" id={`${prefix}-panel-${active}`} aria-labelledby={`${prefix}-tab-${active}`} tabIndex={0} className="@container min-w-0 focus-visible:outline-offset-4" aria-busy={loading}>
         {!pack && !loading ? (
           <p className="rounded-[var(--radius)] border border-dashed border-line-strong p-6 text-sm text-fg-muted">{t("analysis.empty")}</p>

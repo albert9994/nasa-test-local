@@ -1,5 +1,6 @@
 // Register each namespace here: one import line and one entry line per feature (keeps parallel PRs from colliding).
 import { alerts } from "./alerts";
+import { assistant } from "./assistant";
 import { analysis } from "./analysis";
 import { common, crops, glossary, units } from "./common";
 import { explain } from "./explain";
@@ -34,4 +35,5 @@ export const MESSAGES: Record<string, Dict> = {
   alerts,
   satellite,
   reasons,
+  assistant,
 };

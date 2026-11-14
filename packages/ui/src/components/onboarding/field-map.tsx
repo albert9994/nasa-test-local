@@ -23,6 +23,12 @@ export interface FieldMapProps {
   fitFields?: boolean;
   /** Show the satellite layers control (NASA GIBS + AI crop map where available). Used by the workspace. */
   satellite?: boolean;
+  /** Screen space covered by floating panels, so fitted fields stay visible. */
+  padding?: { top: number; right: number; bottom: number; left: number };
+  /** Change it when the map container is resized by the host (e.g. a side panel opens) to refit the fields. */
+  refitKey?: string | number;
+  /** Where the satellite layers control sits. */
+  satellitePosition?: string;
   className?: string;
 }
 

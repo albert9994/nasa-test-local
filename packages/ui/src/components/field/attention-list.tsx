@@ -17,9 +17,9 @@ import { Panel, Skeleton } from "./ui";
 import { useHeatAtFlowering } from "./use-heat";
 
 const TONE: Record<Level, string> = {
-  danger: "border-danger/25 bg-danger-soft text-danger",
-  warn: "border-warn/25 bg-warn-soft text-warn",
-  ok: "border-ok/25 bg-ok-soft text-ok",
+  danger: "bg-danger-soft text-danger",
+  warn: "bg-warn-soft text-warn",
+  ok: "bg-ok-soft text-ok",
 };
 const GO_LABEL: Partial<Record<TabId, string>> = { rotations: "att_go_rotations", stress: "att_go_stress", replay: "att_go_replay", risk: "att_go_risk" };
 
@@ -72,19 +72,19 @@ export function AttentionList() {
       {!items ? (
         <div className="space-y-2"><Skeleton className="h-14" /><Skeleton className="h-14" /></div>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="-mx-1 flex flex-col divide-y divide-line">
           {items.map((it) => {
             const Icon = it.level === "ok" ? CheckCircle2 : it.id === "heat" ? Flame : AlertTriangle;
             const goKey = GO_LABEL[it.go];
             return (
-              <li key={it.id} className={cn("flex items-start gap-3 rounded-xl border p-3", TONE[it.level])}>
-                <Icon className="mt-0.5 size-5 shrink-0" aria-hidden />
+              <li key={it.id} className="flex items-start gap-3 px-1 py-3 first:pt-1 last:pb-1">
+                <span className={cn("grid size-8 shrink-0 place-items-center rounded-full", TONE[it.level])}><Icon className="size-4" aria-hidden /></span>
                 <div className="min-w-0 flex-1">
                   <p className="sr-only">{t(`analysis.att_level_${it.level}`)}</p>
-                  <p className="text-sm leading-snug text-fg">{text(it)}</p>
+                  <p className="pt-1 text-sm leading-snug text-fg">{text(it)}</p>
                 </div>
                 {goKey && (
-                  <button type="button" onClick={() => setTab(it.go)} className="flex shrink-0 items-center gap-0.5 rounded-full px-2 py-1 text-xs font-medium text-fg hover:bg-surface/70">
+                  <button type="button" onClick={() => setTab(it.go)} className="mt-0.5 flex shrink-0 items-center gap-0.5 rounded-full border border-line px-2.5 py-1 text-xs font-medium text-fg-muted transition-colors hover:border-line-strong hover:bg-surface-2 hover:text-fg">
                     {t(`analysis.${goKey}`)}<ChevronRight className="size-3.5" aria-hidden />
                   </button>
                 )}

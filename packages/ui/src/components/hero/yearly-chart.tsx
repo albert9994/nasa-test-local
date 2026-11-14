@@ -53,7 +53,7 @@ export function YearlyChart() {
                 })),
                 markLine: {
                   silent: true, symbol: "none", lineStyle: { color: k.fg, type: "dashed", width: 1.2 },
-                  label: { formatter: labels.line, color: k.muted, fontSize: 11, position: "insideEndTop" },
+                  label: { formatter: labels.line, color: k.muted, fontSize: 11, position: "insideStartTop", backgroundColor: k.surface, padding: [2, 6], borderRadius: 4 },
                   data: [{ yAxis: failNet }],
                 },
               }],

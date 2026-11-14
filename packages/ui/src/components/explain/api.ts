@@ -6,7 +6,8 @@ import type { Lang } from "./templates";
 export { API_URL };
 export const TIMEOUT_MS = 8000;
 
-export interface ExplainRequest { factSheet: FactSheet; lang: Lang; mode: "short" | "plan" | "chat"; question?: string }
+export interface ChatTurn { role: "user" | "assistant"; content: string }
+export interface ExplainRequest { factSheet: FactSheet; lang: Lang; mode: "short" | "plan" | "chat"; question?: string; /** chat only: earlier turns, oldest first (the server keeps the last 6) */ history?: ChatTurn[] }
 export interface ExplainDone {
   usedNumbers: (string | number)[];
   /** The server removed sentences it could not back with the data: `text` is the whole corrected answer, show it instead of the stream. */

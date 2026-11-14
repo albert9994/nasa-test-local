@@ -20,7 +20,7 @@ const STYLE: StyleSpecification = {
   layers: [{ id: "esri", type: "raster", source: "esri" }],
 };
 
-const RISK_COLOR = { safe: "#2f7d4a", tight: "#d9a23a", over: "#e0592a", none: "#5ba3e8" } as const;
+const RISK_COLOR = { safe: "#4cc47c", tight: "#f0b43c", over: "#f06a3c", none: "#7cb8f0" } as const;
 
 function bounds(coords: [number, number][]): [[number, number], [number, number]] | null {
   if (!coords.length) return null;
@@ -29,7 +29,7 @@ function bounds(coords: [number, number][]): [[number, number], [number, number]
   return [[w, s], [e, n]];
 }
 
-export default function FieldMapInner({ center, zoom = 12, fields, selectedId, riskById, marker, onMapClick, onSelect, fitFields, satellite, className }: FieldMapProps) {
+export default function FieldMapInner({ center, zoom = 12, fields, selectedId, riskById, marker, onMapClick, onSelect, fitFields, satellite, padding, satellitePosition, refitKey, className }: FieldMapProps) {
   const ref = useRef<MapRef>(null);
   const [ready, setReady] = useState(false);
   const [map, setMap] = useState<MlMap | null>(null);
@@ -45,6 +45,7 @@ export default function FieldMapInner({ center, zoom = 12, fields, selectedId, r
 
   const fitCoords = useMemo(() => fields.flatMap((f) => f.geometry?.coordinates[0] as [number, number][] ?? [[f.centroid.lon, f.centroid.lat]]), [fields]);
   const fitSig = fitFields ? fields.map((f) => f.id).join(",") : "";
+  const padSig = padding ? `${padding.top},${padding.right},${padding.bottom},${padding.left}` : "";
 
   // Move the camera when the target changes (new place) or when the set of fields changes in overview mode.
   useEffect(() => {
@@ -52,11 +53,26 @@ export default function FieldMapInner({ center, zoom = 12, fields, selectedId, r
     if (!m || !ready) return;
     if (fitFields) {
       const b = bounds(fitCoords);
-      if (b) { m.fitBounds(b, { padding: 60, maxZoom: 15, duration: 800 }); return; }
+      const pad = padding ? { top: padding.top + 48, right: padding.right + 48, bottom: padding.bottom + 48, left: padding.left + 48 } : 60;
+      if (b) { m.fitBounds(b, { padding: pad, maxZoom: 15, duration: 800 }); return; }
     }
-    m.flyTo({ center: [center.lon, center.lat], zoom, duration: 900 });
+    m.flyTo({ center: [center.lon, center.lat], zoom, duration: 900, ...(padding ? { padding } : {}) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [center.lat, center.lon, zoom, fitSig, ready]);
+  }, [center.lat, center.lon, zoom, fitSig, padSig, ready]);
+
+  // The host resized the map (side panel opened/closed): wait for the resize, then frame the fields again.
+  useEffect(() => {
+    const m = ref.current;
+    if (!m || !ready || refitKey == null || !fitFields) return;
+    const id = setTimeout(() => {
+      m.resize();
+      const b = bounds(fitCoords);
+      const pad = padding ? { top: padding.top + 48, right: padding.right + 48, bottom: padding.bottom + 48, left: padding.left + 48 } : 60;
+      if (b) m.fitBounds(b, { padding: pad, maxZoom: 15, duration: 600 });
+    }, 340);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refitKey]);
 
   return (
     <div className={className ?? "relative h-full min-h-[240px] w-full overflow-hidden rounded-[var(--radius)] border border-line"}>
@@ -74,20 +90,20 @@ export default function FieldMapInner({ center, zoom = 12, fields, selectedId, r
           onMapClick?.({ lat: e.lngLat.lat, lon: e.lngLat.lng });
         }}
       >
-        <NavigationControl showCompass={false} position="top-right" />
+        <NavigationControl showCompass={false} position={padding ? "bottom-right" : "top-right"} />
         <Source id="fields" type="geojson" data={data}>
           <Layer id="fields-fill" type="fill" paint={{
             "fill-color": ["match", ["get", "risk"], "safe", RISK_COLOR.safe, "tight", RISK_COLOR.tight, "over", RISK_COLOR.over, RISK_COLOR.none],
-            "fill-opacity": ["case", ["==", ["get", "selected"], 1], 0.55, 0.38],
+            "fill-opacity": ["case", ["==", ["get", "selected"], 1], 0.5, 0.3],
           }} />
           <Layer id="fields-line" type="line" paint={{
-            "line-color": "#ffffff",
-            "line-width": ["case", ["==", ["get", "selected"], 1], 3, 1.5],
+            "line-color": ["case", ["==", ["get", "selected"], 1], "#ffffff", ["match", ["get", "risk"], "safe", RISK_COLOR.safe, "tight", RISK_COLOR.tight, "over", RISK_COLOR.over, "#ffffff"]],
+            "line-width": ["case", ["==", ["get", "selected"], 1], 3, 2],
           }} />
         </Source>
         {fields.map((f) => (
           <Marker key={f.id} longitude={f.centroid.lon} latitude={f.centroid.lat} anchor="center" style={{ pointerEvents: "none" }}>
-            <span className="rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-medium text-[#14201a] shadow">{f.name}</span>
+            <span className={`whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-[0_2px_8px_rgb(0_0_0/0.35)] ${f.id === selectedId ? "bg-[#111a15] text-white" : "bg-white/92 text-[#111a15]"}`}>{f.name}</span>
           </Marker>
         ))}
         {marker && (
@@ -96,7 +112,7 @@ export default function FieldMapInner({ center, zoom = 12, fields, selectedId, r
           </Marker>
         )}
       </Map>
-      {satellite && <SatelliteControls map={map} cropFarm={cropFarm} beforeId="fields-fill" className="absolute left-2 top-2" />}
+      {satellite && <SatelliteControls map={map} cropFarm={cropFarm} beforeId="fields-fill" className={satellitePosition ?? "absolute left-2 top-2"} />}
     </div>
   );
 }

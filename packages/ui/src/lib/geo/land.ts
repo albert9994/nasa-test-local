@@ -24,3 +24,16 @@ export function landFromCircle(center: LngLat, areaHa: number): Land {
   const ring = circleRing(center, haToRadiusM(areaHa));
   return { kind: "circle", ring, areaHa, centroid: { lat: center[1], lon: center[0] }, circle: { center, areaHa } };
 }
+
+/** GeoJSON polygon (closed ring, [lon, lat]) of a selected land, as stored on a farm field. */
+export function landPolygon(land: Land): { type: "Polygon"; coordinates: number[][][] } {
+  const r = land.ring;
+  return { type: "Polygon", coordinates: [[...r, r[0]].map(([x, y]) => [x, y])] };
+}
+
+/** Open ring of a stored field polygon (drops the closing point). */
+export function polygonRing(p: { coordinates: number[][][] } | undefined): LngLat[] | null {
+  const r = p?.coordinates?.[0];
+  if (!r || r.length < 4) return null;
+  return openRing(r.map(([x, y]) => [x, y] as LngLat));
+}
