@@ -1,0 +1,56 @@
+{
+  "id": "iowa",
+  "name": "Story County, Iowa (USA)",
+  "lat": 42.03,
+  "lon": -93.62,
+  "elev": 310.22,
+  "slope": 2.0,
+  "rotation": [
+    "maize",
+    "soybean"
+  ],
+  "note": "Corn Belt. 2012 flash drought + heat.",
+  "cropPool": [
+    "maize",
+    "soybean",
+    "wheat",
+    "sorghum",
+    "sunflower",
+    "pea",
+    "barley",
+    "fallow"
+  ],
+  "costs": {
+    "maize": 950,
+    "soybean": 620,
+    "wheat": 700,
+    "sorghum": 580,
+    "sunflower": 540,
+    "pea": 500,
+    "barley": 600,
+    "millet": 340,
+    "fallow": 60
+  },
+  "prices": {
+    "maize": 190,
+    "soybean": 420,
+    "wheat": 230,
+    "sorghum": 175,
+    "sunflower": 430,
+    "pea": 300,
+    "barley": 200,
+    "millet": 260
+  },
+  "calib": {
+    "maize": 1.16,
+    "soybean": 1.09
+  },
+  "sources": {
+    "weather": "NASA POWER daily, community=AG (MERRA-2 meteorology, CERES/MERRA-2 solar)",
+    "ndvi": "MODIS MOD13Q1 v061 250 m 16-day NDVI via ORNL DAAC",
+    "soil": "ISRIC SoilGrids 2.0 250 m (mean, Q0.05, Q0.95)",
+    "scenarios": "NASA NEX-GDDP-CMIP6 v2.0 0.25 deg ensemble",
+    "costs": "Iowa State University Extension Ag Decision Maker (File A1-20)",
+    "prices": "USDA NASS / FAO GIEWS"
+  }
+}
