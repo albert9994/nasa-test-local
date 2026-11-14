@@ -2,7 +2,7 @@
 // O1: farm info (name, coordinates, soil texture, climate normals, data sources). Tolerates missing soil/ndvi/scenarios.
 import { useMemo } from "react";
 import { useF } from "@/components/field/hooks";
-import { useT } from "@/lib/i18n";
+import { localName, useT } from "@/lib/i18n";
 import { useApp } from "@/lib/store/app";
 import type { FarmPack, SoilProp } from "@/lib/engine";
 
@@ -60,7 +60,7 @@ export function FarmPanel() {
   const sources = Object.entries(meta.sources ?? {});
   return (
     <section className="rounded-[var(--radius)] border border-line bg-surface p-4 text-sm shadow-[var(--shadow)]">
-      <h2 className="text-lg font-semibold leading-tight tracking-tight">{meta.name}</h2>
+      <h2 className="text-lg font-semibold leading-tight tracking-tight">{localName(meta, t.locale)}</h2>
       {meta.note && <p className="mt-1 text-fg-muted">{meta.note}</p>}
       <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
         {rows.map(([k, v]) => (
