@@ -32,11 +32,11 @@ Target awards: *Best Use of Science*, *Best Use of Data*, *Global Impact*.
 | Strengthen soil health | Soil carbon, erosion, diversity, cover crops, soil score | M3, M6 |
 | Changing temperature/rainfall | Sliders, margin, frontier, 2050 projections, margin year | I3, I3b, O3, LU7, I6 |
 | Water availability | Irrigation lever, crop water use, SMAP | O2, A7, A10 |
-| Decision support | Plain-language plan, farmer mode | O7, O6, LU4, M8 |
+| Decision support | LLM explanations + plan, light site, quant risk metrics | O7, O6, A10, LU4, I6, M8 |
 
 ## 3. Feature catalog (P0 = demo can't work without it · P1 = this weekend · P2 = stretch · P3 = roadmap slide)
 
-### Simulation engine (Albert + Moldo)
+### Simulation engine: Rust `fieldshift-core` → WASM + Axum server (Albert + Moldo)
 - [ ] P0 Daily soil-water balance with growing roots + subsoil store; off-season recharge
 - [ ] P0 Growing-degree-day phenology; temperature-triggered sowing
 - [ ] P0 Stage-wise water-stress yield response; heat at flowering + season-long extreme heat; frost
@@ -48,11 +48,13 @@ Target awards: *Best Use of Science*, *Best Use of Data*, *Global Impact*.
 - [ ] P2 Double-cropping when seasons get longer; disease-pressure proxy
 - [ ] P3 Swap the core for AquaCrop/APSIM for production use
 
-### Decision layer (Ionut)
+### Stress test, optimizer, quant engine: Rust (Ionut)
 - [ ] P0 Adaptation Margin (ΔT and rain-cut bisection)
 - [ ] P1 Failure frontier grid
 - [ ] P1 Optimizer → Best balance / Drought shield / Soil builder
-- [ ] P2 Probabilistic margin (10/50/90 %)
+- [ ] P1 **Quant engine**: Monte Carlo futures 2026–2050 (weather bootstrap × CMIP6, mean-reverting correlated prices, cost jumps) → fan chart, VaR/CVaR, ruin probability, margin-year distribution
+- [ ] P1 Market shock (price ±30 %, inputs +40 %) + budget/equipment constraints in the optimizer
+- [ ] P2 Risk–return frontier (rotations as a portfolio, mean-CVaR)
 
 ### Data (Luca + Moldo + Albert)
 - [ ] P0 NASA POWER daily packs for demo farms
@@ -62,10 +64,12 @@ Target awards: *Best Use of Science*, *Best Use of Data*, *Global Impact*.
 - [ ] P2 ESA Sentinel-2 / CCI partner data; GPM IMERG cross-check; land-cover check of the pixel
 - [ ] P3 HLS 30 m, OpenET, NISAR soil moisture
 
-### App (Octa + Ionut)
+### App + light site + AI explanations (Octa + Ionut; LLM endpoint Albert, prompts Luca)
 - [ ] P0 Map + farm selection; inputs; hero margin; year-by-year chart
 - [ ] P1 Compare cards, frontier heatmap, drought replay, live click anywhere
-- [ ] P1 Validation + data-provenance panel, printable plan, farmer mode
+- [ ] P1 Validation + data-provenance panel, LLM-written plan, light site (Astro) with instant WASM demo
+- [ ] P1 "Explain this" (LLM streams a plain-language explanation from the engine's fact sheet; template fallback)
+- [ ] P2 Chat "what if…" where the LLM calls the Rust simulator as a tool
 - [ ] P2 Share link, "why?" tooltips, field polygon, i18n, offline/PWA
 - [ ] P3 Extension-agent dashboard, SMS summaries, insurer/lender view
 

@@ -1,61 +1,66 @@
-# Albert: Lead + Engine core + NASA satellite layers
+# Albert: Lead + Rust engine core + server
 
-**You are:** the integrator (repo, checkpoints, merges, submission) and the person who **codes the simulation engine core**
-(the daily crop/soil/water loop). Moldo gives you the agronomy (parameters, rules); Ionut builds the decision layer on top of your engine.
-**You own:** `web/js/engine/season.js`, `rotation.js`, `index.js`, `engine.stub.js` · `pipeline/appeears/` · `tests/` ·
+**You are:** the integrator (repo, checkpoints, merges, submission) and the person who builds the **Rust foundation**:
+the workspace, the WASM build, the core simulation (season + rotation), and the **Axum server** that hosts heavy runs and the LLM endpoint.
+Moldo gives you the agronomy (crops, rules); Ionut builds stress tests and the optimizer on top of your engine; Octa consumes it in the browser.
+**You own:** `crates/fieldshift-core/src/{lib,season,rotation,soil,explain}.rs` · `crates/fieldshift-wasm/` · `crates/fieldshift-server/` · Rust tests ·
 `docs/team/*`, `docs/CHALLENGE.md`, `docs/SUBMISSION.md`, `docs/SCIENCE.md`, `README.md` · merges to `main`.
-**Your partners:** Moldo (engine pair) · Luca (data you consume) · Ionut (consumes your engine) · Octa (backup merger).
+**Your partners:** Moldo (engine pair) · Ionut (Rust stress/optimizer) · Octa (WASM in the UI, server API) · Luca (data, LLM prompt).
 **Sleep:** shift 2, ≈T+15.5 → T+19.5 (Octa merges meanwhile).
 
 ## Your tasks in order
 | # | Task | With | Needs / start when | Done when | Unblocks | Est. | By |
 |---|---|---|---|---|---|---|---|
-| A1 | **Repo skeleton + stack** (repo and Drive already exist): commit the folder structure below, an empty `web/index.html` that loads, GitHub Pages on; create the Drive folders (01_PLAN.md) | — | T0 | Everyone cloned it and opened the page | everyone | 30 m | CP0 |
-| A2 | **Choose demo farms** together: 3 contrasting places + 1 from your home region; check on satellite imagery that each point is a **rain-fed field** (no irrigation circles, towns, forest) | **Moldo** (M1) | T0 | Farms in `docs/CHALLENGE.md` + chat | **LU1, A4, M3** | 30 m | CP0 |
-| A3 | **Kickoff stand-up** (15 min): roles, clock table, chat rules; read the official challenge statement aloud and paste it into `docs/CHALLENGE.md` | everyone | A1 + A2 | Clock times written in 01_PLAN.md | — | 30 m | **CP0** |
-| A4 | **Submit AppEEARS point requests** (Earthdata login): `SPL4SMGP` root-zone soil moisture, `ECO_L4T_ESI` (or `ECO4ESIPTJPL`) ESI, `NASADEM_NC` elevation; each farm + a 3×3 grid at ~30 m (for slope); 2015–2025 | — | A2 | Request IDs in chat | A10 | 45 m | **CP1** |
-| A5 | **Contracts sign-off**: walk Luca, Ionut, Octa, Moldo through `02_CONTRACTS.md`; change it now if someone objects | everyone | CP0 | Everyone OK'd in chat | all | 30 m | **CP1** |
-| A6 | **`engine.stub.js`**: the C3 functions with fake-but-plausible results (same shapes) | — | A5 | Merged; Ionut and Octa import it | **I3, O2** | 30 m | **CP1** |
-| A7 | **Season simulator** `season.js` + soil hydraulics: `prepareFarm`, sowing rule, GDD phenology, roots + **subsoil store**, rain → runoff → soil → drainage, ET0 × Kc → water stress, stage yield response, heat (flowering + season-long extreme heat), frost, season-length factor, `$`; `trace` option. Plus `tests/smoke.mjs <farm>` | Moldo (parameters, sanity checks at the engine syncs) | **LU1** (Iowa weather) · M2 (start with a draft maize line) · LU3 (soil; use Iowa defaults until then) | Iowa maize yields believable, 2012 among the worst years; < 1 ms per season | **A8, O4** | 5.5 h | T+8.5 |
-| A8 | **Rotation layer** `rotation.js`: every phase × every year; carry-over (legume N, same-crop penalty, soil water from the previous crop, fallow stores water, rye cover uses spring water) per Moldo's M3 rules; farm-level net, `pFail`, `fails`, `worstYear`, `traced` | Moldo (rules) | A7 + **M3** | `simulateRotation` returns the C3 shape in < 10 ms | **I3, I4, O3, M6, M7** | 2 h | **T+10.5** |
-| A9 | **CP2 live demo** of the first full loop + **cut list** | everyone | CP2 items | Cut list in chat | sleep shift 1 | 30 m | **CP2** |
-| A10 | **AppEEARS layer** (C7): `pipeline/appeears/merge.py` → `layers/<farm>/appeears.json` (SMAP daily, QC-filtered ESI, slope from the 3×3 elevation grid); optionally use SMAP to set starting soil water after 2015 | — | A4 results | Layer files + rebuilt packs | Octa (badges) | 2.5 h | T+14 |
-| A11 | **Engine hardening**: run the smoke test on all farms, speed check (optimizer < 1 s), edge cases (missing soil/NDVI, southern hemisphere, tropics) | Ionut | A10 | Smoke passes everywhere | CP3 | 1.5 h | T+15.5 |
+| A1 | **Rust + WASM skeleton** (repo and Drive already exist): Cargo workspace with `fieldshift-core`, `fieldshift-wasm`, `fieldshift-server`; `wasm-pack build --target web` → `web/pkg/`; a "hello" function called from the page; Axum `GET /api/health`; folder skeleton below; README with build commands; Drive folders | Octa (checks it loads in the page) | T0 | Every teammate built it and saw "hello from Rust" in the browser | **everyone**, O1 | 2 h | T+2 |
+| A2 | **Choose demo farms**: 3 contrasting places + 1 from your home region; rain-fed fields only (check on satellite imagery) | **Moldo** (M1) | T0 (in parallel with A1) | Farms in `docs/CHALLENGE.md` + chat | **LU1, A4, M3** | 30 m | CP0 |
+| A3 | **Kickoff stand-up** (15 min): roles, clock table, chat rules; paste the official challenge statement into `docs/CHALLENGE.md` | everyone | A2 (A1 may still be finishing) | Clock times written in 01_PLAN.md | — | 30 m | **CP0** |
+| A4 | **Submit AppEEARS requests** (Earthdata): `SPL4SMGP` root-zone soil moisture, `ECO_L4T_ESI` ESI, `NASADEM_NC` elevation; farms + a 3×3 grid at ~30 m; 2015–2025 (Moldo merges later as a stretch, M11) | — | A2 | Request IDs in chat | M11 | 30 m | **CP1** |
+| A5 | **Contracts sign-off**: walk everyone through `02_CONTRACTS.md` (C3 Rust API, C9 server, C10 LLM) | everyone | CP0 | Everyone OK'd in chat | all | 30 m | **CP1** |
+| A6 | **Rust stub**: every C3 export in `fieldshift-wasm` returning fake-but-plausible results, built to `web/pkg/`; `web/data/mock/api/*.json` for C9 | Ionut | A1 + A5 | Octa calls `fs.simulateRotation(...)` from the page | **I3, O2** | 45 m | **CP1** |
+| A7 | **Season simulator** `season.rs` + `soil.rs`: farm prep, sowing rule, GDD, roots + **subsoil store**, rain → runoff → soil → drainage, ET0 × Kc → water stress, stage yield response, heat (flowering + season-long extreme heat), frost, season length, `$`; trace option. `cargo test` smoke tests per farm (Iowa: 2012 among the worst years) | Moldo (parameters, engine syncs) | **LU1** · M2 (draft maize line first) · LU3 (Iowa default soil until then) | Believable Iowa yields; < 0.2 ms per season native | **A8, O4** | 5 h | T+8.5 |
+| A8 | **Rotation layer** `rotation.rs`: phases × years; carry-over (legume N, same-crop penalty, soil water, fallow, rye cover) per Moldo's M3; farm net, `pFail`, `fails`, `worstYear`, `traced`. Export through WASM (replace the stub) | Moldo | A7 + **M3** | WASM `simulateRotation` < 5 ms; stub gone | **I3, I4, O3, M6, M7** | 2 h | **T+10.5** |
+| A9 | **CP2 live demo** + cut list. **Plan B decision:** if WASM is flaky, the UI switches to the server API (C9) | everyone | CP2 items | Decision + cut list in chat | sleep shift 1 | 30 m | **CP2** |
+| A10 | **Server + LLM endpoint**: Axum `/api/simulate`, `/api/stress`, `/api/optimize` (same crate, `rayon` for parallel runs) and **`/api/explain`**: build the fact sheet (`explain.rs`, C10), call **your LLM API** (key from env), stream SSE, check every number in the answer exists in the fact sheet, fall back to Luca's templates; rate limit + cache; deploy (Fly.io / Render / Shuttle) | Luca (prompt), Octa (UI) | A8 + LU4 prompt draft | Deployed URL answers `/api/explain` for every farm | **O7**, O6 | 3 h | T+14.5 |
+| A11 | **Engine hardening**: `cargo test` on all farms, `criterion` benchmark, edge cases (no soil/NDVI, southern hemisphere, tropics), `cargo clippy` clean | Ionut | A10 | Tests green; benchmark in README | CP3 | 1 h | T+15.5 |
 | — | *Sleep ≈T+15.5 → T+19.5* | | | | | | |
-| A12 | **CP3 stand-up**: check every feature is on screen | everyone | — | CP3 decided | — | 15 m | **CP3** |
-| A13 | **Submission text** `docs/SUBMISSION.md`: summary, description, NASA + partner data, tools, **AI-use disclosure** | Luca (numbers) | **LU8 + LU9** | Reviewed by Luca | **A17** | 2 h | T+23.5 |
+| A12 | **CP3 stand-up**: every feature on screen? | everyone | — | CP3 decided | — | 15 m | **CP3** |
+| A13 | **Submission text** `docs/SUBMISSION.md`: summary, description, NASA + partner data, tools (Rust/WASM, LLM), **AI-use disclosure** (LLM explanations + AI-assisted code/docs) | Luca (numbers) | **LU8 + LU9** | Reviewed by Luca | **A17** | 2 h | T+23.5 |
 | A14 | **`docs/SCIENCE.md`**: equations, every parameter cited, limitations | **Moldo** (M9) | A13 | Reviewed by Moldo | M9, A16 | 1.5 h | **CP4** |
-| A15 | **Feature freeze**: check the CP4 list, tag `v1.0-freeze`, announce "bug fixes only" | Octa | CP4 items | Tag pushed | **O8, O9** | 30 m | **CP4** |
-| A16 | **Rehearse the pitch** 3× (you present; Moldo answers agronomy; Luca runs slides; one person plays a hostile judge) | Moldo, Luca | LU10 + M9 | Under the time limit; Q&A without notes | CP5 | 3 h | **CP5** |
-| A17 | **Submit**: form + links (video, repo, live URL); open everything in incognito on a phone | Octa | **O9 + A13** | Confirmation screenshot in chat | — | 45 m | **CP6** |
-| — | **Ongoing:** review/merge PRs within 30 min; open the app after every merge | Octa (backup) | from CP0 | `main` always loads | all | — | — |
+| A15 | **Feature freeze**: check CP4, tag `v1.0-freeze` (app + site + server), announce "bug fixes only" | Octa | CP4 items | Tag pushed; server redeployed from the tag | **O8, O9** | 30 m | **CP4** |
+| A16 | **Rehearse the pitch** 3× (you present; Moldo answers agronomy; Luca runs slides; someone plays a hostile judge) | Moldo, Luca | LU10 + M9 | Under the time limit | CP5 | 3 h | **CP5** |
+| A17 | **Submit**: form + links (video, repo, site, app); everything opened in incognito on a phone | Octa | **O9 + A13** | Confirmation screenshot in chat | — | 45 m | **CP6** |
+| — | **Ongoing:** review/merge PRs within 30 min; `cargo test` + open the site after every merge | Octa (backup) | from CP0 | `main` always builds and loads | all | — | — |
 
-## Recommended stack and skeleton (A1)
-No-build static site: `web/index.html` + ES modules, **Leaflet 1.9.4** (CDN), hand-made SVG charts; engine in JavaScript in the browser;
-pipeline in Python. Local: `python3 -m http.server 8000 --directory web`.
+## Repo skeleton (A1)
 ```
-web/index.html  web/css/  web/js/app.js  web/js/charts.js  web/js/engine/  web/js/ui/  web/js/data/
-web/data/farms/  web/data/layers/  web/data/mock/  web/data/validation/
-pipeline/power/ pipeline/soil/ pipeline/ndvi/ pipeline/yields/ pipeline/cmip6/ pipeline/appeears/ pipeline/presets.json
-tests/  docs/  assets/
+Cargo.toml                      # workspace
+crates/fieldshift-core/         # pure Rust, no I/O (serde for JSON)
+crates/fieldshift-wasm/         # wasm-bindgen + serde-wasm-bindgen; wasm-pack build --target web --out-dir ../../web/pkg
+crates/fieldshift-server/       # axum, tokio, tower-http (CORS), reqwest (LLM, NASA POWER), moka (cache), rayon
+web/                            # the full app (Octa): Vite + TypeScript, js/, css/, pkg/ (generated), data/
+site/                           # the light site (Octa): Astro, imports the same pkg
+pipeline/                       # Python data pipeline (Luca, Moldo)
+prompts/                        # LLM prompts + fallback templates (Luca)
+docs/  assets/
 ```
+Crates: `serde`, `serde_json`, `wasm-bindgen`, `serde-wasm-bindgen`, `console_error_panic_hook`, `axum`, `tokio`, `tower-http`,
+`reqwest` (with `stream`), `moka`, `rayon` (server only, not WASM), `criterion` (dev).
+Setup: `rustup target add wasm32-unknown-unknown` · `cargo install wasm-pack`.
 
 ## Engine recipe for A7/A8 (agree details with Moldo at the T+4.5 engine sync)
 1. Spring crops sow on the first day in their window when the 5-day mean temperature ≥ the sowing temperature; winter wheat on a fixed autumn day of the previous year; southern hemisphere: shift ~182 days.
-2. GDD = max(0, min(Tmean, Tupper) − Tbase). Stages by GDD fraction: vegetative < 0.45 ≤ flowering < 0.62 ≤ grain fill < 0.85 ≤ ripening.
-3. Soil: Saxton & Rawls (2006) for field capacity/wilting point from sand, clay, organic matter → plant-available water mm/m.
-4. FAO-56 bucket; roots grow 0.15 m → max by mid-season; **subsoil store** catches drainage and is taken up as roots deepen.
-5. Starting soil water: off-season bucket since the previous harvest + **GWETROOT anomaly** nudge (it's model-relative, so never use it as an absolute value).
-6. ET0: Hargreaves with POWER solar radiation; ETc = Kc × ET0; water stress Ks when depletion > p × TAW.
-7. Yield = attainable × Π stages [1 − Ky (1 − ETa/ETc)] × heat × frost × season-length × rotation × calibration.
-8. Heat: acute at flowering + season-long extreme degree-days (Schlenker & Roberts 2009). Without the second, warming barely hurts.
+2. GDD = max(0, min(Tmean, Tupper) − Tbase); stages by GDD fraction: vegetative < 0.45 ≤ flowering < 0.62 ≤ grain fill < 0.85 ≤ ripening.
+3. Soil: Saxton & Rawls (2006) → plant-available water mm/m.
+4. FAO-56 bucket; roots 0.15 m → max by mid-season; a **subsoil store** catches drainage and is taken up as roots deepen.
+5. Starting soil water: off-season bucket since the previous harvest + **GWETROOT anomaly** nudge (it's model-relative).
+6. ET0 Hargreaves with POWER solar radiation; ETc = Kc × ET0; Ks when depletion > p × TAW.
+7. Yield = attainable × Π stages [1 − Ky (1 − ETa/ETc)] × heat × frost × season length × rotation × calibration.
+8. Heat: acute at flowering + season-long extreme degree-days (Schlenker & Roberts 2009).
 9. Climate shift: + ΔT to every daily Tmax/Tmin; × (1+ΔP) every rain day.
-10. Performance: typed arrays in `prepareFarm`; no object allocation inside the daily loop.
-
-## Checkpoint duties
-Read the CP list in 01_PLAN.md; each owner answers done / fallback / blocked; decide on the spot; post the decision in chat.
+10. Performance: pre-allocated `Vec<f32>` per variable in the farm struct; no allocation inside the daily loop.
 
 ## Fallbacks
-- A7 late at T+9 → Ionut takes A8 (rotation layer) while you finish A7; CP2 demo runs on the stub.
-- Pages broken at the end → serve from a laptop + Luca's 2-min backup capture.
-- Someone disappears → give their next main task to whoever is free; drop their stretch tasks.
+- WASM toolchain problems in hour 1 → keep going natively (`cargo test`); Octa uses the mock JSON (C9) until WASM works. Decide at CP1.
+- A7 late at T+9 → Ionut takes A8; the CP2 demo runs on the stub.
+- LLM API down or slow → `/api/explain` returns Luca's template text (C10); the demo never depends on the LLM.
+- Server deploy fails → the site still works fully in WASM; explanations use templates.

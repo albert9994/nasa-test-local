@@ -22,7 +22,9 @@ Then do it again with the climate shifted warmer and drier, and find the point w
 Then the app shows how to get more margin:
 1. **Stress-test**: drag warming/rain sliders, or jump to 2050 climate projections; every number updates live.
 2. **Failure frontier**: a heatmap of every future climate, marking where each rotation breaks.
-3. **3 resilient rotations**, found automatically and ranked by the farmer's priorities (profit / fewer bad years / soil / water).
+3. **3 resilient rotations**, found automatically and ranked by the farmer's priorities (profit / fewer bad years / soil / water), within their **budget and equipment**.
+3b. **The future, quant-style:** 1,000+ simulated futures 2026–2050 (weather × prices × costs) → income fan chart, worst-case loss (CVaR), probability of running out of cash, "safe until ~20XX".
+3c. **AI explanations:** an LLM explains every result in plain Romanian/English, using only the simulator's numbers.
 4. **Replay the worst local drought** day by day: watch soil water drain and heat days pile up in each rotation.
 5. **Plain-language plan** the farmer can print.
 
@@ -48,10 +50,12 @@ Then the app shows how to get more margin:
 | ISRIC SoilGrids 250 m (partner data) | Soil water holding, runoff, erodibility, carbon |
 
 ### What we build this weekend (all from zero)
-A **static web app** (runs in the browser, hosted free on GitHub Pages) with:
-- a **simulation engine** in JavaScript, fast enough for live sliders;
-- a **Python data pipeline** that caches NASA data for demo farms;
-- **live NASA data** for any point clicked on the map.
+One **Rust engine** (`fieldshift-core`: simulator, stress test, optimizer, **quant engine**) used two ways:
+- compiled to **WASM** in the browser: the **light site** (Astro landing + instant demo) and the live sliders of the app;
+- natively in an **Axum server**: heavy runs (10,000 Monte Carlo futures) and the **LLM explanation endpoint** (our API), which explains results to the farmer using only the engine's numbers.
+
+Plus a **Python data pipeline** that caches NASA data for the demo farms, and **live NASA data** for any point clicked on the map.
+Full Romanian brainstorm: [../BRAINSTORM.md](../BRAINSTORM.md).
 
 Demo farms: 3 contrasting places (e.g. US Corn Belt, dryland High Plains, a European drought region) + **one from the team's home region**.
 

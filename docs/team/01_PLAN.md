@@ -3,19 +3,20 @@
 ## The team
 | Person | Main focus | Also | Task IDs | File |
 |---|---|---|---|---|
-| **Albert** | Lead + engine core (water/crop simulation code) | NASA satellite layers (AppEEARS), submission | `A1…` | [ALBERT.md](ALBERT.md) |
-| **Moldo** | Agronomy: the practical side (crops, rotations, farm economics, "does this make sense to a farmer?") | NDVI + yield data, soil health | `M1…` | [MOLDO.md](MOLDO.md) |
-| **Luca** | Data pipeline (weather, soil, climate projections) + validation numbers | Story: persona, copy, deck | `LU1…` | [LUCA.md](LUCA.md) |
-| **Ionut** | Bridge between science and UI: decision layer (margin, frontier, optimizer) + charts + design system | Validation panel, video graphics | `I1…` | [IONUT.md](IONUT.md) |
-| **Octa** | Frontend lead: app shell, inputs, results, drought replay, live click, farmer mode, plan, deploy | **The video** | `O1…` | [OCTA.md](OCTA.md) |
+| **Albert** | Lead + **Rust** engine core (season/rotation), WASM build, **Axum server + LLM endpoint** | AppEEARS requests, submission | `A1…` | [ALBERT.md](ALBERT.md) |
+| **Moldo** | Agronomy: the practical side (crops, rotations, economics, equipment, "does this make sense to a farmer?") | NDVI + yield data, soil health, **quant price/yield parameters** | `M1…` | [MOLDO.md](MOLDO.md) |
+| **Luca** | Data pipeline (weather, soil, climate projections) + validation numbers | Story: persona, copy, **LLM prompts**, deck | `LU1…` | [LUCA.md](LUCA.md) |
+| **Ionut** | **Rust** stress test, optimizer and **quant engine** (Monte Carlo futures + risk metrics) + charts + design system | Validation panel, video graphics | `I1…` | [IONUT.md](IONUT.md) |
+| **Octa** | Frontend lead: full app (WASM in the browser), **light site** (Astro), AI-explanation UI, replay, live click, deploy | **The video** | `O1…` | [OCTA.md](OCTA.md) |
 
 Nobody does "one thing". Everyone works in **2–3 workstreams**, always paired with someone:
 
 | Workstream | Owner (final say) | Works with | What it produces |
 |---|---|---|---|
-| **Engine** (simulation) | Albert | Moldo (agronomy rules + parameters), Ionut (decision layer on top) | `web/js/engine/` |
+| **Engine** (Rust: simulation, stress, quant) | Albert | Moldo (agronomy + quant params), Ionut (stress/optimizer/quant) | `crates/` |
+| **AI explanations** (LLM via our API) | Albert (server) | Luca (prompts), Octa (UI), Moldo (reviews answers) | `/api/explain`, `prompts/` |
 | **Data** (NASA pipelines) | Luca | Moldo (NDVI, yields, farm presets), Albert (AppEEARS) | `pipeline/`, `web/data/` |
-| **App** (frontend) | Octa | Ionut (charts, design system, cards, frontier, panels) | `web/` UI |
+| **App + light site** (frontend) | Octa | Ionut (charts, design system, cards, frontier, panels) | `web/`, `site/` |
 | **Story** (pitch, deck, video) | Luca (deck) · Octa (video) | Ionut (design), Moldo (farmer realism), Albert (pitch) | deck, video, copy |
 | **Integration + submission** | Albert | Octa (backup merger) | `main`, checkpoints, submission |
 
@@ -55,11 +56,11 @@ Rule: when you finish something that unblocks someone, post in the team chat
 ## Everyone's timeline at a glance
 ```
 T+   0     2     4     6     8    10    12    14    16    18    20    22    24    26    28    30
-Albert  A1-A5|A6|---A7 season sim---|-A8 rot-|A9|-A10 AppEEARS-|A11|zzzz sleep zzzz|A13 text|A14|A15|--A16 rehearse--|
-Moldo   --M1--|---M2 crops---|-M3 rules/€-|--M4 NDVI--|-M5 yields-|-M6 soil-|-M7 tune-|zzzz|--M8--|---M9 Q&A---|--M10--|
-Luca    |-LU1 POWER-|LU2|--LU3 soil--|--LU4 copy--|-LU5 CMIP6↓-|LU6|zzzz sleep zzzz|-LU7-|-LU8 valid-|LU9|--LU10 deck--|LU11|
-Ionut   ---I1 design---|--I2 charts--|--I3 margin--|I3b|---I4 optim---|-I5 cards-|zzzz|-I6 2050-|-I7 panel-|I8|-I9 video gfx-|
-Octa    |----O1 shell----|---O2 inputs---|---O3 hero+yearly---|zzzz sleep zzzz|--O4 replay--|-O5 live-|-O6 farmer-|-O7 plan-|O8|--O9 VIDEO--|
+Albert  |-A1 Rust+WASM-|A4-A6|---A7 season.rs---|-A8 rotation-|A9|-A10 server+LLM-|A11|zzzz sleep zzzz|A13 text|A14|A15|--A16 rehearse--|
+Moldo   --M1--|---M2 crops---|-M3 rules/€/equip-|--M4 NDVI--|-M5 yields-|-M6 soil-|-M7 tune-|zzzz|-M12 quant params-|-M8-|-M9 Q&A-|--M10--|
+Luca    |-LU1 POWER-|LU2|--LU3 soil--|---LU4 copy+LLM prompts---|LU5↓|LU6|zzzz sleep zzzz|-LU7-|-LU8 valid-|LU9|--LU10 deck--|LU11|
+Ionut   ---I1 design---|--I2 charts--|--I3 stress.rs--|I3b|---I4 optimize.rs---|-I5 cards-|zzzz|---I6 QUANT quant.rs---|I7|-I9 video gfx-|
+Octa    |----O1 shell+WASM----|---O2 inputs+budget---|---O3 hero+yearly---|zzzz sleep zzzz|--O4 replay--|-O5 live-|-O6 SITE-|-O7 AI UI-|O8|--O9 VIDEO--|
 ```
 
 ---
@@ -75,7 +76,7 @@ A checkpoint **passes** when every item is done, or Albert explicitly accepts th
 ### CP1 · T+3 · "Foundations"
 - [ ] A4 AppEEARS requests **submitted** (queue takes hours)
 - [ ] A5 [02_CONTRACTS.md](02_CONTRACTS.md) signed off
-- [ ] A6 `engine.stub.js` merged (Ionut and Octa build on it)
+- [ ] A1 Rust → WASM "hello" runs in everyone's browser · A6 Rust stub built to `web/pkg` (Ionut and Octa build on it)
 - [ ] LU1 first real pack (Iowa weather) merged · *fallback: the mock pack*
 - [ ] I1 wireframe + design tokens; LU2 persona started
 - [ ] O1 app shell shows the map with farm markers (work in progress is fine)
@@ -84,7 +85,7 @@ A checkpoint **passes** when every item is done, or Albert explicitly accepts th
 - [ ] A7 season simulator + A8 rotation layer merged; smoke test prints yields for every farm
 - [ ] M2 crop library + M3 rotation rules and farm economics merged
 - [ ] LU3 soil in all packs · M4 NDVI in ≥ 1 pack
-- [ ] I3 margin + frontier running on the **real** engine · O2 inputs · O3 hero margin + yearly chart
+- [ ] I3 margin + frontier (Rust) running on the **real** engine in WASM · O2 inputs · O3 hero margin + yearly chart · *plan B: same calls via the server*
 - [ ] LU4 copy · LU5 CMIP6 downloads running · LU6 deck skeleton
 - [ ] A9 cut list written · *fallback if the engine is late: demo on the stub; Ionut helps Albert*
 
@@ -92,12 +93,13 @@ A checkpoint **passes** when every item is done, or Albert explicitly accepts th
 - [ ] I4 optimizer + I5 compare cards · I3b frontier heatmap
 - [ ] O4 drought replay · O5 live click anywhere
 - [ ] M6 soil-health metrics · M7 sanity-tuned yields · M5 county yields
-- [ ] LU7 2050 scenarios in packs · I6 "safe until ~20XX" + real 2050 markers · *fallback: illustrative markers, labelled*
+- [ ] LU7 2050 scenarios in packs · *fallback: illustrative markers, labelled*
 - [ ] LU8 validation numbers (`summary.json`)
-- [ ] A10 SMAP/ECOSTRESS/slope merged · *fallback: badges say "requested"*
+- [ ] A10 server deployed: `/api/simulate`, `/api/explain` streams LLM explanations (template fallback works)
 
 ### CP4 · T+25 · FEATURE FREEZE
-- [ ] O6 farmer mode · O7 printable plan · I7 validation + data panel · LU9 data-source list
+- [ ] I6 **quant engine**: fan chart 2026–2050, VaR/CVaR, ruin probability, "safe until ~20XX" · M12 quant params
+- [ ] O6 light site deployed · O7 AI explanations + plan · I7 validation + data panel · LU9 data-source list
 - [ ] M9 Q&A draft · A14 SCIENCE.md
 - [ ] A15 `main` tagged `v1.0-freeze` → O8 deployed; smoke test passes
 - [ ] **After this: bug fixes only.** New ideas go on the deck's "Future work" slide.
@@ -121,7 +123,7 @@ flowchart LR
   LU3[LU3 soil] --> A7
   M3[M3 rules+economics] --> A8[A8 rotation layer]
   A7 --> A8 --> I3 & I4[I4 optimizer] & O3[O3 hero+yearly] & M6[M6 soil health] & M7[M7 sanity tune]
-  I1[I1 design] --> O1 & O6[O6 farmer mode]
+  I1[I1 design] --> O1 & O6[O6 light site]
   I2[I2 charts] --> O3 & I3b[I3b frontier UI] & O4[O4 replay] & I7[I7 validation panel]
   I3 --> O3 & I3b
   M6 --> I4 --> I5[I5 compare cards]
@@ -133,14 +135,19 @@ flowchart LR
   LU9[LU9 sources] --> I7 & A13 & LU10
   LU4[LU4 copy] --> O3 & O6 & O7[O7 plan]
   M8[M8 farmer tips] --> O7
-  A4 --> A10[A10 SMAP/ESI/slope]
+  A4 --> M11[M11 SMAP/ESI/slope stretch]
+  A8 --> A10[A10 server + LLM]
+  LU4 --> A10 --> O7[O7 AI explanations]
+  M12[M12 quant params] --> I6[I6 QUANT engine]
+  LU7 --> I6
+  I6 --> O9
   A15[A15 freeze] --> O8[O8 deploy] --> LU11[LU11 QA] --> O9[O9 VIDEO] --> A17[A17 SUBMIT]
   LU2[LU2 persona+storyboard] --> O9
   A13 --> A17
 ```
 
 ### Critical paths (Albert checks these at every checkpoint)
-1. **Engine:** `LU1 + M2 + LU3 → A7 → A8 → I3 → O3 → CP2`. Albert codes it; Moldo feeds parameters fast; Ionut takes over A8 if A7 runs late.
+1. **Engine (Rust):** `A1 Rust+WASM skeleton → LU1 + M2 + LU3 → A7 → A8 → I3 → O3 → CP2`. Albert codes it; Moldo feeds parameters fast; Ionut takes over A8 if A7 runs late; if WASM fights back, plan B = same API on the server.
 2. **Validation:** `M4 + M5 → M7 → LU8 → I7 / LU10 / A13`. This earns the *Validity* score.
 3. **Projections:** `LU5 (downloads during Luca's sleep) → LU7 → I6`.
 4. **Video:** `A15 freeze → O8 → LU11 → O9 → A17`. Octa records **only from the frozen build**.
@@ -149,11 +156,11 @@ flowchart LR
 ## Who owns which files (one owner each; others open a PR and tag the owner)
 | Person | Files |
 |---|---|
-| Albert | `web/js/engine/season.js`, `rotation.js`, `index.js`, `engine.stub.js` · `pipeline/appeears/` · `tests/` · `docs/team/*`, `docs/CHALLENGE.md`, `docs/SUBMISSION.md`, `docs/SCIENCE.md`, `README.md` |
-| Moldo | `web/js/engine/crops.js`, `web/js/engine/soilhealth.js` · `pipeline/presets.json` (farms + economics) · `pipeline/ndvi/`, `pipeline/yields/` · `web/data/validation/<farm>.json` · `docs/QA.md` |
-| Luca | `pipeline/power/`, `pipeline/soil/`, `pipeline/cmip6/`, `pipeline/build_packs.py` · `web/data/farms/*`, `web/data/layers/*` (assembly) · `web/data/validation/summary.json` · `docs/DATA_SOURCES.md`, `docs/STORY.md` |
-| Ionut | `web/css/*` · `web/js/charts.js` · `web/js/engine/decision.js` · `web/js/ui/compare.js`, `frontier.js`, `marginyear.js`, `science.js` · `assets/brand/` |
-| Octa | `web/index.html`, `web/js/app.js` · `web/js/ui/inputs.js`, `hero.js`, `yearly.js`, `replay.js`, `farmer.js`, `report.js` · `web/js/data/*` (loading + live fetch) · deployment · video |
+| Albert | `Cargo.toml` · `crates/fieldshift-core/src/{lib,season,rotation,soil,explain}.rs` · `crates/fieldshift-wasm/` · `crates/fieldshift-server/` · Rust tests · `docs/team/*`, `docs/CHALLENGE.md`, `docs/SUBMISSION.md`, `docs/SCIENCE.md`, `README.md` |
+| Moldo | `crates/fieldshift-core/data/crops.json`, `src/soil_health.rs` · `data/equipment.json`, `data/quant_params.json` · `pipeline/presets.json`, `pipeline/ndvi/`, `pipeline/yields/`, `pipeline/quant/`, `pipeline/appeears/` · `web/data/validation/<farm>.json` · `docs/QA.md` |
+| Luca | `pipeline/power/`, `pipeline/soil/`, `pipeline/cmip6/`, `pipeline/build_packs.py` · `web/data/farms/*`, `web/data/layers/*` (assembly), `web/data/mock/*` · `web/data/validation/summary.json` · `prompts/*` (LLM) · `docs/DATA_SOURCES.md`, `docs/STORY.md` |
+| Ionut | `crates/fieldshift-core/src/{stress,optimize,quant}.rs` · `web/css/*` (shared with the site) · `web/src/charts.ts` · `web/src/ui/{compare,frontier,marginyear,science}.ts` · `assets/brand/` |
+| Octa | `web/` shell (`index.html`, `src/main.ts`, `src/ui/{inputs,hero,yearly,replay,explain,report}.ts`, `src/data/*`) · `site/` (Astro) · deployment (app + site) · video |
 
 - Branch per task (`lu1-power`, `a7-season`, `o4-replay`…), small PRs. Albert merges (Octa while Albert sleeps). **`main` must always load.**
 - Exception: during a sleep shift, the merger may make an urgent fix in a sleeping person's file and tells them on wake-up.
