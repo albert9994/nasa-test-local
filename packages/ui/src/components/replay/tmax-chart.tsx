@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/lib/i18n";
 import { monthTicks } from "./calendar";
 
 const W = 600, H = 64, PT = 4, PB = 4;
@@ -9,13 +10,14 @@ export function TmaxChart({
 }: {
   year: number; days: number; t0: number; tmax: number[]; heat: number; domain: [number, number]; day: number;
 }) {
+  const t = useT();
   const x = (d: number) => (d / (days - 1)) * W;
   const y = (v: number) => PT + (1 - (v - domain[0]) / (domain[1] - domain[0])) * (H - PT - PB);
   const line = tmax.map((v, i) => `${i ? "L" : "M"}${x(t0 + i).toFixed(1)} ${y(v).toFixed(1)}`).join("");
   const hotPath = tmax.map((v, i) => (v > heat ? `M${x(t0 + i).toFixed(1)} ${y(v).toFixed(1)}h1.6v${(y(heat) - y(v)).toFixed(1)}h-1.6z` : "")).join("");
   const xe = x(t0 + tmax.length - 1);
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label={`Daily maximum temperature, heat threshold ${heat} °C`}>
+    <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label={t("replay.tmax_aria", { heat })}>
       {monthTicks(year).map((m) => (
         <line key={m.day} x1={x(m.day)} x2={x(m.day)} y1={0} y2={H} stroke="var(--line)" strokeWidth={1} vectorEffect="non-scaling-stroke" />
       ))}
@@ -23,7 +25,7 @@ export function TmaxChart({
       <line x1={x(t0)} x2={xe} y1={y(heat)} y2={y(heat)} stroke="var(--heat)" strokeWidth={1.2} strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />
       <path d={hotPath} fill="var(--heat)" opacity={0.55} />
       <path d={line} fill="none" stroke="var(--fg)" strokeWidth={1.2} opacity={0.75} vectorEffect="non-scaling-stroke" />
-      <line x1={x(day)} x2={x(day)} y1={0} y2={H} stroke="var(--gold)" strokeWidth={2} vectorEffect="non-scaling-stroke" />
+      <line x1={x(day)} x2={x(day)} y1={0} y2={H} stroke="var(--primary)" strokeWidth={2} vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
