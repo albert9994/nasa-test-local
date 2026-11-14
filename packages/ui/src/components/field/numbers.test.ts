@@ -67,6 +67,6 @@ describe("rotationCost and fitCheck", () => {
 describe("shareColor", () => {
   it("uses tokens only", () => {
     expect(shareColor(0, 0.2)).toContain("var(--ok)");
-    expect(shareColor(0.5, 0.2)).toContain("var(--danger)");
+    expect(shareColor(0.5, 0.2)).toContain("var(--risk-hi)");
   });
 });

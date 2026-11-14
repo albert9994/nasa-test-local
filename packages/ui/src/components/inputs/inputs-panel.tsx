@@ -1,6 +1,7 @@
 "use client";
 // Stress-test inputs: rotation builder, climate sliders, bad-year rule, budget/equipment, priorities, levers, market.
 // Every control writes through the Zustand store (setRotation / setOpts / setWeights / setConstraints).
+import { NumberInput } from "@/components/ui/number-input";
 import { fromUsd, toUsd } from "@/components/field/fmt";
 import { useF, useNames } from "@/components/field/hooks";
 import { Button } from "@/components/ui/button";
@@ -31,7 +32,7 @@ function Climate() {
         <Button variant="outline" className="h-9 flex-1" onClick={() => setOpts({ dT: r(Math.min(5, Math.max(0, pt.dT)), 1), dP: r(Math.min(0, Math.max(-0.5, pt.dP)), 2) })}>{t("inputs.y2050")}</Button>
       </div>
       <Field label={t("inputs.warmer_by")} value={dT} min={0} max={5} step={0.1} format={(v) => f.warm(v)} accent="text-heat" onChange={(v) => setOpts({ dT: v })} />
-      <Field label={t("inputs.less_rain")} value={Math.round(dP * 100)} min={-50} max={0} step={1} format={(v) => (v === 0 ? "0 %" : `−${f.num(Math.abs(v))} %`)} accent="text-water" onChange={(v) => setOpts({ dP: v / 100 })} />
+      <Field label={t("inputs.less_rain")} value={Math.round(-dP * 100)} min={0} max={50} step={1} format={(v) => (v === 0 ? "0 %" : `−${f.num(Math.abs(v))} %`)} accent="text-water" onChange={(v) => setOpts({ dP: -v / 100 })} />
     </>
   );
 }
@@ -47,11 +48,8 @@ function BadYear() {
     <div className="flex flex-col gap-3 text-sm" data-tour="bad-year-rule">
       <label className="flex flex-wrap items-center gap-2">
         <span>{t("inputs.bad_below")}</span>
-        <span className="flex items-center gap-1">
-          <input type="number" inputMode="decimal" className={`${inputCls} num w-24`} value={fromUsd(currency, failNet)} aria-label={t("inputs.bad_threshold_aria")}
-            onChange={(e) => setOpts({ failNet: e.target.value === "" ? 0 : toUsd(currency, +e.target.value) })} />
-          {currency}/ha
-        </span>
+        <NumberInput className="w-36" value={fromUsd(currency, failNet)} aria-label={t("inputs.bad_threshold_aria")} suffix={`${currency}/ha`}
+          onValueChange={(v) => setOpts({ failNet: toUsd(currency, v ?? 0) })} />
       </label>
       <label className="flex flex-wrap items-center gap-2">
         <span>{t("inputs.tolerate")}</span>
@@ -102,12 +100,9 @@ function Profile({ expert }: { expert: boolean }) {
     <>
       <label className="flex flex-wrap items-center gap-2 text-sm">
         <span>{expert ? t("inputs.spend_expert") : t("inputs.spend_farmer")}</span>
-        <span className="flex items-center gap-1">
-          <input type="number" inputMode="decimal" min={0} placeholder={t("inputs.no_limit")} className={`${inputCls} num w-28`} aria-label={t("inputs.spend_aria")}
-            value={c.maxCostPerHa != null ? fromUsd(currency, c.maxCostPerHa) : ""}
-            onChange={(e) => setConstraints({ maxCostPerHa: e.target.value === "" ? undefined : toUsd(currency, Math.max(0, +e.target.value)) })} />
-          {currency}/ha
-        </span>
+        <NumberInput className="w-40" min={0} allowEmpty placeholder={t("inputs.no_limit")} aria-label={t("inputs.spend_aria")} suffix={`${currency}/ha`}
+          value={c.maxCostPerHa != null ? fromUsd(currency, c.maxCostPerHa) : null}
+          onValueChange={(v) => setConstraints({ maxCostPerHa: v == null ? undefined : toUsd(currency, v) })} />
       </label>
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 text-sm">{t("inputs.equipment")}</legend>

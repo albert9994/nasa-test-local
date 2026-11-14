@@ -1,20 +1,25 @@
 "use client";
 // First-run walkthrough: 6 full-screen steps. Skippable; "Try the demo farm" jumps straight to the workspace.
+import { NumberInput } from "@/components/ui/number-input";
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, MapPin, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, MapPin, Plus, Trash2 } from "lucide-react";
 import { useT, useCurrency, FX, useLocale, LOCALES, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { FARM_CROPS, EQUIPMENT, DEFAULT_PROFILE, circlePolygon, demoFarm, newField, useFarm, type Field, type Place, type Profile } from "@/lib/store/farm";
+import { FARM_CROPS, EQUIPMENT, DEFAULT_PROFILE, demoFarm, newField, useFarm, type Field, type Place, type Profile } from "@/lib/store/farm";
 import type { CropId, Equipment } from "@/lib/engine/types";
 import { FieldPicker } from "./field-map";
+import { LandPicker } from "@/components/landpick/land-picker";
+import { landPolygon, type Land } from "@/lib/geo/land";
+import type { LngLat } from "@/lib/geo/area";
+import { fieldInputCls } from "@/components/workspace/add-field-dialog";
 import { PlaceSearch } from "./place-search";
 
 const STEPS = 6;
 const DEFAULT_CENTER = { lat: 45.9, lon: 25.0, zoom: 6 }; // Romania
-const inputCls = "h-10 rounded-[var(--radius-sm)] border border-line-strong bg-surface px-3 text-sm outline-none focus:border-primary";
+const inputCls = fieldInputCls;
 
-interface DraftField { id: string; name: string; areaHa: number; centroid: { lat: number; lon: number }; crop: CropId; history: (CropId | null)[] }
+interface DraftField { id: string; name: string; areaHa: number; centroid: { lat: number; lon: number }; ring: LngLat[]; land: Land; crop: CropId; history: (CropId | null)[] }
 interface Draft { name: string; place: Place | null; fields: DraftField[]; profile: Profile }
 
 function Chip({ active, children, onClick }: { active: boolean; children: React.ReactNode; onClick: () => void }) {
@@ -45,6 +50,7 @@ export function Onboarding() {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<Draft>({ name: "", place: null, fields: [], profile: DEFAULT_PROFILE });
   const [selected, setSelected] = useState<string | null>(null);
+  const [land, setLand] = useState<Land | null>(null);
   const patch = (p: Partial<Draft>) => setDraft((d) => ({ ...d, ...p }));
   const setField = (id: string, p: Partial<DraftField>) => setDraft((d) => ({ ...d, fields: d.fields.map((f) => (f.id === id ? { ...f, ...p } : f)) }));
 
@@ -60,16 +66,21 @@ export function Onboarding() {
     complete({ name: draft.name, place: draft.place, fields: [], profile: draft.profile });
   }
   function finish() {
-    const fields: Field[] = draft.fields.map((f) => newField({ name: f.name, centroid: f.centroid, areaHa: f.areaHa, crop: f.crop, history: f.history, geometry: circlePolygon(f.centroid, f.areaHa) }));
+    const fields: Field[] = draft.fields.map((f) => newField({ name: f.name, centroid: f.centroid, areaHa: f.areaHa, crop: f.crop, history: f.history, geometry: landPolygon(f.land) }));
     complete({ name: draft.name.trim() || draft.place?.name.split(",")[0] || "FieldShift", place: draft.place, fields, profile: draft.profile });
   }
-  function addAt(c: { lat: number; lon: number }) {
-    const f: DraftField = { id: `d${Date.now()}`, name: t("onboarding.fieldNameDefault", { n: draft.fields.length + 1 }), areaHa: 20, centroid: c, crop: "maize", history: [null, null, null] };
+  function addLand() {
+    if (!land) return;
+    const f: DraftField = {
+      id: `d${Date.now()}`, name: t("onboarding.fieldNameDefault", { n: draft.fields.length + 1 }), areaHa: Math.round(land.areaHa * 10) / 10,
+      centroid: land.centroid, ring: land.ring, land, crop: "maize", history: [null, null, null],
+    };
     patch({ fields: [...draft.fields, f] });
     setSelected(f.id);
+    setLand(null);
   }
 
-  const mapFields = useMemo(() => draft.fields.map((f) => ({ id: f.id, name: f.name, centroid: f.centroid, geometry: circlePolygon(f.centroid, f.areaHa) })), [draft.fields]);
+  const existing = useMemo(() => draft.fields.map((f) => ({ id: f.id, name: f.name, ring: f.ring })), [draft.fields]);
   const pickPlace = (p: Place) => patch({ place: p, name: draft.name || p.name.split(",")[0] });
 
   return (
@@ -125,7 +136,11 @@ export function Onboarding() {
                     <h1 className="display text-3xl">{t("onboarding.fieldsTitle")}</h1>
                     <p className="mt-2 text-sm text-fg-muted">{t("onboarding.fieldsBody")}</p>
                   </div>
-                  {draft.fields.length === 0 && <p className="rounded-[var(--radius-sm)] border border-dashed border-line-strong p-4 text-sm text-fg-muted">{t("onboarding.noFields")}</p>}
+                  <div className={cn("flex items-center gap-3 rounded-[var(--radius)] border p-3", land ? "border-primary/40 bg-primary-soft" : "border-dashed border-line-strong")}>
+                    <p className="min-w-0 flex-1 text-sm">{land ? <span className="font-medium">{t("onboarding.selectionArea", { ha: land.areaHa.toLocaleString(locale === "ro" ? "ro-RO" : "en-US", { maximumFractionDigits: 1 }) })}</span> : <span className="text-fg-muted">{t("onboarding.selectFirst")}</span>}</p>
+                    <Button size="sm" disabled={!land} onClick={addLand}><Plus size={14} />{t("onboarding.addThisField")}</Button>
+                  </div>
+                  {draft.fields.length === 0 && <p className="text-sm text-fg-muted">{t("onboarding.noFields")}</p>}
                   <ul className="flex flex-col gap-3">
                     {draft.fields.map((f) => (
                       <li key={f.id} onClick={() => setSelected(f.id)}
@@ -133,30 +148,31 @@ export function Onboarding() {
                         <label className="flex flex-1 flex-col gap-1 text-xs font-medium text-fg-muted">{t("onboarding.fieldName")}
                           <input className={cn(inputCls, "text-fg")} value={f.name} onChange={(e) => setField(f.id, { name: e.target.value })} />
                         </label>
-                        <label className="flex w-24 flex-col gap-1 text-xs font-medium text-fg-muted">{t("onboarding.hectares")}
-                          <input className={cn(inputCls, "num text-fg")} type="number" min={0.5} step={1} value={f.areaHa} onChange={(e) => setField(f.id, { areaHa: Math.max(0.5, +e.target.value || 0.5) })} />
-                        </label>
+                        <div className="flex w-20 flex-col gap-1 text-xs font-medium text-fg-muted">{t("onboarding.hectares")}
+                          <span className="num flex h-10 items-center text-sm text-fg">{f.areaHa.toLocaleString(locale === "ro" ? "ro-RO" : "en-US")}</span>
+                        </div>
                         <button type="button" aria-label={t("onboarding.removeField")} title={t("onboarding.removeField")} className="mb-1 rounded-full p-2 text-fg-muted hover:bg-surface-2 hover:text-heat"
                           onClick={(e) => { e.stopPropagation(); patch({ fields: draft.fields.filter((x) => x.id !== f.id) }); }}><Trash2 size={16} /></button>
                       </li>
                     ))}
                   </ul>
-                  {draft.fields.length > 0 && <p className="num text-sm text-fg-muted">{t("onboarding.totalArea", { ha: totalHa.toLocaleString(locale === "ro" ? "ro-RO" : "en-US") })}</p>}
+                  {draft.fields.length > 0 && <p className="text-sm text-fg-muted">{t("onboarding.totalArea", { ha: totalHa.toLocaleString(locale === "ro" ? "ro-RO" : "en-US") })}</p>}
                 </>
               )}
             </section>
-            <section className="min-h-[320px]">
-              <div className="relative h-full">
-                <FieldPicker
-                  center={center} zoom={zoom} fields={step === 2 ? mapFields : []} selectedId={selected}
-                  marker={step === 1 ? draft.place : null}
-                  onMapClick={step === 1 ? (c) => pickPlace({ name: `${c.lat.toFixed(4)}, ${c.lon.toFixed(4)}`, ...c }) : addAt}
-                  onSelect={setSelected}
-                />
-                <p className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-surface/95 px-3 py-1 text-xs text-fg-muted shadow">
-                  {step === 1 ? t("onboarding.clickMapHint") : t("onboarding.addFieldHint")}
-                </p>
-              </div>
+            <section className="min-h-[320px] overflow-hidden rounded-[var(--radius)] border border-line">
+              {step === 1 ? (
+                <div className="relative h-full">
+                  <FieldPicker
+                    center={center} zoom={zoom} fields={[]} marker={draft.place} className="relative h-full w-full"
+                    onMapClick={(c) => pickPlace({ name: `${c.lat.toFixed(4)}, ${c.lon.toFixed(4)}`, ...c })}
+                  />
+                  <p className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-glass px-3 py-1.5 text-xs text-fg-muted shadow-[var(--shadow)] backdrop-blur">{t("onboarding.clickMapHint")}</p>
+                </div>
+              ) : (
+                <LandPicker land={land} onLandChange={setLand} existing={existing} hideSearch
+                  initialView={{ lat: center.lat, lon: center.lon, zoom: draft.place ? 13.4 : 6 }} />
+              )}
             </section>
           </div>
         )}
@@ -226,10 +242,9 @@ function ProfileStep({ profile, onChange, currency }: { profile: Profile; onChan
       <p className="mt-2 text-sm text-fg-muted">{t("onboarding.profileBody")}</p>
       <label className="mt-6 flex flex-wrap items-center gap-3 text-sm font-medium">{t("onboarding.budget")}
         <span className="flex items-center gap-2 font-normal">
-          <input className={cn(inputCls, "num w-32")} type="number" min={0} step={10} placeholder={t("onboarding.noLimit")}
-            value={profile.budgetPerHa == null ? "" : Math.round(profile.budgetPerHa * fx)}
-            onChange={(e) => onChange({ budgetPerHa: e.target.value === "" ? null : Math.max(0, +e.target.value) / fx })} />
-          {currency}/ha
+          <NumberInput className="w-44" min={0} allowEmpty placeholder={t("onboarding.noLimit")} suffix={`${currency}/ha`} aria-label={t("onboarding.budget")}
+            value={profile.budgetPerHa == null ? null : Math.round(profile.budgetPerHa * fx)}
+            onValueChange={(v) => onChange({ budgetPerHa: v == null ? null : v / fx })} />
         </span>
       </label>
       <fieldset className="mt-6"><legend className="mb-2 text-sm font-medium">{t("onboarding.equipment")}</legend>

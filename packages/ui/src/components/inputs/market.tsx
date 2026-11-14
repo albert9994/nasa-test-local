@@ -1,5 +1,6 @@
 "use client";
 // Market slider + expert prices/costs table. Writes opts.prices / opts.costs for the crops in the rotation.
+import { NumberInput } from "@/components/ui/number-input";
 import { useEffect, useMemo } from "react";
 import { useF, useNames } from "@/components/field/hooks";
 import { fromUsd, toUsd } from "@/components/field/fmt";
@@ -7,7 +8,7 @@ import { CROPS, type CropId, type Opts } from "@/lib/engine";
 import { useCurrency, useT } from "@/lib/i18n";
 import { useApp } from "@/lib/store/app";
 import { useMarket } from "@/lib/store/market";
-import { Field, inputCls } from "./parts";
+import { Field } from "./parts";
 
 
 export function basePrice(c: CropId, meta: { prices?: Opts["prices"] } | undefined, over: Opts["prices"]) {
@@ -75,19 +76,19 @@ export function PriceTable() {
             <tr key={c}>
               <th scope="row" className="py-1 pr-2 text-left font-normal">{names.crop(c)}</th>
               <td className="px-1 py-1">
-                <input
-                  type="number" inputMode="decimal" min={0} aria-label={t("inputs.price_aria", { crop: names.crop(c) })} disabled={c === "fallow"}
-                  className={`${inputCls} num w-full max-w-24 disabled:opacity-40`}
+                <NumberInput
+                  min={0} aria-label={t("inputs.price_aria", { crop: names.crop(c) })} disabled={c === "fallow"}
+                  className="w-full max-w-28" inputClassName="h-9 disabled:opacity-40"
                   value={fromUsd(currency, basePrice(c, pack?.meta, m.basePrices))}
-                  onChange={(e) => m.setBasePrice(c, e.target.value === "" ? undefined : toUsd(currency, Math.max(0, +e.target.value)))}
+                  onValueChange={(v) => m.setBasePrice(c, v == null ? undefined : toUsd(currency, v))}
                 />
               </td>
               <td className="px-1 py-1">
-                <input
-                  type="number" inputMode="decimal" min={0} aria-label={t("inputs.cost_aria", { crop: names.crop(c) })}
-                  className={`${inputCls} num w-full max-w-24`}
+                <NumberInput
+                  min={0} aria-label={t("inputs.cost_aria", { crop: names.crop(c) })}
+                  className="w-full max-w-28" inputClassName="h-9"
                   value={fromUsd(currency, baseCost(c, pack?.meta, m.baseCosts))}
-                  onChange={(e) => m.setBaseCost(c, e.target.value === "" ? undefined : toUsd(currency, Math.max(0, +e.target.value)))}
+                  onValueChange={(v) => m.setBaseCost(c, v == null ? undefined : toUsd(currency, v))}
                 />
               </td>
             </tr>

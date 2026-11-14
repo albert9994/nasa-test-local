@@ -11,9 +11,9 @@ const ICON: Record<AlertKind, LucideIcon> = {
   heatwave: Flame, drought: Droplets, frost: Snowflake, heavy_rain: CloudRain, spray_window: SprayCan,
 };
 const TONE: Record<Severity, string> = {
-  danger: "border-[var(--danger)] bg-[var(--danger-soft)] text-[var(--danger)]",
-  warn: "border-[var(--warn)] bg-[var(--warn-soft)] text-[var(--warn)]",
-  ok: "border-[var(--ok)] bg-[var(--ok-soft)] text-[var(--ok)]",
+  danger: "bg-[var(--danger-soft)] text-[var(--danger)]",
+  warn: "bg-[var(--warn-soft)] text-[var(--warn)]",
+  ok: "bg-[var(--ok-soft)] text-[var(--ok)]",
 };
 
 export function AlertsList({ items, flowering = false }: { items: Alert[]; flowering?: boolean }) {
@@ -28,11 +28,11 @@ export function AlertsList({ items, flowering = false }: { items: Alert[]; flowe
       {items.map((a) => {
         const Icon = ICON[a.kind];
         return (
-          <li key={a.kind} data-severity={a.severity} className={cn("flex gap-3 rounded-lg border p-3", TONE[a.severity])}>
-            <Icon size={20} className="mt-0.5 shrink-0" aria-hidden />
+          <li key={a.kind} data-severity={a.severity} className="flex gap-3 rounded-xl border border-[var(--line)] p-3">
+            <span className={cn("grid size-8 shrink-0 place-items-center rounded-full", TONE[a.severity])}><Icon size={16} aria-hidden /></span>
             <div className="min-w-0">
-              <p className="text-sm font-semibold">{t(`alerts.${a.kind}.title`)}</p>
-              <p className="text-sm text-[var(--fg,inherit)]">
+              <p className="text-sm font-semibold text-[var(--fg,inherit)]">{t(`alerts.${a.kind}.title`)}</p>
+              <p className="text-sm text-[var(--fg-muted,inherit)]">
                 {t(`alerts.${a.kind}.body`, { n: a.days.length, value: a.value, from: a.from ?? "" })}
                 {a.kind === "heatwave" && flowering ? ` ${t("alerts.heatwave.flowering")}` : ""}
               </p>

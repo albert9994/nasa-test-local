@@ -183,10 +183,11 @@ export function PlanComparison() {
 }
 
 // ---------- download ----------
+/** Installers are served by the website itself (scripts/fetch-installers.mjs copies them from the GitHub release). */
+export const DESKTOP_VERSION = "2.1.0";
+const DL = { mac: "/downloads/FieldShift-mac-apple-silicon.dmg", macIntel: "/downloads/FieldShift-mac-intel.dmg", win: "/downloads/FieldShift-windows-setup.exe" };
 export function DesktopDownload() {
   const t = useT();
-  const { Link } = useSiteEnv();
-  const p = useLocalePath();
   return (
     <Section id="download">
       <div className="overflow-hidden rounded-3xl bg-primary p-8 text-primary-fg sm:p-12">
@@ -198,9 +199,14 @@ export function DesktopDownload() {
           </div>
           <div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <Link href={`${p()}#download`} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-base font-medium text-primary hover:bg-primary-soft"><Download className="size-4" />{t("site.dlMac")}</Link>
-              <Link href={`${p()}#download`} className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 px-6 text-base font-medium hover:bg-white/10"><Monitor className="size-4" />{t("site.dlWin")}</Link>
+              <a href={DL.mac} download className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-base font-medium text-primary hover:bg-primary-soft"><Download className="size-4" />{t("site.dlMac")}</a>
+              <a href={DL.win} download className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 px-6 text-base font-medium hover:bg-white/10"><Monitor className="size-4" />{t("site.dlWin")}</a>
             </div>
+            <p className="mt-3 text-sm text-primary-fg/80">
+              <a href={DL.macIntel} download className="underline underline-offset-4 hover:text-primary-fg">{t("site.dlMacIntel")}</a>
+              <span className="mx-2 text-primary-fg/50">·</span>
+              <span>{t("site.dlVersion", { v: DESKTOP_VERSION })}</span>
+            </p>
             <p className="mt-4 text-sm text-primary-fg/70">{t("site.dlNote")}</p>
           </div>
         </div>

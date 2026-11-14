@@ -1,5 +1,6 @@
 "use client";
 // Futures to 2050: Monte Carlo fan chart, P(bad year), VaR/CVaR, probability of ruin, margin year range.
+import { NumberInput } from "@/components/ui/number-input";
 import { useEffect, useRef, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { getEngine, type QuantResult } from "@/lib/engine";
@@ -11,7 +12,7 @@ import { EChart, baseAxis, tooltipStyle } from "./echart";
 import { fromUsd, toUsd } from "./fmt";
 import { useF } from "./hooks";
 import { Segmented } from "./segmented";
-import { Hint, Panel, Skeleton, Spinner, Stat, inputCls } from "./ui";
+import { Hint, Panel, Skeleton, Spinner, Stat } from "./ui";
 
 export const PATHS = 1000;
 const FROM = 2026, TO = 2050;
@@ -72,7 +73,7 @@ function FanChart({ q, failNet }: { q: QuantResult; failNet: number }) {
           { type: "line", name: "p10", data: q.income.p10, showSymbol: false, lineStyle: { color: k.data, width: 1, opacity: 0.45 }, z: 2 },
           {
             type: "line", name: "p50", data: q.income.p50, showSymbol: false, lineStyle: { color: k.data, width: 2.5 }, z: 3,
-            markLine: { silent: true, symbol: "none", lineStyle: { color: k.heat, type: "dashed", width: 1.2 }, label: { formatter: t("analysis.fan_bad_line"), color: k.heat, fontSize: 11, position: "insideEndTop" }, data: [{ yAxis: failNet }] },
+            markLine: { silent: true, symbol: "none", lineStyle: { color: k.heat, type: "dashed", width: 1.2 }, label: { formatter: t("analysis.fan_bad_line"), color: k.heat, fontSize: 11, position: "insideStartTop", backgroundColor: k.surface, padding: [2, 6], borderRadius: 4 }, data: [{ yAxis: failNet }] },
           },
         ],
       })}
@@ -143,7 +144,7 @@ export function FuturesTab() {
           </div>
           <label className="flex flex-col gap-1 text-xs text-fg-muted">
             <span className="flex items-center gap-1">{t("analysis.fut_reserve")} ({currency}/ha)<Hint text={t("glossary.ruin")} /></span>
-            <input type="number" inputMode="decimal" min={0} step={50} className={`${inputCls} num w-32 text-fg`} value={fromUsd(currency, cashReserve)} onChange={(e) => setCashReserve(toUsd(currency, +e.target.value || 0))} />
+            <NumberInput min={0} className="w-36" value={fromUsd(currency, cashReserve)} suffix={currency} onValueChange={(v) => setCashReserve(toUsd(currency, v ?? 0))} />
           </label>
           {mock && <p className="rounded-full bg-warn-soft px-3 py-1 text-xs text-warn">{t("analysis.fut_mock")}</p>}
         </div>
@@ -152,7 +153,7 @@ export function FuturesTab() {
       </Panel>
 
       {!q ? (
-        <div className="grid gap-4 lg:grid-cols-2"><Skeleton className="h-80" /><Skeleton className="h-80" /></div>
+        <div className="grid gap-4 @3xl:grid-cols-2"><Skeleton className="h-80" /><Skeleton className="h-80" /></div>
       ) : (
         <div className={busy ? "pointer-events-none opacity-60 transition-opacity" : "transition-opacity"} aria-busy={busy}>
           <div className="grid grid-cols-1 gap-4 @4xl:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
