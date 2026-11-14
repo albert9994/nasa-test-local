@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "FieldShift",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "identifier": "ro.fieldshift.desktop",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -40,9 +40,23 @@
       "icons/icon.ico"
     ],
     "windows": {
-      "wix": { "language": ["en-US", "ro-RO"] },
-      "nsis": { "languages": ["English", "Romanian"], "displayLanguageSelector": true }
+      "wix": {
+        "language": [
+          "en-US",
+          "ro-RO"
+        ]
+      },
+      "nsis": {
+        "languages": [
+          "English",
+          "Romanian"
+        ],
+        "displayLanguageSelector": true
+      }
     },
-    "macOS": { "minimumSystemVersion": "11.0" }
+    "macOS": {
+      "minimumSystemVersion": "11.0",
+      "signingIdentity": "-"
+    }
   }
 }
