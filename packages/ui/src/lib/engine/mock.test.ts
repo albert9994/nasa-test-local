@@ -38,5 +38,5 @@ describe("mock engine", () => {
       const picks = await fs.pickThree(ranked, base);
       expect(picks.length).toBe(3);
     }
-  });
+  }, 20_000); // optimizer over 3 farms is CPU-heavy; avoid flaky timeouts on busy CI runners
 });

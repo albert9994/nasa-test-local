@@ -3,11 +3,14 @@
 // an animated soil-water tank per crop, Tmax with the heat threshold, and MODIS NDVI vs the median year.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { cn, fmtMoney } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { useF, useNames } from "@/components/field/hooks";
+import { pickKey } from "@/components/field/numbers";
+import { useT } from "@/lib/i18n";
 import { getEngine, type Rotation, type SeasonResult } from "@/lib/engine";
 import { useApp } from "@/lib/store/app";
 import { useReplay } from "@/lib/store/replay";
-import { CROP_NAMES, axisDays, doyOf, startDay } from "./calendar";
+import { axisDays, doyOf, startDay } from "./calendar";
 import { ReplayControls } from "./controls";
 import { CropCard } from "./crop-card";
 import { NdviChart } from "./ndvi-chart";
@@ -15,7 +18,7 @@ import { NdviChart } from "./ndvi-chart";
 /** Days of the calendar per real second at 1× (the whole 15-month year plays in ~15 s). */
 const DAYS_PER_SEC = 30;
 
-interface PanelData { id: string; label: string; rot: Rotation; seasons: SeasonResult[] }
+interface PanelData { id: string; rot: Rotation; seasons: SeasonResult[] }
 
 function usePrefersReducedMotion() {
   const [r, setR] = useState(false);
@@ -30,6 +33,7 @@ function usePrefersReducedMotion() {
 }
 
 export function DroughtReplay() {
+  const t = useT();
   const handle = useApp((s) => s.handle);
   const farmId = useApp((s) => s.farmId);
   const pack = useApp((s) => s.pack);
@@ -59,7 +63,7 @@ export function DroughtReplay() {
       setBusy(true);
       try {
         const fs = getEngine();
-        const targets = [{ id: "current", label: "Your rotation", rot: rotation }, ...picks.map((p) => ({ id: p.label, label: p.label, rot: p.rot }))];
+        const targets = [{ id: "current", rot: rotation }, ...picks.map((p) => ({ id: p.label, rot: p.rot }))];
         const res = await Promise.all(targets.map((tg) => fs.simulateRotation(handle, tg.rot, opts, year)));
         if (cancelled) return;
         setPanels(targets.map((tg, i) => ({ ...tg, seasons: res[i].traced ?? [] })));
@@ -119,16 +123,16 @@ export function DroughtReplay() {
   const onDay = (d: number) => { pause(); setDay(d); }; // jump on scrub
 
   if (!pack || !base || !year) {
-    return <Card><h3 className="display text-2xl">Drought replay</h3><p className="mt-2 text-sm text-fg-muted">Pick a farm to replay a year.</p></Card>;
+    return <Card><h3 className="display text-2xl">{t("replay.title")}</h3><p className="mt-2 text-sm text-fg-muted">{t("replay.pick_farm")}</p></Card>;
   }
 
   return (
-    <Card className="flex flex-col gap-3 p-4 sm:p-5" >
+    <Card className="flex flex-col gap-3 p-4 sm:p-5" data-tour="replay">
       <div ref={root} className="flex flex-col gap-3">
         <div>
-          <h3 className="display text-2xl sm:text-3xl">Drought replay</h3>
+          <h3 className="display text-2xl">{t("replay.title")}</h3>
           <p className="mt-1 text-sm text-fg-muted">
-            Watch {year}{year === base.worstYear ? ", the worst year on record here," : ""} unfold on the farm. The tank is the water in the soil; amber means the crop is short of water, red means a heat day.
+            {t("replay.intro", { year, worst: year === base.worstYear ? t("replay.intro_worst") : "" })}
           </p>
         </div>
         <ReplayControls
@@ -147,22 +151,26 @@ export function DroughtReplay() {
 }
 
 function Panel({ panel, year, days, day, tmaxDomain }: { panel: PanelData; year: number; days: number; day: number; tmaxDomain: [number, number] }) {
+  const t = useT();
+  const f = useF();
+  const nm = useNames();
   const seasons = useMemo(
     () => [...panel.seasons].sort((a, b) => startDay(year, a.sow) - startDay(year, b.sow)),
     [panel.seasons, year],
   );
   const done = seasons.every((s) => !s.trace || day >= startDay(year, s.sow) + s.trace.fill.length - 1);
   const net = seasons.length ? Math.round(seasons.reduce((a, s) => a + s.net, 0) / seasons.length) : 0;
-  const names = panel.rot.map((s) => CROP_NAMES[s.crop] ?? s.crop).join(" → ");
+  const names = nm.rotation(panel.rot);
+  const label = panel.id === "current" ? t("replay.your_rotation") : t(`analysis.pick_${pickKey(panel.id)}`);
   return (
-    <section className="rounded-xl border border-line bg-bg-elev p-3">
+    <section className="rounded-xl border border-line bg-surface-2 p-3">
       <header className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3">
         <div className="min-w-0">
-          <h4 className="text-sm font-semibold">{panel.label}</h4>
+          <h4 className="text-sm font-semibold">{label}</h4>
           <p className="truncate text-xs text-fg-muted">{names}</p>
         </div>
-        <div className={cn("num text-sm transition-opacity duration-500", done ? "opacity-100" : "opacity-0", net < 0 ? "text-heat" : "text-leaf")}>
-          Farm income {fmtMoney(net)} /ha
+        <div className={cn("num text-sm transition-opacity duration-500", done ? "opacity-100" : "opacity-0", net < 0 ? "text-danger" : "text-ok")}>
+          {t("replay.farm_income", { amount: f.money(net) })}
         </div>
       </header>
       <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
