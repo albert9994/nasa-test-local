@@ -17,7 +17,7 @@ export interface TourStep {
   onEnter?: () => void;
 }
 
-const seenKey = (id: string) => `fieldshift.tour.${id}`;
+const seenKey = (id: string) => `hotar.tour.${id}`;
 const seen = (id: string) => { try { return window.localStorage.getItem(seenKey(id)) === "1"; } catch { return false; } };
 const markSeen = (id: string) => { try { window.localStorage.setItem(seenKey(id), "1"); } catch { /* ignore */ } };
 

@@ -27,11 +27,11 @@ const ls = {
 
 export const browserHost: Host = {
   tauri: false,
-  kvGet: async (k) => ls.get(`fieldshift.${k}`),
-  kvSet: async (k, v) => ls.set(`fieldshift.${k}`, v),
-  kvRemove: async (k) => ls.remove(`fieldshift.${k}`),
-  cacheGet: async (k) => ls.get(`fieldshift.cache.${k}`),
-  cacheSet: async (k, v) => ls.set(`fieldshift.cache.${k}`, v),
+  kvGet: async (k) => ls.get(`hotar.${k}`),
+  kvSet: async (k, v) => ls.set(`hotar.${k}`, v),
+  kvRemove: async (k) => ls.remove(`hotar.${k}`),
+  cacheGet: async (k) => ls.get(`hotar.cache.${k}`),
+  cacheSet: async (k, v) => ls.set(`hotar.cache.${k}`, v),
   async saveFile(name, content, mime = "text/plain") {
     const blob = new Blob([content as BlobPart], { type: mime });
     const a = document.createElement("a");

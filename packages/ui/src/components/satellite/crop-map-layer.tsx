@@ -7,7 +7,7 @@ import { useT } from "@/lib/i18n";
 import { CROP_CLASSES, CROP_COLORS, isPrithvi, type CropClass, type CropMeta } from "./parse";
 import { DEFAULT_DATA_BASE, useCropMap, useCropMeta } from "./use-layer-data";
 
-const ID = "fs-cropmap";
+const ID = "hotar-cropmap";
 
 export function cropBadgeKey(meta: CropMeta | null): string {
   if (!meta) return "satellite.cropMap";

@@ -1,4 +1,4 @@
-# FieldShift Desktop (Tauri 2)
+# Hotar Desktop (Tauri 2)
 
 The paid desktop app (macOS + Windows): first-run onboarding, farm/fields workspace, field analysis, guided tour.
 Vite + React 19 + Tailwind 4 in `src/`, Tauri 2 shell in `src-tauri/`. All UI lives in `packages/ui` (`@/` = `packages/ui/src`),
@@ -29,11 +29,11 @@ Installers are built in CI: `.github/workflows/desktop.yml` (tag `v*` or manual 
 | `packages/ui/src/lib/engine/tauri.ts` | `Engine` adapter that calls Tauri commands + `useNativeEngine()` |
 | `src-tauri/src/native.rs` | native engine commands (cargo feature `native-engine`) |
 
-Farm data is stored by the Tauri store plugin (`fieldshift.json` in the app data folder); data packs of custom fields are
+Farm data is stored by the Tauri store plugin (`hotar.json` in the app data folder); data packs of custom fields are
 cached as files in `<app data>/packs/` so the app works offline after the first load. Demo-farm packs ship inside the app.
 
 ## Server URL (`VITE_API_URL`)
-The AI advisor and the server-side FieldShift Score use the Axum server (`crates/fieldshift-server`). Point the app at it with a Vite env
+The AI advisor and the server-side Hotar Score use the Axum server (`crates/hotar-server`). Point the app at it with a Vite env
 var at dev/build time; empty (default) means offline mode: template text instead of the AI answer, score computed locally.
 
 ```bash
@@ -46,7 +46,7 @@ and desktop share the same code path and fallback. Satellite layers and the weat
 
 ## Native Rust engine
 
-The desktop app runs `fieldshift-core` natively (rayon on all cores): every `Engine` method is a Tauri command in
+The desktop app runs `hotar-core` natively (rayon on all cores): every `Engine` method is a Tauri command in
 `src-tauri/src/native.rs`, with farms kept in a registry in Tauri state and heavy calls on `spawn_blocking`. The cargo feature
 `native-engine` is on by default (`--no-default-features` builds the shell without it).
 

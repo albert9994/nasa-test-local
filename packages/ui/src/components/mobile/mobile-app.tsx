@@ -1,5 +1,5 @@
 "use client";
-// FieldShift mobile app: onboarding funnel on first run, then a tab-bar app (Farm · Alerts · Settings) with a pushed
+// Hotar mobile app: onboarding funnel on first run, then a tab-bar app (Farm · Alerts · Settings) with a pushed
 // field-detail screen. Reuses the farm store, the per-field risk badges and the shared analysis panels.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -81,7 +81,7 @@ function Shell({ onReplayIntro }: { onReplayIntro: () => void }) {
         {tab === "settings" && <SettingsTab onReplayIntro={onReplayIntro} />}
       </main>
 
-      <nav className={cn("flex shrink-0 border-t border-line bg-surface/95 backdrop-blur", SAFE_BOTTOM, "pb-[max(env(safe-area-inset-bottom),6px)]")} aria-label="FieldShift">
+      <nav className={cn("flex shrink-0 border-t border-line bg-surface/95 backdrop-blur", SAFE_BOTTOM, "pb-[max(env(safe-area-inset-bottom),6px)]")} aria-label="Hotar">
         {tabs.map((x) => (
           <button key={x.id} type="button" aria-current={tab === x.id ? "page" : undefined} onClick={() => { haptic(); setTab(x.id); }}
             className={cn("flex flex-1 flex-col items-center gap-0.5 pb-1 pt-2 text-[11px] font-medium transition-colors", tab === x.id ? "text-primary" : "text-fg-subtle")}>
@@ -120,7 +120,7 @@ function FarmTab({ onOpen, onAdd }: { onOpen: (id: string) => void; onAdd: () =>
 
   async function share() {
     setSharing(true);
-    try { await getHost().saveFile(`fieldshift-${(farm.name || "farm").toLowerCase().replace(/[^a-z0-9]+/g, "-")}.html`, buildReportHtml(farm, risks, t, locale), "text/html"); }
+    try { await getHost().saveFile(`hotar-${(farm.name || "farm").toLowerCase().replace(/[^a-z0-9]+/g, "-")}.html`, buildReportHtml(farm, risks, t, locale), "text/html"); }
     finally { setSharing(false); }
   }
 
@@ -339,7 +339,7 @@ function SettingsTab({ onReplayIntro }: { onReplayIntro: () => void }) {
         <button type="button" className="w-full px-4 py-3.5 text-left text-[15px] font-medium text-heat active:bg-heat-soft"
           onClick={() => { if (window.confirm(t("mobile.resetConfirm"))) { prefs.reset(); farm.reset(); } }}>{t("mobile.resetFarm")}</button>
       </Group>
-      <p className="mt-6 text-center text-[12px] text-fg-subtle">FieldShift · {t("mobile.version", { v: "2.0.1" })}</p>
+      <p className="mt-6 text-center text-[12px] text-fg-subtle">Hotar · {t("mobile.version", { v: "2.0.1" })}</p>
     </div>
   );
 }

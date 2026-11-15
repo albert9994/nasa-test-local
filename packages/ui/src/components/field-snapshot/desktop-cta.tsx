@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import type { Land } from "@/lib/geo/land";
 import { listSaved, removeSaved, saveField, type SavedField } from "@/lib/geo/saved";
 
-/** "Full stress test, futures to 2050… → FieldShift Desktop" + "Save this field" (1 field on the Free plan). */
+/** "Full stress test, futures to 2050… → Hotar Desktop" + "Save this field" (1 field on the Free plan). */
 export function DesktopCta({ land, href, onOpenSaved }: { land: Land | null; href: string; onOpenSaved?(f: SavedField): void }) {
   const t = useT();
   const [saved, setSaved] = useState<SavedField[]>([]);

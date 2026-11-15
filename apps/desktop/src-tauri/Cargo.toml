@@ -1,7 +1,7 @@
 [package]
-name = "fieldshift-desktop"
-version = "2.1.0"
-description = "FieldShift desktop app (Tauri 2)"
+name = "hotar-desktop"
+version = "2.2.0"
+description = "Hotar desktop app (Tauri 2)"
 edition = "2021"
 rust-version = "1.77"
 publish = false
@@ -10,7 +10,7 @@ publish = false
 [workspace]
 
 [lib]
-name = "fieldshift_desktop_lib"
+name = "hotar_desktop_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
@@ -25,13 +25,13 @@ tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
-# Native engine: the same Engine contract as the TypeScript/WASM engine, computed by fieldshift-core in Rust (rayon on).
+# Native engine: the same Engine contract as the TypeScript/WASM engine, computed by hotar-core in Rust (rayon on).
 # On by default; `--no-default-features` builds the shell without it (the UI then keeps the TypeScript engine).
-fieldshift-core = { path = "../../../crates/fieldshift-core", optional = true }
+hotar-core = { path = "../../../crates/hotar-core", optional = true }
 
 [features]
 default = ["native-engine"]
-native-engine = ["dep:fieldshift-core"]
+native-engine = ["dep:hotar-core"]
 
 [profile.release]
 opt-level = "s"

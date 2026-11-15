@@ -1,6 +1,6 @@
 # 00 · The idea (read this first, 3 minutes)
 
-## FieldShift: "How much climate change can your farm take?"
+## Hotar: "How much climate change can your farm take?"
 
 **Challenge:** NASA Space Apps 2026 · *Field Shift: Adapting Farms with NASA Data*: help farmers explore crop rotations
 that strengthen soil health and adapt to changing temperature, rainfall and water availability, using NASA Earth
@@ -11,7 +11,7 @@ Farmers choose rotations from the climate they *remember*. Nobody tells them how
 Most tools (and most other teams this weekend) answer "what should I plant?". That is a forecast, and forecasts are fragile.
 
 ### Our answer: measure headroom, not a forecast
-FieldShift gives every farm one number, the **Adaptation Margin**:
+Hotar gives every farm one number, the **Adaptation Margin**:
 
 > "Your corn → soybean rotation can absorb **+X °C** of warming or **Y % less rain** before you lose money more often
 > than 1 year in 5. Mid-century climate projections use Z % of that margin."
@@ -38,7 +38,7 @@ Then the app shows how to get more margin:
 | Presentation | 30-second story: margin → slide to 2050 → replay drought → better rotation. |
 
 ### NASA data and what each will do
-| Dataset | Job in FieldShift |
+| Dataset | Job in Hotar |
 |---|---|
 | NASA POWER daily 2001–2025 (MERRA-2, CERES) | Weather that drives the whole simulation; GWETROOT soil wetness |
 | MODIS MOD13Q1 NDVI 250 m | Independent check of the model; drought-replay greenness |
@@ -50,7 +50,7 @@ Then the app shows how to get more margin:
 | ISRIC SoilGrids 250 m (partner data) | Soil water holding, runoff, erodibility, carbon |
 
 ### What we build this weekend (all from zero)
-One **Rust engine** (`fieldshift-core`: simulator, stress test, optimizer, **quant engine**) used two ways:
+One **Rust engine** (`hotar-core`: simulator, stress test, optimizer, **quant engine**) used two ways:
 - compiled to **WASM** in the browser: the **light site** (Next.js static landing with a Three.js 3D hero + instant demo) and the live sliders of the app;
 - natively in an **Axum server**: heavy runs (10,000 Monte Carlo futures) and the **LLM explanation endpoint** (our API), which explains results to the farmer using only the engine's numbers.
 
@@ -60,4 +60,4 @@ Full Romanian brainstorm: [../BRAINSTORM.md](../BRAINSTORM.md).
 Demo farms: 3 contrasting places (e.g. US Corn Belt, dryland High Plains, a European drought region) + **one from the team's home region**.
 
 ### Our one-sentence pitch
-**"FieldShift turns 25 years of NASA data into one number every farmer understands: how much climate change their rotation can take, and which rotation gives them more."**
+**"Hotar turns 25 years of NASA data into one number every farmer understands: how much climate change their rotation can take, and which rotation gives them more."**

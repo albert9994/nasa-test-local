@@ -63,7 +63,7 @@ export function Workspace() {
 
   async function saveReport() {
     const html = buildReportHtml(farm, risks, t, locale);
-    const where = await getHost().saveFile(`fieldshift-${(farm.name || "farm").toLowerCase().replace(/[^a-z0-9]+/g, "-")}.html`, html, "text/html");
+    const where = await getHost().saveFile(`hotar-${(farm.name || "farm").toLowerCase().replace(/[^a-z0-9]+/g, "-")}.html`, html, "text/html");
     if (where) { setSaved(true); setTimeout(() => setSaved(false), 4000); }
   }
 

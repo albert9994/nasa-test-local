@@ -10,7 +10,7 @@ importers:
 
   apps/desktop:
     dependencies:
-      '@fieldshift/ui':
+      '@hotar/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@fontsource-variable/geist':
@@ -104,7 +104,7 @@ importers:
 
   apps/mobile:
     dependencies:
-      '@fieldshift/ui':
+      '@hotar/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@fontsource-variable/geist':
@@ -195,7 +195,7 @@ importers:
 
   apps/web:
     dependencies:
-      '@fieldshift/ui':
+      '@hotar/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@radix-ui/react-slider':

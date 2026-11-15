@@ -15,7 +15,7 @@ Each contract names a **mock**, so whoever consumes the data can start before it
 | C8 | Farm presets + economics | Moldo → Luca (packs), Albert (engine defaults) | — |
 | C9 | Server API (Axum) | Albert → Octa | fixed JSON files in `apps/web/public/data/mock/api/` (Albert, 15 min) |
 | C11 | Quant parameters (`data/quant_params.json`) | Moldo (M12) → Ionut (I6) | literature defaults inside `quant.rs` |
-| C12 | FieldShift Score (`/api/score`) | Ionut (`score.rs`, rules runner) + Moldo (rules) + Albert (LLM adjust) → Octa | `apps/web/public/data/mock/api/score.json` |
+| C12 | Hotar Score (`/api/score`) | Ionut (`score.rs`, rules runner) + Moldo (rules) + Albert (LLM adjust) → Octa | `apps/web/public/data/mock/api/score.json` |
 | C10 | LLM fact sheet + `/api/explain` | Albert (fact sheet in Rust) + Luca (prompt, fallback texts) → Octa (UI) | `apps/web/public/data/mock/api/explain.json` |
 
 ---
@@ -64,12 +64,12 @@ weights = { profit: 3, stability: 3, soil: 2, water: 1 }   // farmer priorities 
 ```
 Crop ids (Moldo finalises in M2): `maize, soybean, wheat (winter), barley, sorghum, sunflower, pea, millet, fallow`.
 
-## C3 · Engine API: Rust crate `fieldshift-core`, used two ways
+## C3 · Engine API: Rust crate `hotar-core`, used two ways
 The **same Rust code** runs (a) in the browser through **WASM** (site + app sliders) and (b) natively in the **Axum server** (heavy runs, LLM).
 All inputs and outputs are JSON with the shapes below (`serde`, camelCase); the frontend never knows which one answered.
 
 ```
-crates/fieldshift-core/src/
+crates/hotar-core/src/
   crops.rs        Moldo   crop library (C8 defaults)
   soil.rs         Albert  SoilGrids → water holding, curve number, erodibility, carbon stock
   season.rs       Albert  daily simulation of one season
@@ -79,11 +79,11 @@ crates/fieldshift-core/src/
   optimize.rs     Ionut   optimizer + pickThree + budget/equipment filters
   quant.rs        Ionut   Monte Carlo futures (weather × prices × costs) + risk metrics
   explain.rs      Albert  builds the LLM fact sheet (C10)
-crates/fieldshift-wasm/   wasm-bindgen exports (Albert)
-crates/fieldshift-server/ Axum server (Albert, C9)
+crates/hotar-wasm/   wasm-bindgen exports (Albert)
+crates/hotar-server/ Axum server (Albert, C9)
 ```
 
-**WASM exports** (`import init, * as fs from "./pkg/fieldshift_wasm.js"`, all take/return plain JS objects):
+**WASM exports** (`import init, * as fs from "./pkg/hotar_wasm.js"`, all take/return plain JS objects):
 ```js
 fs.prepareFarm(pack) → farmHandle            // parses the C1 pack once; keep the handle
 fs.simulateSeason(farmHandle, cropId, year, opts, trace) → {
@@ -157,7 +157,7 @@ Corn bu/ac × 0.0628 = t/ha; soybean/wheat bu/ac × 0.0673.
 ```
 Moldo's script writes each farm's `layers/<farm>/meta.json` from this file.
 
-## C9 · Server API (`crates/fieldshift-server`, Axum)
+## C9 · Server API (`crates/hotar-server`, Axum)
 | Method + path | Body → response | Use |
 |---|---|---|
 | `GET /api/health` | → `{ ok: true, version }` | deploy check |
@@ -203,7 +203,7 @@ Rules (Luca writes the prompt in `prompts/explain_*.md`):
 - Weather paths reuse real seasons (block bootstrap) shifted along `scenarios.<ssp>.series`, sampling between p10 and p90 per path.
 - These are **scenario probabilities, not forecasts**; the UI and the LLM must say so.
 
-## C12 · FieldShift Score (`POST /api/score` → JSON)
+## C12 · Hotar Score (`POST /api/score` → JSON)
 ```json
 { "rotation": "winter wheat → sorghum → pea",
   "score": 78, "confidence": "medium",

@@ -1,4 +1,4 @@
-//! FieldShift mobile shell (Tauri 2, iOS + Android).
+//! Hotar mobile shell (Tauri 2, iOS + Android).
 //!
 //! Same engine contract as the desktop app: the native commands are the desktop's `native.rs`, included by path so the two
 //! apps can never drift apart. The UI (packages/ui, bundled by apps/mobile) switches to them through
@@ -51,5 +51,5 @@ pub fn run() {
 
     builder
         .run(tauri::generate_context!())
-        .expect("error while running FieldShift");
+        .expect("error while running Hotar");
 }

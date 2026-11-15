@@ -1,19 +1,19 @@
-//! Native engine commands: `fieldshift-core` (Rust, rayon) behind the same JSON contract as the WASM build.
+//! Native engine commands: `hotar-core` (Rust, rayon) behind the same JSON contract as the WASM build.
 //!
 //! One Tauri command per method of the TypeScript `Engine` interface (packages/ui/src/lib/engine/types.ts). Arguments arrive as
-//! one JSON `payload` object, results go back as JSON with exactly the camelCase shapes of `crates/fieldshift-wasm` (both
-//! serialise the same `fieldshift-core` structs), so the UI adapter in packages/ui/src/lib/engine/tauri.ts is a thin forwarder.
+//! one JSON `payload` object, results go back as JSON with exactly the camelCase shapes of `crates/hotar-wasm` (both
+//! serialise the same `hotar-core` structs), so the UI adapter in packages/ui/src/lib/engine/tauri.ts is a thin forwarder.
 //!
 //! Prepared farms live in a registry in Tauri state (`Mutex<HashMap<u32, Arc<PreparedFarm>>>`); `prepare_farm` returns the
 //! numeric handle every other call takes. Heavy calls run on `tauri::async_runtime::spawn_blocking`, so the webview never
-//! freezes; inside them `fieldshift-core` parallelises frontier / optimize / quant on the rayon pool.
+//! freezes; inside them `hotar-core` parallelises frontier / optimize / quant on the rayon pool.
 
-use fieldshift_core::optimize::{PickResult, RankedRotation};
-use fieldshift_core::quant::{QuantConfig, QuantModel};
-use fieldshift_core::score::LlmAdjustment;
-use fieldshift_core::stress::MarketShockParams;
-use fieldshift_core::validate::ObservedYields;
-use fieldshift_core::{
+use hotar_core::optimize::{PickResult, RankedRotation};
+use hotar_core::quant::{QuantConfig, QuantModel};
+use hotar_core::score::LlmAdjustment;
+use hotar_core::stress::MarketShockParams;
+use hotar_core::validate::ObservedYields;
+use hotar_core::{
     explain, optimize as core_optimize, prepare_farm as core_prepare_farm, quant, rotation,
     score as core_score, season, stress, validate as core_validate, Constraints, FarmPack,
     PreparedFarm, RotationStep, ScenarioPoint, SimOptions, Weights,
@@ -212,7 +212,7 @@ pub fn dispatch(reg: &Registry, method: &str, p: Value) -> Result<Value, String>
 pub fn engine_info() -> Result<Value, String> {
     Ok(json!({
         "kind": "native",
-        "name": "fieldshift-core",
+        "name": "hotar-core",
         "version": env!("CARGO_PKG_VERSION"),
         "threads": std::thread::available_parallelism().map(|n| n.get()).unwrap_or(1),
     }))

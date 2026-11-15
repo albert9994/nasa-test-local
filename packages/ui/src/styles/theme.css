@@ -1,4 +1,4 @@
-/* FieldShift design system: clean agri-SaaS, light by default.
+/* Hotar design system: clean agri-SaaS, light by default.
    Import after `@import "tailwindcss";` in each app (web: app/globals.css, desktop: src/main.css).
    Semantic tokens first; the older names (gold, bg-elev, …) are kept as aliases so existing components keep working. */
 :root {

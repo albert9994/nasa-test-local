@@ -1,4 +1,4 @@
-# Impact evidence: who is affected, and why FieldShift helps
+# Impact evidence: who is affected, and why Hotar helps
 
 For the deck (Luca), the submission text (Albert) and judge Q&A (Moldo). Every number has a source link.
 Researched 14 Nov 2026. **Check a number in its source before putting it on a slide.** Several come from news summaries of the original reports.
@@ -32,11 +32,11 @@ Researched 14 Nov 2026. **Check a number in its source before putting it on a sl
 | **Romania, 2024 drought** (our Bărăgan farm) | **~2–2.5 million ha** damaged (≈ **40 %** of wheat/corn/rapeseed/sunflower area); farmers lost **€1.5–2 bn** in revenue; state aid **€400 M** (min. €200/ha), which farmers say doesn't cover sowing costs; sunflower losses **up to 90 %** locally while **wheat had only minor losses**; **< 2 M of 9 M ha** arable land is irrigated | [Romania Insider (Aug)](https://romania-insider.com/drought-losses-romanian-farmers-august-2024), [Romania Insider (Sept)](https://romania-insider.com/drought-losses-romania-sept-2024), [Romania Insider (crops)](https://www.romania-insider.com/romania-corn-sunflower-crops-drought-2024), [S&P Global](https://www.spglobal.com/commodity-insights/en/news-research/latest-news/agriculture/081424-romanian-farmers-begin-early-harvest-of-sunflower-crop-due-to-drought), [phys.org / AFP](https://phys.org/news/2024-08-years-romanian-farms-wilt-drought.html) |
 
 > **Strong local hook:** in Romania 2024, winter wheat (harvested before the summer heat) had minor losses while
-> sunflower and maize collapsed. That is exactly what FieldShift's drought replay shows, and why rotation choice is an adaptation lever.
+> sunflower and maize collapsed. That is exactly what Hotar's drought replay shows, and why rotation choice is an adaptation lever.
 
 ---
 
-## 2. Evidence that what FieldShift recommends actually works
+## 2. Evidence that what Hotar recommends actually works
 
 ### Rotation diversification makes farms more resilient
 | Finding | Source |
@@ -59,8 +59,8 @@ Researched 14 Nov 2026. **Check a number in its source before putting it on a sl
 
 ---
 
-## 3. How FieldShift answers each problem
-| Problem (evidence above) | What FieldShift does | Feature / owner |
+## 3. How Hotar answers each problem
+| Problem (evidence above) | What Hotar does | Feature / owner |
 |---|---|---|
 | Hundreds of millions of farmers face more heat and drought, but plan from the climate they remember | Replays **their own field's** last 25 years and shifts them warmer and drier → one number: the **Adaptation Margin** | Engine (Albert + Moldo), hero (Octa) |
 | Each +1 °C costs maize ~7 % (US ~10 %) | Margin in **°C** + "safe until ~20XX" from NASA CMIP6 projections | I3, I6, LU7 |
@@ -78,7 +78,7 @@ Researched 14 Nov 2026. **Check a number in its source before putting it on a sl
 2. **"Every 1 °C of warming costs maize about 7 % of its yield, and 10 % in the US Corn Belt."** (Zhao et al. 2017, *PNAS*)
 3. **"In 2024 drought damaged over 2 million hectares in Romania and cost farmers up to €2 billion. The wheat survived; the sunflower didn't."** (Romanian Ministry of Agriculture / Pro Agro via Romania Insider)
 4. **"Diverse rotations cut drought-year yield losses by up to 90 %, but farmers can't see in advance which rotation protects *their* field."** (Bowles et al. 2020)
-5. **"52 % of farmers say satellite data would be valuable; only 28 % know how to use it. FieldShift is the bridge."** (NASA Acres survey 2024)
+5. **"52 % of farmers say satellite data would be valuable; only 28 % know how to use it. Hotar is the bridge."** (NASA Acres survey 2024)
 
 ## 5. Honest caveats (Moldo: be ready in Q&A)
 - Farmer counts vary because "smallholder" has no single definition; say **"about half a billion"**.

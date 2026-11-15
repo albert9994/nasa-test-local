@@ -25,7 +25,7 @@ function apply(map: MlMap, l: GibsLayer, s: { on: boolean; date: string }, befor
   if (present) map.removeSource(id);
   map.addSource(id, { type: "raster", tiles: [url], tileSize: 256, maxzoom: l.maxZoom, attribution: "NASA GIBS" });
   // keep the crop map (if any) above the imagery
-  const before = map.getLayer("fs-cropmap") ? "fs-cropmap" : beforeId && map.getLayer(beforeId) ? beforeId : undefined;
+  const before = map.getLayer("hotar-cropmap") ? "hotar-cropmap" : beforeId && map.getLayer(beforeId) ? beforeId : undefined;
   map.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": l.opacity } }, before);
 }
 

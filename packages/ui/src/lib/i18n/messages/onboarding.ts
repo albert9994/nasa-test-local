@@ -5,7 +5,7 @@ export const onboarding = {
     skipSetup: "Skip setup",
     demoFarm: "Try the demo farm (Ialomița)",
     // 1 welcome
-    welcomeTitle: "Welcome to FieldShift",
+    welcomeTitle: "Welcome to Hotar",
     welcomeBody: "In about two minutes we set up your farm, then show how heat and drought could hit each field, and what to grow to stay safe.",
     welcomeLang: "Choose your language",
     start: "Set up my farm",
@@ -67,7 +67,7 @@ export const onboarding = {
     stepOf: "Pasul {n} din {total}",
     skipSetup: "Sari peste configurare",
     demoFarm: "Încearcă ferma demo (Ialomița)",
-    welcomeTitle: "Bine ai venit în FieldShift",
+    welcomeTitle: "Bine ai venit în Hotar",
     welcomeBody: "În vreo două minute îți configurăm ferma, apoi îți arătăm cum pot lovi căldura și seceta fiecare lan și ce să cultivi ca să rămâi în siguranță.",
     welcomeLang: "Alege limba",
     start: "Configurează ferma",

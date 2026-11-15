@@ -1,1 +1,1 @@
-"""FieldShift data pipeline package."""
+"""Hotar data pipeline package."""

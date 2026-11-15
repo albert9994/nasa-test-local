@@ -5,8 +5,8 @@ import { createWasmEngine } from "./wasm";
 import { DEFAULT_OPTS, type FarmPack, type Rotation } from "./types";
 
 const dir = join(__dirname, "../../../../engine-wasm");
-const wasmFile = join(dir, "fieldshift_wasm_bg.wasm");
-const built = existsSync(join(dir, "fieldshift_wasm.js")) && existsSync(wasmFile) && readFileSync(wasmFile).length > 1000;
+const wasmFile = join(dir, "hotar_wasm_bg.wasm");
+const built = existsSync(join(dir, "hotar_wasm.js")) && existsSync(wasmFile) && readFileSync(wasmFile).length > 1000;
 
 const pack = (id: string): FarmPack =>
   JSON.parse(readFileSync(join(__dirname, "../../../../../apps/web/public/data/mock/farms", `${id}.json`), "utf8"));

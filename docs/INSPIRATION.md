@@ -7,7 +7,7 @@ Checked 14 Nov 2026. Items marked *(from memory)* were not re-checked today; ope
 ## 1. Closest competitors (climate × crop rotation × farm decisions)
 Know these for the judges' "how is this different?" question.
 
-| Tool | What it does | What to steal | How FieldShift differs |
+| Tool | What it does | What to steal | How Hotar differs |
 |---|---|---|---|
 | **[EDF Ag Credit Risk tool](https://agcreditrisk.edf.org/)** (Environmental Defense Fund + 4 lenders) | Projects weather → crop yields → farm profit and **credit risk** to mid-century for Nebraska, Iowa, South Dakota, Alberta, Saskatchewan. A custom scenario picks county, farm size, **crop rotation** and risk level | **5-tab story flow**: Intro → Weather → Crop yield → Profit & risk → Next steps (Octa/Ionut: our page order). **Full dataset download** (a trust signal) | Built for lenders, 5 regions, county-level model farms. Ours: **any field on Earth**, live NASA data, one "margin" number, optimizer, drought replay |
 | **[RotationARM](https://era.dpi.qld.gov.au/id/eprint/15651/1/1-s2.0-S0168169926003200-main.pdf)** (Queensland DPI, Australia) | Rotation risk tool on **APSIM**, backed by **22.9 million pre-run simulations** + cost/benefit across 24 sites | Pre-computing many simulations; showing how **sowing rules / cropping intensity** change risk (our levers) | 24 sites in one country, research-grade. Ours runs live for any point, in the browser |
@@ -20,7 +20,7 @@ Know these for the judges' "how is this different?" question.
 | **[CalClimateAg tool](https://calclimateag.org/online-tool-helps-farmers-reduce-climate-related-risks/)** | Online tool to reduce climate-related farm risks | — | — |
 
 **Pitch line from this:** *"Tools like EDF's and RotationARM prove farmers and lenders want rotation-level climate risk, but they
-cover a handful of regions. FieldShift does it for any field on Earth, with NASA data, in the browser, and boils it down to one number."*
+cover a handful of regions. Hotar does it for any field on Earth, with NASA data, in the browser, and boils it down to one number."*
 
 **Cautionary tale:** **ClimateAi** wound down in 2025, two years after **Gro Intelligence** shut down
 ([AgFunderNews](https://agfundernews.com/climate-resilience-platform-climateai-winds-down-operations)). Lesson: insight alone
@@ -69,7 +69,7 @@ doesn't keep a product alive; it has to drive a decision a farmer actually makes
   - EOSDA's "normal range" band on the NDVI chart.
   - Optional ashMeteo-like 3D strip.
 - **Luca (story + deck):**
-  - Competitor slide: EDF / RotationARM / FAO tools → "few regions, research-grade" vs FieldShift "any field, one number".
+  - Competitor slide: EDF / RotationARM / FAO tools → "few regions, research-grade" vs Hotar "any field, one number".
   - The 2°C Earth tone for the video.
 - **Moldo (agronomy):**
   - Read RotationARM's paper for which sowing rules and intensity changes matter.

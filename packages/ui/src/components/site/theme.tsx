@@ -1,5 +1,5 @@
 "use client";
-// Website theme: the visitor's saved choice (`fs-theme`, shared with the app) or the system setting.
+// Website theme: the visitor's saved choice (`hotar-theme`, shared with the app) or the system setting.
 // The layout sets `data-theme` before first paint; this hook mirrors it and lets the nav toggle it.
 import { useCallback, useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
@@ -23,7 +23,7 @@ export function useSiteTheme() {
   const toggle = useCallback(() => {
     const next: SiteTheme = read() === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
-    try { localStorage.setItem("fs-theme", next); } catch { /* private mode */ }
+    try { localStorage.setItem("hotar-theme", next); } catch { /* private mode */ }
   }, []);
   return { theme, toggle };
 }

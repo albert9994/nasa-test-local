@@ -1,21 +1,21 @@
-# FieldShift v2: what changed and who does what
+# Hotar v2: what changed and who does what
 
 ## Product (decided by Octa, 14 Nov)
-FieldShift is a **SaaS for farmers and advisers**, not a hackathon demo. No team or hackathon content in the product.
+Hotar is a **SaaS for farmers and advisers**, not a hackathon demo. No team or hackathon content in the product.
 - **Web (free):** SaaS landing page + **free map tool**: search a place, **select a piece of land** (draw it, click a farmland
   parcel, or drop a circle), see simple information and processed NASA data for it, and how it could be affected.
 - **Desktop app (paid, Mac/Windows, Tauri 2):** the full workspace: farm + fields, stress test, futures (quant), rotations
-  optimizer + FieldShift Score, drought replay, satellite layers (incl. Prithvi-EO-2.0 crop map), AI advisor, PDF report, alerts.
+  optimizer + Hotar Score, drought replay, satellite layers (incl. Prithvi-EO-2.0 crop map), AI advisor, PDF report, alerts.
 - **RO + EN everywhere** (Romanian first), a **walkthrough** for first-time farmers, a **light agri-SaaS look**.
 - **Only real data** is shown as real; anything else is labelled "Illustrative".
 
 ## Architecture
 ```
-crates/fieldshift-core     unified Rust engine (simulator, stress, optimizer, quant, score + Rhai rules, fact sheet)
-crates/fieldshift-wasm     wasm-bindgen exports (C3) → packages/engine-wasm (web)
-crates/fieldshift-server   Axum API: explain (LLM), score, data proxies (CMIP6, HLS, IMERG, SMAP…)
+crates/hotar-core     unified Rust engine (simulator, stress, optimizer, quant, score + Rhai rules, fact sheet)
+crates/hotar-wasm     wasm-bindgen exports (C3) → packages/engine-wasm (web)
+crates/hotar-server   Axum API: explain (LLM), score, data proxies (CMIP6, HLS, IMERG, SMAP…)
 apps/web                   Next.js: /ro, /en landing + /[locale]/map free tool
-apps/desktop               Tauri 2 + Vite; Rust commands call fieldshift-core natively
+apps/desktop               Tauri 2 + Vite; Rust commands call hotar-core natively
 packages/ui                shared React (design system, i18n, map, panels, walkthrough). `@/` = packages/ui/src
 pipeline/                  Python data pipeline (packs, CMIP6, yields, NDVI, Prithvi precompute)
 ```

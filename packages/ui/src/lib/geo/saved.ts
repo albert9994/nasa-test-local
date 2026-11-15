@@ -2,7 +2,7 @@
 import { encodeLand, decodeLand } from "./url-state";
 import type { Land } from "./land";
 
-const KEY = "fieldshift.saved-fields";
+const KEY = "hotar.saved-fields";
 export const FREE_FIELD_LIMIT = 1;
 export interface SavedField { id: string; name: string; savedAt: number; land: string }
 

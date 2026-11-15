@@ -9,13 +9,12 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "assets": "node scripts/assets/build-all.mjs",
-    "cf:installers": "node ../../scripts/fetch-installers.mjs",
     "cf:build": "node ../../scripts/ensure-wasm.mjs && opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare preview",
     "cf:deploy": "opennextjs-cloudflare deploy"
   },
   "dependencies": {
-    "@fieldshift/ui": "workspace:*",
+    "@hotar/ui": "workspace:*",
     "@radix-ui/react-slider": "^1.6.1",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",

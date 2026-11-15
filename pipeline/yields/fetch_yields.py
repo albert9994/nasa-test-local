@@ -30,7 +30,7 @@ TEMPO_PIVOT = "http://statistici.insse.ro:8077/tempo-ins/pivot"
 TEMPO_MATRIX = "http://statistici.insse.ro:8077/tempo-ins/matrix"
 TEMPO_URL = "http://statistici.insse.ro:8077/tempo-online/#/pages/tables/insse-table"
 
-# FieldShift crop id -> TEMPO crop name (accent-free, as TEMPO labels them)
+# Hotar crop id -> TEMPO crop name (accent-free, as TEMPO labels them)
 RO_CROPS: dict[str, str] = {
     "wheat": "Grau si secara",
     "barley": "Orz si orzoaica",
@@ -40,7 +40,7 @@ RO_CROPS: dict[str, str] = {
     "pea": "Mazare boabe",
     "sorghum": "Sorg",
 }
-# FieldShift farm id -> (TEMPO county label, display name)
+# Hotar farm id -> (TEMPO county label, display name)
 RO_COUNTIES: dict[str, tuple[str, str]] = {
     "baragan": ("Ialomita", "Județul Ialomița"),
     "vaslui": ("Vaslui", "Județul Vaslui"),

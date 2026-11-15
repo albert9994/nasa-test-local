@@ -67,7 +67,7 @@ export function Onboarding() {
   }
   function finish() {
     const fields: Field[] = draft.fields.map((f) => newField({ name: f.name, centroid: f.centroid, areaHa: f.areaHa, crop: f.crop, history: f.history, geometry: landPolygon(f.land) }));
-    complete({ name: draft.name.trim() || draft.place?.name.split(",")[0] || "FieldShift", place: draft.place, fields, profile: draft.profile });
+    complete({ name: draft.name.trim() || draft.place?.name.split(",")[0] || "Hotar", place: draft.place, fields, profile: draft.profile });
   }
   function addLand() {
     if (!land) return;
@@ -86,7 +86,7 @@ export function Onboarding() {
   return (
     <div className="flex h-full flex-col bg-bg text-fg">
       <header className="flex items-center gap-4 border-b border-line bg-surface px-6 py-3">
-        <span className="display text-xl">FieldShift</span>
+        <span className="display text-xl">Hotar</span>
         <div className="mx-auto flex w-full max-w-md items-center gap-3" aria-label={t("onboarding.stepOf", { n: step + 1, total: STEPS })}>
           <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
             <div className="h-full bg-primary transition-all duration-300" style={{ width: `${((step + 1) / STEPS) * 100}%` }} />

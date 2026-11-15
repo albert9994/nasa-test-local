@@ -13,7 +13,7 @@ function useTheme() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   useEffect(() => {
     let saved: string | null = null;
-    try { saved = localStorage.getItem("fs-theme"); } catch { /* private mode */ }
+    try { saved = localStorage.getItem("hotar-theme"); } catch { /* private mode */ }
     const t = saved === "dark" ? "dark" : "light"; // light by default (agri-SaaS look); dark only on request
     document.documentElement.dataset.theme = t;
     setTheme(t);
@@ -22,7 +22,7 @@ function useTheme() {
     const t = theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = t;
     setTheme(t);
-    try { localStorage.setItem("fs-theme", t); } catch { /* ignore */ }
+    try { localStorage.setItem("hotar-theme", t); } catch { /* ignore */ }
   };
   return { theme, toggle };
 }
@@ -42,7 +42,7 @@ export function AppHeader() {
 
   return (
     <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-surface px-4 py-3">
-      <a href="/" className="display text-2xl text-primary">FieldShift</a>
+      <a href="/" className="display text-2xl text-primary">Hotar</a>
       <select aria-label={t("farm.farm")} className="h-10 min-w-0 max-w-full flex-1 rounded-lg border border-line bg-surface px-2 text-sm sm:max-w-xs"
         value={farmId ?? ""} onChange={(e) => selectFarm(e.target.value)} data-tour="farm-picker">
         {!index.some((f) => f.id === farmId) && <option value={farmId ?? ""}>{farmId ?? t("farm.loading")}</option>}

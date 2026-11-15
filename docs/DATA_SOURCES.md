@@ -1,4 +1,4 @@
-# FieldShift Data Sources and Provenance
+# Hotar Data Sources and Provenance
 
 Rule: every number the product shows is either **real** (fetched by a rerunnable script from the
 provider below) or labelled **illustrative**. The machine-readable version of this page is

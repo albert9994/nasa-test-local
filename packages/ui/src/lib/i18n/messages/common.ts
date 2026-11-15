@@ -1,7 +1,7 @@
 // Shared vocabulary + farmer glossary. RO is the primary language; keep wording plain (a farmer, not a scientist).
 export const common = {
   en: {
-    appName: "FieldShift",
+    appName: "Hotar",
     language: "Language",
     next: "Next", back: "Back", skip: "Skip", done: "Done", close: "Close", cancel: "Cancel", save: "Save",
     loading: "Loading…", retry: "Try again", learnMore: "Learn more", source: "Source", illustrative: "Illustrative",
@@ -16,7 +16,7 @@ export const common = {
     risk_safe: "Safe", risk_tight: "Tight", risk_over: "Over the limit",
   },
   ro: {
-    appName: "FieldShift",
+    appName: "Hotar",
     language: "Limbă",
     next: "Înainte", back: "Înapoi", skip: "Sari peste", done: "Gata", close: "Închide", cancel: "Renunță", save: "Salvează",
     loading: "Se încarcă…", retry: "Încearcă din nou", learnMore: "Află mai mult", source: "Sursă", illustrative: "Ilustrativ",

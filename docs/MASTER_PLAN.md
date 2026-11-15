@@ -1,6 +1,6 @@
-# FieldShift: Master Plan (feature catalog, judging, pitch)
+# Hotar: Master Plan (feature catalog, judging, pitch)
 
-> **One line:** FieldShift measures a farm's **Adaptation Margin**: how many °C of warming or % less rain the current crop
+> **One line:** Hotar measures a farm's **Adaptation Margin**: how many °C of warming or % less rain the current crop
 > rotation can absorb before the farm loses money more often than the farmer can accept. Then it stress-tests that
 > rotation against 3 automatically found resilient rotations, using 25 years of NASA data for that exact field.
 
@@ -22,7 +22,7 @@ Add one **space-agency partner** dataset (ESA Sentinel-2 / ESA CCI soil moisture
 Target awards: *Best Use of Science*, *Best Use of Data*, *Global Impact*.
 
 ## 2. Requirements → features (Albert completes this against the official text in `docs/CHALLENGE.md`)
-| Prompt asks for | FieldShift feature | Task |
+| Prompt asks for | Hotar feature | Task |
 |---|---|---|
 | NASA Earth observations | POWER weather, MODIS NDVI, SMAP, ECOSTRESS, NASADEM, NEX-GDDP-CMIP6, GIBS | LU1, M4, LU7, A10, O1 |
 | Local soil information | SoilGrids → water holding, runoff, erodibility, carbon | LU3, A7, M6 |
@@ -36,7 +36,7 @@ Target awards: *Best Use of Science*, *Best Use of Data*, *Global Impact*.
 
 ## 3. Feature catalog (P0 = demo can't work without it · P1 = this weekend · P2 = stretch · P3 = roadmap slide)
 
-### Simulation engine: Rust `fieldshift-core` → WASM + Axum server (Albert + Moldo)
+### Simulation engine: Rust `hotar-core` → WASM + Axum server (Albert + Moldo)
 - [ ] P0 Daily soil-water balance with growing roots + subsoil store; off-season recharge
 - [ ] P0 Growing-degree-day phenology; temperature-triggered sowing
 - [ ] P0 Stage-wise water-stress yield response; heat at flowering + season-long extreme heat; frost
@@ -55,7 +55,7 @@ Target awards: *Best Use of Science*, *Best Use of Data*, *Global Impact*.
 - [ ] P1 **Quant engine**: Monte Carlo futures 2026–2050 (weather bootstrap × CMIP6, mean-reverting correlated prices, cost jumps) → fan chart, VaR/CVaR, ruin probability, margin-year distribution
 - [ ] P1 Market shock (price ±30 %, inputs +40 %) + budget/equipment constraints in the optimizer
 - [ ] P2 Risk–return frontier (rotations as a portfolio, mean-CVaR)
-- [ ] P1 **FieldShift Score**: simulator + quant + Rhai agronomy rules + data signals + bounded LLM adjustment (±10) → score 0–100, confidence, waterfall
+- [ ] P1 **Hotar Score**: simulator + quant + Rhai agronomy rules + data signals + bounded LLM adjustment (±10) → score 0–100, confidence, waterfall
 
 ### Data (Luca + Moldo + Albert)
 - [ ] P0 NASA POWER daily packs for demo farms

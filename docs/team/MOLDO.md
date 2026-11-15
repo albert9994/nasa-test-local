@@ -3,7 +3,7 @@
 **You are:** the team's farmer brain. You decide what the crops, rotations and economics look like in real life, so the
 model and its recommendations **make sense to a real farmer**. You also run two data jobs (MODIS NDVI and county yields)
 and code the soil-health formulas.
-**You own:** `crates/fieldshift-core/data/crops.json` (read by Rust with `include_str!`), `crates/fieldshift-core/src/soil_health.rs` · `data/equipment.json` · `pipeline/presets.json` (farms + economics) ·
+**You own:** `crates/hotar-core/data/crops.json` (read by Rust with `include_str!`), `crates/hotar-core/src/soil_health.rs` · `data/equipment.json` · `pipeline/presets.json` (farms + economics) ·
 `pipeline/ndvi/`, `pipeline/yields/` · `apps/web/public/data/validation/<farm>.json` · `docs/QA.md`.
 **Your partners:** Albert (engine pair: you give rules and numbers, he codes the loop) · Luca (data + validation) · Octa (farmer plan text).
 **Sleep:** shift 2, ≈T+15.5 → T+19.5.

@@ -1,4 +1,4 @@
-"""Tests for the FieldShift data pipeline (real-data build; no network access needed)."""
+"""Tests for the Hotar data pipeline (real-data build; no network access needed)."""
 
 from __future__ import annotations
 

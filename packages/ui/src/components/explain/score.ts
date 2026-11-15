@@ -1,4 +1,4 @@
-// Client-side FieldShift Score (C12 shape) used when /api/score is unavailable.
+// Client-side Hotar Score (C12 shape) used when /api/score is unavailable.
 // Deterministic: subscores from the engine results + a couple of simple rules. llm is always null here.
 import { CROPS } from "../../lib/engine/mock";
 import type { MarginResult, Rotation, RotationResult, ScoreResult } from "@/lib/engine/types";

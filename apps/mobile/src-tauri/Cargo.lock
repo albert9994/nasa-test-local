@@ -1063,34 +1063,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fieldshift-core"
-version = "0.2.0"
-dependencies = [
- "once_cell",
- "rand",
- "rand_chacha",
- "rayon",
- "rhai",
- "serde",
- "serde_json",
- "thiserror 2.0.21",
-]
-
-[[package]]
-name = "fieldshift-mobile"
-version = "2.0.1"
-dependencies = [
- "fieldshift-core",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-fs",
- "tauri-plugin-opener",
- "tauri-plugin-store",
-]
-
-[[package]]
 name = "find-msvc-tools"
 version = "0.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1567,6 +1539,34 @@ name = "hex"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
+
+[[package]]
+name = "hotar-core"
+version = "0.2.0"
+dependencies = [
+ "once_cell",
+ "rand",
+ "rand_chacha",
+ "rayon",
+ "rhai",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+]
+
+[[package]]
+name = "hotar-mobile"
+version = "2.0.1"
+dependencies = [
+ "hotar-core",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-fs",
+ "tauri-plugin-opener",
+ "tauri-plugin-store",
+]
 
 [[package]]
 name = "html5ever"

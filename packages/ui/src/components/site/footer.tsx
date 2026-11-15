@@ -22,7 +22,7 @@ export function SiteFooter() {
               <li><Link href={p("/map")}>{t("site.navTry")}</Link></li>
               <li><Link href={`${p()}#how`}>{t("site.navHow")}</Link></li>
               <li><Link href={p("/pricing")}>{t("site.navPricing")}</Link></li>
-              <li><Link href={`${p()}#download`}>FieldShift Desktop</Link></li>
+              <li><Link href={`${p()}#download`}>Hotar Desktop</Link></li>
               <li><Link href={p("/signin")}>{t("site.navSignin")}</Link></li>
             </ul>
           </div>

@@ -16,7 +16,7 @@ Toate livrabilele lui **Moldo** (`M1`–`M9`, `M11`, `M12` + `C13` Parcele clica
 🌱 UPDATE MOLDO (branch `moldy` gata de merge!):
 Am terminat și pre-generat toate straturile și modulele mele (fără conflicte pe fișierele voastre):
 ✅ M1 + M3 (`pipeline/presets.json`, `data/equipment.json`, `apps/web/public/data/layers/{iowa,kansas,baragan,moldova}/meta.json`): cele 4 ferme demo + costuri/prețuri/utilaje + surse piață.
-✅ M2 + M6 (`crates/fieldshift-core/data/crops.json`, `src/crops.rs`, `src/soil_health.rs`): toate cele 9 culturi + secară cover crop + formulele Rust pentru carbon (Q10 + Poeplau & Don) și eroziune RUSLE.
+✅ M2 + M6 (`crates/hotar-core/data/crops.json`, `src/crops.rs`, `src/soil_health.rs`): toate cele 9 culturi + secară cover crop + formulele Rust pentru carbon (Q10 + Poeplau & Don) și eroziune RUSLE.
 ✅ M4 + M5 (`layers/*/ndvi.json` + `apps/web/public/data/validation/{iowa,kansas,baragan,moldova}.json`): 25 de sezoane MODIS NDVI + recoltele oficiale NASS/INS/Eurostat 2001–2025.
 ✅ M12 (`data/quant_params.json`): parametrii Ornstein-Uhlenbeck (vol 16–22%/an, revenire la medie, corelație preț-recoltă negativă, șoc îngrășăminte) gata pt Ionuț (`I6`).
 ✅ M8 (`rules/*.rhai` — 13 reguli + `docs/FARMER_TIPS.md`) & M9 (`docs/QA.md` — 12 întrebări juriu).
@@ -46,10 +46,10 @@ Detalii per persoană în `docs/team/SYNC_MOLDO.md`.
 - Pentru **`LU9` (`docs/DATA_SOURCES.md`)**: Ai toate cele **12 surse NASA + Parteneri (ESA, JAXA, USDA, ISRIC)** documentate complet în [`data/nasa_resources.json`](../../data/nasa_resources.json).
 
 ### 3. Pentru **Albert** (Rust Core `A7/A8` & `SCIENCE.md` `A14`)
-- În `crates/fieldshift-core/`:
-  - [`crates/fieldshift-core/data/crops.json`](../../crates/fieldshift-core/data/crops.json) și [`crates/fieldshift-core/src/crops.rs`](../../crates/fieldshift-core/src/crops.rs) sunt gata (încărcare cu `include_str!` + `CropLibrary::carry_over_effect`).
-  - [`crates/fieldshift-core/src/soil_health.rs`](../../crates/fieldshift-core/src/soil_health.rs) este gata și testat (`compute_soil_health` returnează `soilScore`, `socChangePct`, `erosion`).
-- Când faci `Cargo.toml` pentru `fieldshift-core`, adaugă `pub mod crops; pub mod soil_health;` în `lib.rs`.
+- În `crates/hotar-core/`:
+  - [`crates/hotar-core/data/crops.json`](../../crates/hotar-core/data/crops.json) și [`crates/hotar-core/src/crops.rs`](../../crates/hotar-core/src/crops.rs) sunt gata (încărcare cu `include_str!` + `CropLibrary::carry_over_effect`).
+  - [`crates/hotar-core/src/soil_health.rs`](../../crates/hotar-core/src/soil_health.rs) este gata și testat (`compute_soil_health` returnează `soilScore`, `socChangePct`, `erosion`).
+- Când faci `Cargo.toml` pentru `hotar-core`, adaugă `pub mod crops; pub mod soil_health;` în `lib.rs`.
 
 ### 4. Pentru **Ionuț** (Optimizator `I4`, Quant `I6`, Science Panel `I7`)
 - **`I4` (Optimizator & Filtre utilaje + Scor `C12`)**:

@@ -1,6 +1,6 @@
 "use client";
 // AI assistant page (desktop): a conversation about one field. The question, the last turns and the field's fact sheet go
-// to the FieldShift server (/api/explain, mode "chat"), which holds the LLM key, checks every number against the fact
+// to the Hotar server (/api/explain, mode "chat"), which holds the LLM key, checks every number against the fact
 // sheet and streams the answer. Without a server it answers with the deterministic summary built from the same numbers.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { create } from "zustand";
