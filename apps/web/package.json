@@ -15,7 +15,7 @@
     "cf:deploy": "opennextjs-cloudflare deploy"
   },
   "dependencies": {
-    "@fieldshift/ui": "workspace:*",
+    "@hotar/ui": "workspace:*",
     "@radix-ui/react-slider": "^1.6.1",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",

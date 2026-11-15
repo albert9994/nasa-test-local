@@ -24,7 +24,7 @@ jobs:
       - id: d
         run: |
           echo "rust=$([ -f Cargo.toml ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
-          echo "wasm=$([ -d crates/fieldshift-wasm ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "wasm=$([ -d crates/hotar-wasm ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
           echo "web=$([ -f package.json ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
           echo "python=$([ -d pipeline ] && find pipeline -name '*.py' | grep -q . && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
@@ -46,7 +46,7 @@ jobs:
         if: needs.detect.outputs.wasm == 'true'
         run: |
           curl -sSf https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
-          wasm-pack build crates/fieldshift-wasm --target web --out-dir ../../packages/engine-wasm
+          wasm-pack build crates/hotar-wasm --target web --out-dir ../../packages/engine-wasm
 
   web:
     needs: detect

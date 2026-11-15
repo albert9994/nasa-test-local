@@ -1,4 +1,4 @@
-// FieldShift mobile app: onboarding funnel + app shell. RO is primary; short lines, thumb-sized.
+// Hotar mobile app: onboarding funnel + app shell. RO is primary; short lines, thumb-sized.
 export const mobile = {
   en: {
     // intro carousel

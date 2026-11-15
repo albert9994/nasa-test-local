@@ -1,6 +1,6 @@
 # Team folder: start here
 
-We build FieldShift **from zero** this weekend. (An earlier throw-away prototype exists on Octa's laptop, not in this repo. Ask Octa only if you're stuck.)
+We build Hotar **from zero** this weekend. (An earlier throw-away prototype exists on Octa's laptop, not in this repo. Ask Octa only if you're stuck.)
 
 | File | Read it if you are | What it is |
 |---|---|---|
@@ -13,10 +13,10 @@ We build FieldShift **from zero** this weekend. (An earlier throw-away prototype
 | [IONUT.md](IONUT.md) | Ionut | Design system + charts + Rust stress test, optimizer and **quant engine** + cards/panels + video graphics |
 | [OCTA.md](OCTA.md) | Octa | Frontend lead: full app (WASM), light site (Next.js static pages + Three.js hero), AI-explanation UI, replay, live click, deploy + **the video** |
 
-Product brainstorm (Romanian): app vs light site, full stack (Next.js, React, Three.js, Rust), LLM, **quant engine**, **hybrid FieldShift Score**, **monetization**: [../BRAINSTORM.md](../BRAINSTORM.md).
+Product brainstorm (Romanian): app vs light site, full stack (Next.js, React, Three.js, Rust), LLM, **quant engine**, **hybrid Hotar Score**, **monetization**: [../BRAINSTORM.md](../BRAINSTORM.md).
 Feature ideas, judging, pitch and Q&A: [../MASTER_PLAN.md](../MASTER_PLAN.md).
 Competitors and design inspiration (with what each person should steal): [../INSPIRATION.md](../INSPIRATION.md).
-Who is affected and why FieldShift helps (sources for the deck and Q&A): [../IMPACT_EVIDENCE.md](../IMPACT_EVIDENCE.md).
+Who is affected and why Hotar helps (sources for the deck and Q&A): [../IMPACT_EVIDENCE.md](../IMPACT_EVIDENCE.md).
 
 **How to use your file:** do the rows top to bottom. *With* = who you pair with. *Needs / start when* = what must be done first.
 When you finish a row that *Unblocks* someone, post `"<ID> done → <who> unblocked"` + the file path in the team chat.

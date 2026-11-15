@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    fieldshift_mobile_lib::run()
+    hotar_mobile_lib::run()
 }

@@ -1,4 +1,4 @@
-# FieldShift Mobile (Tauri 2, iOS + Android)
+# Hotar Mobile (Tauri 2, iOS + Android)
 
 The phone app. Same engine and data as the desktop app, with a phone-first UI:
 
@@ -46,12 +46,12 @@ pnpm --filter mobile tauri ios build
 pnpm --filter mobile tauri android build
 ```
 
-After `ios init`, add the location prompt text to `src-tauri/gen/apple/fieldshift-mobile_iOS/Info.plist`
+After `ios init`, add the location prompt text to `src-tauri/gen/apple/hotar-mobile_iOS/Info.plist`
 (for "Use my location"):
 
 ```xml
 <key>NSLocationWhenInUseUsageDescription</key>
-<string>FieldShift uses your location to find your farm's weather and soil data.</string>
+<string>Hotar uses your location to find your farm's weather and soil data.</string>
 ```
 
 On Android, add `<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />` to
@@ -59,7 +59,7 @@ On Android, add `<uses-permission android:name="android.permission.ACCESS_COARSE
 
 ## Engine
 
-`src-tauri/src/lib.rs` includes the desktop's `native.rs` by path, so phones run `fieldshift-core` natively (same
+`src-tauri/src/lib.rs` includes the desktop's `native.rs` by path, so phones run `hotar-core` natively (same
 commands, same JSON as WASM). Build without it (`--no-default-features`) and the UI uses the engine in a Web Worker.
 
 ## Server URL

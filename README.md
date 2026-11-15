@@ -1,8 +1,11 @@
-# FieldShift: How much climate change can your crop rotation absorb?
+# Hotar: How much climate change can your crop rotation absorb?
 
 **NASA Space Apps 2026 · Challenge: Field Shift: Adapting Farms with NASA Data**
 
-FieldShift will measure a farm's **Adaptation Margin**: the °C of warming and % of rain loss the current rotation can absorb
+*Hotar* is Romanian for the boundary between two fields, the old marker stone at the edge of the land. The product measures
+exactly that: how far a farm is from its limit. (Formerly FieldShift, after the challenge.)
+
+Hotar will measure a farm's **Adaptation Margin**: the °C of warming and % of rain loss the current rotation can absorb
 before the farm loses money more often than the farmer can accept. It will stress-test that rotation against three resilient
 rotations it finds automatically, replay the worst local drought day by day, and print a plain-language plan. All of this
 runs on 25 years of NASA data for the exact field.

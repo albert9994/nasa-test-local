@@ -89,8 +89,8 @@ export function Rail() {
 
   const go = (v: View) => () => setView(v);
   return (
-    <nav ref={ref} aria-label="FieldShift" className="relative z-30 flex h-full w-[72px] shrink-0 flex-col items-center border-r border-line bg-surface py-3">
-      <div className="mb-4 grid size-10 place-items-center rounded-xl bg-primary text-primary-fg shadow-[var(--shadow)]" title="FieldShift">
+    <nav ref={ref} aria-label="Hotar" className="relative z-30 flex h-full w-[72px] shrink-0 flex-col items-center border-r border-line bg-surface py-3">
+      <div className="mb-4 grid size-10 place-items-center rounded-xl bg-primary text-primary-fg shadow-[var(--shadow)]" title="Hotar">
         <Sprout className="size-5" aria-hidden />
       </div>
       <div className="flex flex-col items-center gap-1">

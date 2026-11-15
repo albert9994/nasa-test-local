@@ -220,7 +220,7 @@ export function PlanComparison() {
 // ---------- download ----------
 /** Installers are served by the website itself (scripts/fetch-installers.mjs copies them from the GitHub release). */
 export const DESKTOP_VERSION = "2.1.0";
-const DL = { mac: "/downloads/FieldShift-mac-apple-silicon.dmg", macIntel: "/downloads/FieldShift-mac-intel.dmg", win: "/downloads/FieldShift-windows-setup.exe" };
+const DL = { mac: "/downloads/Hotar-mac-apple-silicon.dmg", macIntel: "/downloads/Hotar-mac-intel.dmg", win: "/downloads/Hotar-windows-setup.exe" };
 export function DesktopDownload() {
   const t = useT();
   return (

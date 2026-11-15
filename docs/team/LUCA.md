@@ -32,7 +32,7 @@ that win the *Validity* score. You also own the story: persona, plain-language c
 3. 10–16 s: slide to 2050: cards turn red, the dot crosses the limit line.
 4. 16–22 s: "Replay the worst drought": tanks drain, heat days count up, yields collapse.
 5. 22–27 s: the resilient rotation: more margin, soil health up.
-6. 27–30 s: "FieldShift: NASA data → farm headroom." + dataset names as text (no NASA logo).
+6. 27–30 s: "Hotar: NASA data → farm headroom." + dataset names as text (no NASA logo).
 
 ## Pipeline tips
 - POWER missing values are −999, so carry the previous day forward. Round values to 1–2 decimals (~300 KB per pack).

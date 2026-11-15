@@ -1,5 +1,5 @@
 "use client";
-// FieldShift Score card (C12): big score, confidence, sub-score bars, SVG waterfall. Server first, client fallback.
+// Hotar Score card (C12): big score, confidence, sub-score bars, SVG waterfall. Server first, client fallback.
 import { useEffect, useMemo, useState } from "react";
 import type { ScoreResult } from "@/lib/engine/types";
 import { useT } from "@/lib/i18n";

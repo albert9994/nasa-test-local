@@ -1,6 +1,6 @@
-# FieldShift science notes: simulator and quant engine
+# Hotar science notes: simulator and quant engine
 
-Everything here is implemented in `crates/fieldshift-core` (one Rust crate: native server, desktop and browser WASM).
+Everything here is implemented in `crates/hotar-core` (one Rust crate: native server, desktop and browser WASM).
 Numbers are **scenario probabilities, not forecasts**; the UI and the AI advisor must say so.
 
 ## 1. Crop simulator (`season.rs`, `et0.rs`, `co2.rs`, `climate.rs`)
@@ -118,7 +118,7 @@ once, in parallel (rayon on native), and looked up for every path.
 
 ## 3. Parameters (C11 `quant_params.json`)
 
-Read by the server from `apps/web/public/data/quant_params.json` (or `FIELDSHIFT_QUANT_PARAMS`), passed as the 5th argument of
+Read by the server from `apps/web/public/data/quant_params.json` (or `HOTAR_QUANT_PARAMS`), passed as the 5th argument of
 `quantSimulate` in WASM (the browser adapter fetches `/data/quant_params.json`), or inline as `params.quantParams` in
 `POST /api/stress`. Missing file or crops fall back to literature defaults (FAO GIEWS / World Bank Pink Sheet: annual
 log-price volatility 20-26 %, reversion 0.5-0.55 /yr, yield-price correlation −0.2…−0.3). Additions to C11 (all optional):

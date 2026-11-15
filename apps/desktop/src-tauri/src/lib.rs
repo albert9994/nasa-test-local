@@ -1,4 +1,4 @@
-//! FieldShift desktop shell (Tauri 2).
+//! Hotar desktop shell (Tauri 2).
 //!
 //! The UI (packages/ui, bundled by apps/desktop) talks to the engine through the `Engine` interface. By default that is the
 //! Rust engine (WASM) in a Web Worker. The default cargo feature `native-engine` registers the commands in `native.rs` (the
@@ -52,5 +52,5 @@ pub fn run() {
 
     builder
         .run(tauri::generate_context!())
-        .expect("error while running FieldShift");
+        .expect("error while running Hotar");
 }

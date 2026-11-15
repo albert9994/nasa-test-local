@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from "next";
 import "../globals.css";
 import { fontClasses } from "../fonts";
 
-export const metadata: Metadata = { title: { default: "FieldShift app", template: "%s · FieldShift" }, icons: { icon: "/brand/favicon.svg" }, robots: { index: false } };
+export const metadata: Metadata = { title: { default: "Hotar app", template: "%s · Hotar" }, icons: { icon: "/brand/favicon.svg" }, robots: { index: false } };
 export const viewport: Viewport = { themeColor: "#f7f6f1" };
 
 export default function InternalLayout({ children }: LayoutProps<"/app">) {

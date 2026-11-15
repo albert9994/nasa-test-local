@@ -1,4 +1,4 @@
-# FieldShift Pitch Deck — Final Slide Content & Speaker Notes (LU6, LU10, LU12)
+# Hotar Pitch Deck — Final Slide Content & Speaker Notes (LU6, LU10, LU12)
 
 > **Target Presentation Time:** 3 minutes (180 seconds) across 7 core slides + 1 appendix slide ("Future Work & Business Model").
 > **Presenters:** Albert (Lead/Engine), Moldo (Agronomy/Q&A), Luca (Slide Runner & Validation Numbers).
@@ -25,7 +25,7 @@
 > *"Your **maize → soybean** rotation can absorb **+X °C** of warming or **Y % less rain** before money-losing years exceed **1 year in 5**. Under NASA mid-century projections, that margin runs out around **~20XX** (TODO: engine output); example numbers on this slide are storyboard placeholders."*
 
 ### Why It Wins vs. Existing Tools
-| Existing Tools | Limitation | FieldShift |
+| Existing Tools | Limitation | Hotar |
 |---|---|---|
 | **EDF Ag Credit Risk / RotationARM** | Locked to 5 US/CA regions or 24 Australian sites; built for researchers | **Any field on Earth**, live in the browser via Rust → WebAssembly |
 | **Standard "What to Plant" Apps** | Fragile single-year forecasts that ignore farmer machinery & cash reserves | **Stress-test + failure frontier + 1,000 quant futures** filtered by budget & equipment |
@@ -54,12 +54,12 @@
 NASA POWER Daily (2001–2025) ──► +ΔT / ×(1+ΔP) & NEX-GDDP-CMIP6 (2030–2090)
 ISRIC SoilGrids 250 m + NASADEM ─► Saxton–Rawls TAW + Subsoil Store + SCS Runoff + RUSLE Erosion
                                       │
-                        [ fieldshift-core (Rust / WASM + Axum) ]
+                        [ hotar-core (Rust / WASM + Axum) ]
    Daily FAO-56 Bucket · GDD Phenology · FAO-33 Stage Ky · Schlenker–Roberts Heat · Rotation Carry-Over
                                       │
       ┌───────────────────────────────┼───────────────────────────────┐
       ▼                               ▼                               ▼
-Adaptation Margin &         1,000 Quant Futures 2026–2050     Hybrid FieldShift Score
+Adaptation Margin &         1,000 Quant Futures 2026–2050     Hybrid Hotar Score
 11×11 Failure Frontier      (Block-Bootstrap Weather ×        (Physics + Quant + Rhai Agronomy
 (<5 ms in Browser WASM)      Ornstein–Uhlenbeck Crop Prices)   Rules + Bounded ±10 LLM Context)
 ```
@@ -91,7 +91,7 @@ Real yield skill of the Rust engine against county yields: **TODO** (not yet com
 
 ## Slide 6 · Impact & Evidence That Rotation Adaptation Works (`2:25 – 2:45`)
 ### Headline
-**Diverse rotations cut drought losses by up to 90 % — FieldShift makes that actionable for any farmer, free.**
+**Diverse rotations cut drought losses by up to 90 % — Hotar makes that actionable for any farmer, free.**
 
 - **Peer-Reviewed Agronomy:** Across 347 site-years in North America, diverse rotations raised maize yields by **+28 %** on average and reduced drought-year yield losses by **14–90 %** *(Bowles et al. 2020, One Earth)*; legume pre-crops boost subsequent cereal yields by **+20–23 %** *(Zhao et al. 2022; Mudare et al. 2025, Nature Communications)*.
 - **Concrete Example on Our Bărăgan Farm:** Replacing `Maize → Winter Wheat` with `Winter Wheat → Sorghum → Pea` cuts bad years, raises net income and expands warming headroom (TODO: numbers from the engine; earlier figures were placeholders) — using the farmer's existing machinery.

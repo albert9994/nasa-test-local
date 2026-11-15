@@ -1,5 +1,5 @@
 "use client";
-// Tiny i18n for FieldShift (works in Next.js and the Tauri/Vite desktop app; no framework router needed).
+// Tiny i18n for Hotar (works in Next.js and the Tauri/Vite desktop app; no framework router needed).
 // Messages live in ./messages/<namespace>.ts as { en: {...}, ro: {...} } and are registered in ./messages/index.ts.
 // Keys are "namespace.key". Vars: t("margin.sentence", { dT: "1.4" }) replaces {dT}.
 // Add a NEW namespace file for a new feature (fewer merge conflicts than editing a shared file).
@@ -11,7 +11,7 @@ export type Locale = "ro" | "en";
 export const LOCALES: Locale[] = ["ro", "en"];
 export type Vars = Record<string, string | number>;
 
-const KEY = "fieldshift.locale";
+const KEY = "hotar.locale";
 
 function initialLocale(): Locale {
   if (typeof window === "undefined") return "ro";

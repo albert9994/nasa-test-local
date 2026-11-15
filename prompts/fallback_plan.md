@@ -7,7 +7,7 @@ Used by `/api/explain` (`mode = "plan"`) and `report.tsx` when the LLM API is of
 ## English (`lang = "en"`)
 
 ```markdown
-# FieldShift Farm Adaptation Plan — {{farm.name}}
+# Hotar Farm Adaptation Plan — {{farm.name}}
 **Location:** {{farm.lat}}, {{farm.lon}} · **Soil:** {{farm.soil}} · **Baseline Climate:** {{farm.climate}}
 
 ## 1. Current Rotation Stress-Test: `{{rotation}}`
@@ -37,7 +37,7 @@ Used by `/api/explain` (`mode = "plan"`) and `report.tsx` when the LLM API is of
 ## Romanian (`lang = "ro"`)
 
 ```markdown
-# Plan de Adaptare FieldShift — {{farm.name}}
+# Plan de Adaptare Hotar — {{farm.name}}
 **Coordonate:** {{farm.lat}}, {{farm.lon}} · **Sol:** {{farm.soil}} · **Climă multianuală:** {{farm.climate}}
 
 ## 1. Diagnosticul Rotației Actuale: `{{rotation}}`

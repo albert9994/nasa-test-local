@@ -79,7 +79,7 @@ export function ReportSheet() {
     <article className="fs-print-sheet mx-auto max-w-[210mm] rounded-lg bg-white p-6 text-[12px] leading-snug text-[#14201a] shadow-xl sm:p-9" data-tour="report-sheet">
       <header className="flex items-start justify-between gap-4 border-b-2 border-[#1f5135] pb-3">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1f5135]">FieldShift</p>
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1f5135]">Hotar</p>
           <h2 className="mt-0.5 text-2xl font-semibold tracking-tight">{t("explain.r_title")}</h2>
           <p className="text-[#5b655e]">{t("explain.r_subtitle")}</p>
         </div>

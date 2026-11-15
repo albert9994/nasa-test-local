@@ -25,7 +25,7 @@ export function MapHeader() {
         <button type="button" onClick={() => useTour.getState().start(MAP_TOUR_ID)} className={btn("ghost", "sm")} aria-label={t("mapTool.tourRestart")}>
           <HelpCircle className="size-4" /><span className="hidden sm:inline">{t("mapTool.tourRestart")}</span>
         </button>
-        <Link href={`${p()}#download`} className={cn(btn("outline", "sm"), "hidden sm:inline-flex")}>FieldShift Desktop</Link>
+        <Link href={`${p()}#download`} className={cn(btn("outline", "sm"), "hidden sm:inline-flex")}>Hotar Desktop</Link>
         <LocaleSwitcher />
       </div>
     </header>

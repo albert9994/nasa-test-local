@@ -54,7 +54,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
     <header className={cn("top-0 z-50 border-b transition-[background-color,border-color] duration-500",
       overlay ? "fixed inset-x-0" : "sticky", clear ? "border-transparent bg-transparent" : "border-line bg-bg/80 backdrop-blur-md")}>
       <div className={cn("mx-auto flex h-16 items-center gap-6 px-4 sm:px-6", overlay ? "max-w-7xl sm:px-8" : "max-w-6xl")}>
-        <Link href={p()} aria-label="FieldShift" onClick={close}><Logo /></Link>
+        <Link href={p()} aria-label="Hotar" onClick={close}><Logo /></Link>
         <nav className="ml-2 hidden items-center gap-0.5 lg:flex" aria-label="Main">
           {links.map(([k, h]) => (
             <Link key={k} href={`${p()}${h}`} className="whitespace-nowrap rounded-full px-3 py-1.5 text-sm text-fg-muted hover:bg-surface-2 hover:text-fg">{t(`site.${k}`)}</Link>

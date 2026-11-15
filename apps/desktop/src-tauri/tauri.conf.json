@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "FieldShift",
+  "productName": "Hotar",
   "version": "2.1.0",
-  "identifier": "ro.fieldshift.desktop",
+  "identifier": "ro.hotar.desktop",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "FieldShift",
+        "title": "Hotar",
         "width": 1280,
         "height": 800,
         "minWidth": 1024,
@@ -31,7 +31,7 @@
     "targets": "all",
     "category": "Productivity",
     "shortDescription": "Climate-risk planning for farmers",
-    "longDescription": "FieldShift shows how heat and drought could affect each field of your farm and which rotation keeps you safest. Built on NASA data.",
+    "longDescription": "Hotar shows how heat and drought could affect each field of your farm and which rotation keeps you safest. Built on NASA data.",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

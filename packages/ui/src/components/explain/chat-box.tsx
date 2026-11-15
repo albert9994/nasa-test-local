@@ -29,9 +29,9 @@ export function ChatBox({ fact, lang }: { fact: FactSheet; lang: Lang }) {
   }
   return (
     <form onSubmit={ask} className="mt-4 border-t border-line pt-3">
-      <label className="text-xs text-fg-muted" htmlFor="fs-chat">{t("explain.chat_label")}</label>
+      <label className="text-xs text-fg-muted" htmlFor="hotar-chat">{t("explain.chat_label")}</label>
       <div className="mt-1 flex gap-2">
-        <input id="fs-chat" value={q} onChange={(e) => setQ(e.target.value)} maxLength={300} className="h-10 min-w-0 flex-1 rounded-full border border-line bg-surface px-4 text-sm" />
+        <input id="hotar-chat" value={q} onChange={(e) => setQ(e.target.value)} maxLength={300} className="h-10 min-w-0 flex-1 rounded-full border border-line bg-surface px-4 text-sm" />
         <button type="submit" disabled={busy || !q.trim()} aria-label={t("explain.chat_send")} className="grid size-10 place-items-center rounded-full bg-primary text-primary-fg disabled:opacity-50"><Send className="size-4" /></button>
       </div>
       {a ? <p className="mt-2 whitespace-pre-line text-sm">{a}</p> : null}

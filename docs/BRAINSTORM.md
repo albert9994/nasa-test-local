@@ -1,6 +1,6 @@
-# FieldShift: Brainstorming (completat)
+# Hotar: Brainstorming (completat)
 
-> **Într-o frază:** FieldShift le spune fermierilor **câtă schimbare climatică (și câte șocuri de piață) mai poate duce rotația lor actuală**,
+> **Într-o frază:** Hotar le spune fermierilor **câtă schimbare climatică (și câte șocuri de piață) mai poate duce rotația lor actuală**,
 > le arată ce rotație îi protejează mai bine, ținând cont de bugetul și utilajele lor, și le explică totul pe limba lor, printr-un asistent AI.
 
 ---
@@ -34,7 +34,7 @@
 ## Arhitectura pe scurt: un singur motor, două produse
 ```
                   ┌──────────────────────────────────────────┐
-                  │   fieldshift-core  (Rust crate)          │
+                  │   hotar-core  (Rust crate)          │
                   │   simulator + stress test + optimizator  │
                   └───────────────┬───────────────┬──────────┘
                     compilat în WASM            compilat nativ
@@ -109,7 +109,7 @@
 Aplicația și site-ul stau în **același monorepo** și folosesc același stack. Detaliile complete sunt în capitolul **„Stack complet"** de mai jos. Pe scurt:
 - **Frontend:** **Next.js** (App Router) + **React** + **TypeScript**, **Tailwind CSS** + **shadcn/ui**
 - **3D și hărți:** **Three.js** (prin **React Three Fiber**) + **MapLibre GL** / **deck.gl**
-- **Motor:** **Rust** (`fieldshift-core`): WASM în browser + server **Axum**
+- **Motor:** **Rust** (`hotar-core`): WASM în browser + server **Axum**
 - **Date:** **Postgres + PostGIS** (Supabase), cache **Redis**, pipeline **Python**
 - **AI:** LLM-ul vostru prin backend; streaming cu **Vercel AI SDK**
 - **Plăți:** **Stripe** (abonament anual)
@@ -172,7 +172,7 @@ Conturi, ferme salvate, mai multe parcele, Monte Carlo, stress test de piață/b
 | Grafice | **ECharts** (fan chart, heatmap, replay) sau **visx** (D3 în React) | Graficele quant (evantai, histograme, frontieră risc–randament) |
 | Stare / date | **Zustand** (stare UI: rotație, slidere) + **TanStack Query** (apeluri server, cache) | Simplu, rapid, fără boilerplate |
 | Formulare | **React Hook Form** + **Zod** (aceleași scheme validează și răspunsul LLM) | Profilul fermierului, buget, utilaje |
-| Motor în browser | **WASM** din `fieldshift-wasm` (`wasm-pack`), rulat în **Web Worker** (prin **Comlink**) | Slidere instant fără să blocheze interfața |
+| Motor în browser | **WASM** din `hotar-wasm` (`wasm-pack`), rulat în **Web Worker** (prin **Comlink**) | Slidere instant fără să blocheze interfața |
 | AI în UI | **Vercel AI SDK** (`useChat`, streaming) | Text care apare în timp real, chat cu tool calling |
 | Limbi | **next-intl** (română, engleză) | Fermieri din RO + juriu internațional |
 | PDF | **@react-pdf/renderer** | Planul fermierului, rapoarte pentru bancă/APIA |
@@ -181,9 +181,9 @@ Conturi, ferme salvate, mai multe parcele, Monte Carlo, stress test de piață/b
 ### Backend și motor
 | Strat | Alegere | Pentru ce |
 |---|---|---|
-| Motor | **Rust** `fieldshift-core` (simulator, stress, optimizator, quant, scor) | Un singur cod, browser + server |
+| Motor | **Rust** `hotar-core` (simulator, stress, optimizator, quant, scor) | Un singur cod, browser + server |
 | Server | **Rust + Axum** (`tokio`, `tower-http`, `reqwest`, `rayon`) | `/api/simulate`, `/api/stress`, `/api/quant`, `/api/score`, `/api/explain` |
-| Reguli agronomice („scripturi") | **Rhai** (limbaj de scripting încorporat în Rust) | Moldo scrie reguli fără să recompileze motorul (vezi „Scorul FieldShift") |
+| Reguli agronomice („scripturi") | **Rhai** (limbaj de scripting încorporat în Rust) | Moldo scrie reguli fără să recompileze motorul (vezi „Scorul Hotar") |
 | Joburi lungi | **tokio** tasks + coadă în Redis (sau **Apalis**) | Quant cu 10.000 de traiectorii, rapoarte PDF, actualizări de date |
 | API docs | **utoipa** (OpenAPI generat din Rust) | Contract clar între frontend și server; API vândut la enterprise |
 
@@ -249,7 +249,7 @@ Conturi, ferme salvate, mai multe parcele, Monte Carlo, stress test de piață/b
 
 ---
 
-## Scorul FieldShift: nu doar quant, ci o combinație
+## Scorul Hotar: nu doar quant, ci o combinație
 **Ideea:** niciun algoritm singur nu dă scorul. Scorul final al unei rotații este o **combinație transparentă** din 6 surse, fiecare
 cu rolul ei, iar fermierul vede mereu **din ce e compus** (grafic „cascadă" cu fiecare contribuție).
 
@@ -272,7 +272,7 @@ cu rolul ei, iar fermierul vede mereu **din ce e compus** (grafic „cascadă" c
    Răspunsul lui e **JSON validat** (Zod / serde): `{ "adjust": -6, "reason": "solul tasat reduce ...", "confidence": "medium" }`.
    Dacă LLM-ul nu răspunde sau iese din limite → ajustare 0.
 5. **Scor de încredere** separat (scăzut / mediu / ridicat): cât de bune sunt datele (sol din SoilGrids vs. analiză reală, ani de NDVI) și cât de mult sunt de acord sursele 1, 2 și 4.
-6. Rezultat: **Scor FieldShift 0–100 + încredere + cascada cu toate contribuțiile** + explicația LLM.
+6. Rezultat: **Scor Hotar 0–100 + încredere + cascada cu toate contribuțiile** + explicația LLM.
 
 ```
 Scor = Σ ponderi_fermier × sub-scoruri (simulator + quant + date)
@@ -296,7 +296,7 @@ Scor = Σ ponderi_fermier × sub-scoruri (simulator + quant + date)
 ## Motorul în Rust: cum îl organizăm
 ```
 crates/
-  fieldshift-core/      # fără I/O: doar matematică, determinist, testat
+  hotar-core/      # fără I/O: doar matematică, determinist, testat
     src/crops.rs        # biblioteca de culturi (Moldo)
     src/soil.rs         # SoilGrids → apă disponibilă, CN, eroziune
     src/season.rs       # simularea zilnică a unui sezon (Albert)
@@ -305,12 +305,12 @@ crates/
     src/stress.rs       # marjă, frontieră, extreme, șocuri de piață (Ionut)
     src/quant.rs        # motorul quant: Monte Carlo pe vreme × prețuri × costuri, metrici de risc (Ionut)
     src/optimize.rs     # optimizator + filtre buget/utilaje (Ionut)
-    src/score.rs        # Scorul FieldShift: sub-scoruri, reguli, ajustare LLM, cascadă (Ionut)
+    src/score.rs        # Scorul Hotar: sub-scoruri, reguli, ajustare LLM, cascadă (Ionut)
     src/rules.rs        # rulează scripturile Rhai cu reguli agronomice (Ionut)
     src/explain.rs      # construiește "fișa de fapte" JSON pentru LLM
 rules/                  # *.rhai: reguli agronomice (Moldo)
-  fieldshift-wasm/      # wasm-bindgen: expune funcțiile pentru browser
-  fieldshift-server/    # Axum: /api/simulate, /api/stress, /api/optimize, /api/explain, /api/chat
+  hotar-wasm/      # wasm-bindgen: expune funcțiile pentru browser
+  hotar-server/    # Axum: /api/simulate, /api/stress, /api/optimize, /api/explain, /api/chat
 pipeline/               # Python: descarcă și pregătește datele NASA
 apps/web/               # Next.js: site-ul light + aplicația (rute diferite)
 packages/ui/            # componente React partajate (grafice, hărți, 3D)
@@ -406,7 +406,7 @@ Ofertă: **2 luni gratis** la plata anuală; perioadă de probă de 30 de zile p
 
 ### 3. Alte surse de venit (mai târziu)
 - **API / licențiere de date**: scoruri de risc pe regiune pentru asigurători (prima de asigurare), bănci (scoring de credit), reasigurători.
-- **White-label**: o bancă sau un asigurător oferă FieldShift clienților lor, cu brandul lor.
+- **White-label**: o bancă sau un asigurător oferă Hotar clienților lor, cu brandul lor.
 - **Rapoarte plătite**: „Raport de reziliență climatică" pentru credit, fonduri UE sau certificări.
 - **Comision pe carbon**: parteneriate MRV pentru credite de carbon din creșterea carbonului în sol (dacă fermierul vrea).
 - **Marketplace** (atenție la conflicte de interes): consultanți verificați, analize de sol, culturi de acoperire. Separat clar de recomandări.
@@ -439,7 +439,7 @@ Datele NASA sunt gratuite; noi vindem decizia, nu datele."*
 ## Ce facem în hackathon vs. ce e roadmap
 | În weekend (demo pentru juriu) | Roadmap (slide-ul "Next") |
 |---|---|
-| `fieldshift-core` în Rust: sezon, rotație, marjă, frontieră, replay, optimizator mic | Extreme compuse, CO₂, quantile mapping CMIP6 zilnic |
+| `hotar-core` în Rust: sezon, rotație, marjă, frontieră, replay, optimizator mic | Extreme compuse, CO₂, quantile mapping CMIP6 zilnic |
 | **Motor quant**: 1.000 de viitoruri 2026–2050 în browser (10.000 pe server), fan chart, VaR/CVaR, probabilitate de faliment | Frontieră risc–randament pentru tot portofoliul de parcele; optimizare mean-CVaR |
 | WASM în site: slidere instant, click oriunde | Aplicație nativă (Tauri 2) pentru telefon |
 | Server Axum minim: `/api/explain` (+ `/api/simulate` dacă e timp) | Conturi, PostGIS, ferme cu multe parcele |
@@ -448,7 +448,7 @@ Datele NASA sunt gratuite; noi vindem decizia, nu datele."*
 | Filtru de buget (cost max/ha) + listă simplă de utilaje | Catalog complet de utilaje, ROI pentru investiții |
 | Scor de sănătate a solului + cultură de acoperire | Plan de revitalizare pe 5 ani + credite de carbon |
 | Site Next.js + demo + hero 3D (Three.js) | Portofoliu pentru investitori, rapoarte PDF |
-| **Scorul FieldShift** v1: sub-scoruri + 10–15 reguli Rhai + ajustare LLM ±10 + cascadă | Feedback-ul fermierului, reguli scrise de consultanți |
+| **Scorul Hotar** v1: sub-scoruri + 10–15 reguli Rhai + ajustare LLM ±10 + cascadă | Feedback-ul fermierului, reguli scrise de consultanți |
 | Slide de business: free + sponsori/ads, abonament anual | Stripe, conturi, planurile Pro / Advisor / Terminal |
 
 **Atenție la timp:** Rust → WASM adaugă câteva ore de setup (toolchain, `wasm-pack`, integrarea în frontend).
@@ -458,4 +458,4 @@ Dacă la CP2 (T+11) WASM-ul încă nu merge, planul B e să rulăm motorul **doa
 ---
 
 ## Pitch într-un paragraf
-*"FieldShift ia 25 de ani de date NASA pentru exact terenul tău și îți spune câtă schimbare climatică mai poate duce rotația ta, de exemplu +1,8 °C, și până în ce an. Îți simulează ferma pe 1.000 de viitoruri posibile, ca un fond de investiții, și îți arată riscul real. Îți testează rotația și la secete reale, la prăbușiri de preț și la scumpirea inputurilor. Îți găsește 3 rotații mai sigure pe care ți le permiți cu bugetul și utilajele tale. Iar un asistent AI îți explică totul pe limba ta, folosind doar cifrele calculate de simulator. Site-ul îți arată asta în 10 secunde; aplicația te lasă să-ți planifici ferma."*
+*"Hotar ia 25 de ani de date NASA pentru exact terenul tău și îți spune câtă schimbare climatică mai poate duce rotația ta, de exemplu +1,8 °C, și până în ce an. Îți simulează ferma pe 1.000 de viitoruri posibile, ca un fond de investiții, și îți arată riscul real. Îți testează rotația și la secete reale, la prăbușiri de preț și la scumpirea inputurilor. Îți găsește 3 rotații mai sigure pe care ți le permiți cu bugetul și utilajele tale. Iar un asistent AI îți explică totul pe limba ta, folosind doar cifrele calculate de simulator. Site-ul îți arată asta în 10 secunde; aplicația te lasă să-ți planifici ferma."*

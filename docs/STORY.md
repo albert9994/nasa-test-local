@@ -1,4 +1,4 @@
-# FieldShift Story, Persona, Video Storyboard & Plain-Language UI Copy (LU2, LU4)
+# Hotar Story, Persona, Video Storyboard & Plain-Language UI Copy (LU2, LU4)
 
 ---
 
@@ -26,8 +26,8 @@
 | **2. The Number** | `4–10 s` | Hero card reveals the **Adaptation Margin** badge (TODO: illustrative storyboard value until the Rust engine output is wired in; do not quote as a measured result) and the **"Safe until ~20XX"** marker. | **"Not a fragile yield forecast — one number: this rotation can absorb +X °C before bad years exceed 1 in 5."** (TODO: fill X from the engine for the demo farm) |
 | **3. Stress Test to 2050** | `10–16 s` | User clicks **2050 (CMIP6)** slider; failure frontier heatmap dot crosses the white tolerance contour; baseline card turns red (`N/24 bad years`, TODO from engine). | **"Slide to 2050 NASA climate projections: the current maize–soybean plan crosses the farmer's failure limit."** |
 | **4. Replay the Worst Drought** | `16–22 s` | Clicks **▶ Replay 2012 / 2024 Drought**: animated soil-water tank drains to red, flowering days `> 35 °C` tick up, maize income collapses while winter wheat escapes in June. | **"Replay the worst local drought day by day: watch soil moisture drain and flowering heat destroy summer crops."** |
-| **5. Resilient Rotation + AI Plan** | `22–27 s` | Compare cards highlight **Drought Shield** (`Winter Wheat → Sorghum → Pea + Rye cover`): bad years drop and the Adaptation Margin rises (TODO: engine numbers; the earlier `1/24`, `+3.4 °C`, `+18 pts` were storyboard placeholders, not results), AI streams plain-language steps. | **"FieldShift finds 3 resilient rotations that fit the farmer's budget and machinery — and writes a printable plan."** |
-| **6. End Card** | `27–30 s` | Clean dark brand card with live URL + dataset text credits: `NASA POWER · MODIS MOD13Q1 · NEX-GDDP-CMIP6 · SRTM · ISRIC SoilGrids · INS TEMPO` (add SMAP / ECOSTRESS only once real layers ship). | **"FieldShift: 25 years of NASA data → farm headroom, anywhere on Earth."** |
+| **5. Resilient Rotation + AI Plan** | `22–27 s` | Compare cards highlight **Drought Shield** (`Winter Wheat → Sorghum → Pea + Rye cover`): bad years drop and the Adaptation Margin rises (TODO: engine numbers; the earlier `1/24`, `+3.4 °C`, `+18 pts` were storyboard placeholders, not results), AI streams plain-language steps. | **"Hotar finds 3 resilient rotations that fit the farmer's budget and machinery — and writes a printable plan."** |
+| **6. End Card** | `27–30 s` | Clean dark brand card with live URL + dataset text credits: `NASA POWER · MODIS MOD13Q1 · NEX-GDDP-CMIP6 · SRTM · ISRIC SoilGrids · INS TEMPO` (add SMAP / ECOSTRESS only once real layers ship). | **"Hotar: 25 years of NASA data → farm headroom, anywhere on Earth."** |
 
 ---
 
@@ -73,7 +73,7 @@
 | `report.button` | Print 1-Page Farm Plan | Printează Planul de 1 Pagină | Ready to take to your agronomist, co-op, or lender |
 
 ### 3.3 3-Step Onboarding Quick Tour
-1. **Pick your field (or click anywhere on Earth):** FieldShift loads 25 years of real daily NASA weather, satellite greenness, and soil layers for that exact spot.
+1. **Pick your field (or click anywhere on Earth):** Hotar loads 25 years of real daily NASA weather, satellite greenness, and soil layers for that exact spot.
 2. **Read your Adaptation Margin:** See how many degrees of warming (`+°C`) and rain loss (`−%`) your current rotation can take before bad years happen too often.
 3. **Compare 3 safer rotations & print your plan:** Replay your region's worst drought day by day, pick a rotation that fits your machinery and budget, and print a 1-page action plan.
 

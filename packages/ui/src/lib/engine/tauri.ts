@@ -1,5 +1,5 @@
 // Native engine adapter for the desktop app (V2-B2).
-// Every `Engine` method becomes a Tauri command that runs `fieldshift-core` in Rust (see apps/desktop/src-tauri/src/native.rs).
+// Every `Engine` method becomes a Tauri command that runs `hotar-core` in Rust (see apps/desktop/src-tauri/src/native.rs).
 // The commands exist when the app is built with the default cargo feature `native-engine`; without it `engine_info` returns an error and
 // `useNativeEngine()` resolves to false, so the UI keeps the TypeScript engine (Web Worker). No Tauri npm package is imported
 // here: we call the invoke bridge Tauri injects, so the website bundle never pulls Tauri in.

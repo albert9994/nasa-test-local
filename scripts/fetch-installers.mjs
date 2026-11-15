@@ -14,22 +14,25 @@ const version = process.argv[2] ?? JSON.parse(readFileSync(path.join(root, "apps
 const out = path.join(root, "apps/web/public/downloads");
 const tmp = path.join(out, ".tmp");
 
-// release asset (Tauri naming) -> stable name used by the website
+// release asset (Tauri naming, without the product-name prefix) -> stable name used by the website.
+// Releases before the rebrand (<= 2.1.0) were published as "FieldShift_…", later ones as "Hotar_…"; both are accepted.
+const PREFIXES = ["Hotar", "FieldShift"];
 const FILES = {
-  [`FieldShift_${version}_aarch64.dmg`]: "FieldShift-mac-apple-silicon.dmg",
-  [`FieldShift_${version}_x64.dmg`]: "FieldShift-mac-intel.dmg",
-  [`FieldShift_${version}_x64-setup.exe`]: "FieldShift-windows-setup.exe",
+  [`_${version}_aarch64.dmg`]: "Hotar-mac-apple-silicon.dmg",
+  [`_${version}_x64.dmg`]: "Hotar-mac-intel.dmg",
+  [`_${version}_x64-setup.exe`]: "Hotar-windows-setup.exe",
 };
 
 rmSync(tmp, { recursive: true, force: true });
 mkdirSync(tmp, { recursive: true });
 const args = ["release", "download", `v${version}`, "--dir", tmp, "--clobber"];
-for (const name of Object.keys(FILES)) args.push("--pattern", name);
+for (const suffix of Object.keys(FILES)) for (const p of PREFIXES) args.push("--pattern", `${p}${suffix}`);
 execFileSync("gh", args, { stdio: "inherit", cwd: root });
 
 const got = new Set(readdirSync(tmp));
-for (const [from, to] of Object.entries(FILES)) {
-  if (!got.has(from)) throw new Error(`release v${version} has no ${from}`);
+for (const [suffix, to] of Object.entries(FILES)) {
+  const from = PREFIXES.map((p) => `${p}${suffix}`).find((n) => got.has(n));
+  if (!from) throw new Error(`release v${version} has no ${PREFIXES.map((p) => p + suffix).join(" or ")}`);
   renameSync(path.join(tmp, from), path.join(out, to));
   console.log(`downloads/${to}  <-  ${from}`);
 }

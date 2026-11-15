@@ -83,7 +83,7 @@ export function Funnel({ onDone, introOnly }: { onDone: () => void; /** replay j
 
   function finishSetup() {
     const built = fields.map((f) => newField({ name: f.name, centroid: f.centroid, areaHa: f.areaHa, crop: f.crop, history: f.history, geometry: circlePolygon(f.centroid, f.areaHa) }));
-    complete({ name: place?.name.split(",")[0] || "FieldShift", place, fields: built, profile: { budgetPerHa: null, equipment: [], sellable: [], badYearsIn } });
+    complete({ name: place?.name.split(",")[0] || "Hotar", place, fields: built, profile: { budgetPerHa: null, equipment: [], sellable: [], badYearsIn } });
     setFarmFields(built.map((f) => ({ id: f.id, name: f.name })));
     useRisk.getState().refresh(built, badYearsIn);
     go("build");
@@ -187,7 +187,7 @@ export function Funnel({ onDone, introOnly }: { onDone: () => void; /** replay j
         {step === "alerts" && (
           <Pane k="alerts" dir={dir}>
             {header}
-            <AlertsStep fieldName={fields[0]?.name ?? "FieldShift"} onDone={(on) => { prefs.set({ alerts: on }); finishSetup(); }} />
+            <AlertsStep fieldName={fields[0]?.name ?? "Hotar"} onDone={(on) => { prefs.set({ alerts: on }); finishSetup(); }} />
           </Pane>
         )}
 
@@ -232,7 +232,7 @@ function Intro({ onStart, onDemo }: { onStart: () => void; onDemo?: () => void }
     <div className={cn("flex h-full flex-col", SAFE_TOP)} onPointerDown={() => setAuto(false)}>
       <div className="flex items-center justify-between px-5 py-1">
         <span className="flex items-center gap-2 text-[17px] font-semibold tracking-tight text-primary">
-          <img src="/brand/mark.svg" alt="" className="size-6" />FieldShift
+          <img src="/brand/mark.svg" alt="" className="size-6" />Hotar
         </span>
         <div className="flex overflow-hidden rounded-full border border-line-strong text-[13px]" role="group" aria-label={t("common.language")}>
           {LOCALES.map((l) => (
@@ -513,7 +513,7 @@ function AlertsStep({ fieldName, onDone }: { fieldName: string; onDone: (on: boo
         <motion.div initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", damping: 18, delay: 0.15 }}
           className="w-full max-w-[330px] rounded-2xl border border-line bg-surface/95 p-3.5 shadow-[0_12px_32px_rgb(20_32_26/0.14)] backdrop-blur">
           <div className="flex items-center gap-2 text-[12px] text-fg-muted">
-            <img src="/brand/mark.svg" alt="" className="size-5 rounded" /><span className="font-semibold uppercase tracking-wide">FieldShift</span>
+            <img src="/brand/mark.svg" alt="" className="size-5 rounded" /><span className="font-semibold uppercase tracking-wide">Hotar</span>
             <span className="ml-auto">{t("mobile.alertsSampleField", { name: "" }).replace(/^ · /, "")}</span>
           </div>
           <p className="mt-1.5 text-[15px] font-semibold">❄️ {t("mobile.alertsSample")}</p>

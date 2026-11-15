@@ -219,12 +219,12 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# FieldShift extras
+# Hotar extras
 .DS_Store
 node_modules/
 .claude/settings.local.json
 
-# --- FieldShift: Rust / WASM ---
+# --- Hotar: Rust / WASM ---
 target/
 packages/engine-wasm/
 **/pkg/

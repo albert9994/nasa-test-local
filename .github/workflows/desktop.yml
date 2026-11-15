@@ -1,6 +1,6 @@
 name: Desktop installers
 
-# Builds the FieldShift desktop app (Tauri 2) for macOS and Windows. Unsigned for now.
+# Builds the Hotar desktop app (Tauri 2) for macOS and Windows. Unsigned for now.
 # Trigger: push a tag like v0.1.0, or run it by hand from the Actions tab.
 on:
   push:
@@ -63,7 +63,7 @@ jobs:
           args: ${{ matrix.args }}
           # Release assets only on tags; manual runs just upload workflow artifacts below.
           tagName: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
-          releaseName: ${{ startsWith(github.ref, 'refs/tags/v') && format('FieldShift {0}', github.ref_name) || '' }}
+          releaseName: ${{ startsWith(github.ref, 'refs/tags/v') && format('Hotar {0}', github.ref_name) || '' }}
           releaseDraft: true
           prerelease: true
 

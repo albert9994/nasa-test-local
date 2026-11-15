@@ -1,4 +1,4 @@
-# apps/web: FieldShift site + app (Next.js 16, React 19, Tailwind 4)
+# apps/web: Hotar site + app (Next.js 16, React 19, Tailwind 4)
 
 ```bash
 pnpm install          # from the repo root
@@ -9,7 +9,7 @@ pnpm --filter web test && pnpm --filter web typecheck && pnpm --filter web build
 > Next.js 16 differs from older docs: read `node_modules/next/dist/docs/` before using a new API (see AGENTS.md).
 
 ## Server URL (`NEXT_PUBLIC_API_URL`)
-The Axum server (`crates/fieldshift-server`: AI advisor `/api/explain`, FieldShift Score `/api/score`) is optional. Set its base URL
+The Axum server (`crates/hotar-server`: AI advisor `/api/explain`, Hotar Score `/api/score`) is optional. Set its base URL
 at build/dev time and the app uses it; leave it empty and the advisor falls back to template text and the score is computed in the browser.
 
 ```bash
@@ -33,7 +33,7 @@ its rate limit is hit (the UI then shows the template text with a note); its LLM
 | `components/inputs/*` | rotation builder, sliders, profile | O2 |
 | `components/hero/*` | Adaptation Margin hero + yearly chart | O3 |
 | `components/replay/*` | drought replay | O4 |
-| `components/explain/*` | AI explanation, FieldShift Score, plan | O7 |
+| `components/explain/*` | AI explanation, Hotar Score, plan | O7 |
 | `app/[locale]/*` (`/ro`, `/en`: landing, `/map` free tool, `/pricing`, `/signin`), `proxy.ts` (`/` → locale), `components/{site,landpick,field-snapshot}/*`, `lib/geo/*` | public SaaS site + free map tool | V2-B1 |
 | `#compare`, `#frontier`, `#science`, `#marginYear` slots | Ionut's components | I3b, I5, I6, I7 |
 
@@ -45,8 +45,8 @@ cached by the old prototype. They follow C1, so the real packs can replace them 
 pnpm --filter web exec wrangler login      # once, opens Cloudflare in the browser
 pnpm --filter web cf:build                 # builds .open-next/ (also builds the WASM engine if wasm-pack is installed)
 pnpm --filter web cf:preview               # optional: run the Worker locally (workerd) on http://localhost:8787
-pnpm --filter web cf:deploy                # deploys the Worker "fieldshift" (see wrangler.jsonc) → https://fieldshift.<account>.workers.dev
+pnpm --filter web cf:deploy                # deploys the Worker "hotar" (see wrangler.jsonc) → https://hotar.<account>.workers.dev
 ```
 - `cacheComponents`/PPR are off: on Workers they share promises across requests, which the runtime rejects.
 - `/` → `/ro` or `/en` uses `redirects()` in `next.config.ts` (no middleware needed on Workers).
-- The AI advisor server (`crates/fieldshift-server`) is separate; without `NEXT_PUBLIC_API_URL` the site uses the built-in template explanations.
+- The AI advisor server (`crates/hotar-server`) is separate; without `NEXT_PUBLIC_API_URL` the site uses the built-in template explanations.

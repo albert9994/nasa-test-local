@@ -6,7 +6,7 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 import { browserHost, setHost, type Host } from "@/lib/store/farm-storage";
 
 let store: Promise<Store> | null = null;
-const getStore = () => (store ??= load("fieldshift.json", { autoSave: 200, defaults: {} }));
+const getStore = () => (store ??= load("hotar.json", { autoSave: 200, defaults: {} }));
 
 const CACHE_DIR = "packs";
 const base = { baseDir: BaseDirectory.AppData };

@@ -153,7 +153,7 @@ export interface FactSheet {
   sources: string[];
 }
 
-// ---------- C12 · FieldShift Score ----------
+// ---------- C12 · Hotar Score ----------
 export interface ScoreResult {
   rotation: string; score: number; confidence: "low" | "medium" | "high";
   subscores: { climate: number; financialRisk: number; profit: number; soil: number; water: number; feasibility: number };
@@ -182,6 +182,6 @@ export interface Engine {
   factSheet(h: FarmHandle, rot: Rotation, opts: Opts, picks: PickResult[]): Promise<FactSheet>;
   /** Calibration report vs observed county yields (Rust engine only). */
   validate?(h: FarmHandle, observed: ObservedYields, opts?: Opts): Promise<Record<string, CropValidation>>;
-  /** C12 FieldShift Score computed by the Rust engine (native desktop only). */
+  /** C12 Hotar Score computed by the Rust engine (native desktop only). */
   score?(h: FarmHandle, rot: Rotation, opts: Opts, w?: Weights, c?: Constraints): Promise<ScoreResult>;
 }

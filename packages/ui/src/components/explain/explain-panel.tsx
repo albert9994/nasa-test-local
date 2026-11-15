@@ -1,5 +1,5 @@
 "use client";
-// AI advisor: "Explain this" (streamed LLM text from /api/explain, template fallback), FieldShift Score card, link to the report.
+// AI advisor: "Explain this" (streamed LLM text from /api/explain, template fallback), Hotar Score card, link to the report.
 // The engine computes; the LLM only explains numbers from the fact sheet (C10). Language follows the app locale.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FileText, Sparkles } from "lucide-react";
