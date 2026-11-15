@@ -4,8 +4,8 @@ A Cloudflare Pages project whose only job is to forward requests to the Hotar Wo
 `pnpm --filter web cf:deploy` to `hotar.<account>.workers.dev`). No build step.
 
 ```bash
-pnpm --filter web exec wrangler pages deploy ../pages-proxy/public --project-name hotar --branch main
+cd apps/pages-proxy && ../web/node_modules/.bin/wrangler pages deploy public --project-name hotar --branch main
 ```
 
-Run that from the repo root (wrangler picks up `functions/` next to `public/`), after the Worker is deployed. Change `ORIGIN`
+Run it from `apps/pages-proxy` (wrangler picks up `functions/` from the working directory), after the Worker is deployed. Change `ORIGIN`
 in `functions/[[path]].js` if the Worker moves (e.g. to a custom domain).
