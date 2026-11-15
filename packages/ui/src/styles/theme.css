@@ -3,39 +3,45 @@
    Semantic tokens first; the older names (gold, bg-elev, …) are kept as aliases so existing components keep working. */
 :root {
   /* surfaces */
-  --bg: #f7f6f1;          /* warm off-white page */
+  --bg: #f5f4ef;          /* warm off-white page */
   --surface: #ffffff;     /* cards, panels */
-  --surface-2: #f0efe8;   /* inset, table stripes */
-  --line: #e3e1d8;        /* borders */
-  --line-strong: #cfccbf;
+  --surface-2: #f0efe9;   /* inset, hover, table stripes */
+  --surface-3: #e9e7df;   /* pressed / segmented track */
+  --line: #e6e4dc;        /* hairline borders */
+  --line-strong: #d3d0c5;
   /* text */
-  --fg: #14201a;          /* ink */
-  --fg-muted: #5b655e;
-  --fg-subtle: #8a928c;
+  --fg: #111a15;          /* ink */
+  --fg-muted: #59635c;
+  --fg-subtle: #8b938d;
   /* brand */
   --primary: #1f5135;     /* deep field green */
   --primary-hover: #183f29;
   --primary-fg: #ffffff;
-  --primary-soft: #e6efe8;
+  --primary-soft: #e7f0e9;
   --leaf: #3e8e4f;
   --soil: #8a5a3b;
   --wheat: #c9a227;       /* sparing accent */
   /* data */
   --data: #2563a8;        /* neutral data blue */
-  --data-soft: #e7eff8;
+  --data-soft: #e9f0f8;
   --water: #0e7490;
   --heat: #c2410c;
-  --heat-soft: #fbece4;
-  --warn: #b7791f;
-  --warn-soft: #fbf3e2;
+  --heat-soft: #fcf0e9;
+  --warn: #a8701a;
+  --warn-soft: #fbf5e6;
   --ok: #2f7d4a;
-  --ok-soft: #e5f2e9;
+  --ok-soft: #e8f3eb;
   --danger: #b42318;
-  --danger-soft: #fdecea;
+  --danger-soft: #fdf0ee;
+  --risk-hi: #b42318;     /* deepest cell of the risk heatmaps */
+  /* overlays */
+  --scrim: rgb(17 26 21 / 0.42);
+  --glass: rgb(255 255 255 / 0.86);
 
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 1px 2px rgb(20 32 26 / 0.05), 0 4px 16px rgb(20 32 26 / 0.06);
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 0 0 1px rgb(17 26 21 / 0.02), 0 1px 2px rgb(17 26 21 / 0.04), 0 6px 20px -8px rgb(17 26 21 / 0.10);
+  --shadow-lg: 0 0 0 1px rgb(17 26 21 / 0.04), 0 12px 40px -12px rgb(17 26 21 / 0.28);
 
   /* cinematic stage (landing hero, full-bleed bands) */
   --stage: #eef0e6; --stage-2: #e3e8da; --glow: rgb(201 162 39 / 0.18); --accent-ink: var(--primary);
@@ -46,23 +52,32 @@
   --accent: var(--primary);
 }
 
-/* Dark theme: a cinematic night field (deep green-black stage, ivory type, corn-gold accents).
-   On the website it follows the visitor's choice (saved as `fs-theme`) or the system setting; in the app, only on request. */
+/* Dark theme: neutral graphite (barely green), one accent, status colours as low-alpha tints, depth from borders not shadows. */
 :root[data-theme="dark"] {
-  --bg: #070b08; --surface: #0e1410; --surface-2: #141c16; --line: #1e2920; --line-strong: #2c3a2f;
-  --fg: #f2efe4; --fg-muted: #a9b1a4; --fg-subtle: #6f7a70;
-  --primary: #5dbb7b; --primary-hover: #77cc91; --primary-fg: #04110a; --primary-soft: #11251a;
-  --leaf: #6cc07f; --soil: #c49a78; --wheat: #e6b84a;
-  --data: #79b0ef; --data-soft: #0f1d2d; --water: #45bad3; --heat: #f28c52; --heat-soft: #2a170e;
-  --warn: #e8b552; --warn-soft: #29200f; --ok: #66c37f; --ok-soft: #0f2418; --danger: #f2877d; --danger-soft: #2c1513;
-  --shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 24px 60px -24px rgb(0 0 0 / 0.8);
-  --stage: #050806; --stage-2: #0b130d; --glow: rgb(230 184 74 / 0.16); --accent-ink: var(--wheat);
+  --bg: #0b0d0c; --surface: #121513; --surface-2: #191d1a; --surface-3: #212622;
+  --line: #222724; --line-strong: #2f3531;
+  --fg: #e8ece9; --fg-muted: #9aa39d; --fg-subtle: #69716b;
+  --primary: #4cb878; --primary-hover: #62c78b; --primary-fg: #06120a; --primary-soft: rgb(76 184 120 / 0.13);
+  --leaf: #62c07c; --soil: #c49a78; --wheat: #dcbf5c;
+  --data: #6ea8ea; --data-soft: rgb(110 168 234 / 0.13); --water: #45b4cc;
+  --heat: #f0905f; --heat-soft: rgb(240 144 95 / 0.11);
+  --warn: #e0b25c; --warn-soft: rgb(224 178 92 / 0.11);
+  --ok: #62c07c; --ok-soft: rgb(98 192 124 / 0.11);
+  --danger: #f08a80; --danger-soft: rgb(240 138 128 / 0.11); --risk-hi: #c8382c;
+  --scrim: rgb(0 0 0 / 0.6);
+  --glass: rgb(18 21 19 / 0.84);
+  --shadow: 0 0 0 1px rgb(255 255 255 / 0.02), 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 0 0 1px rgb(255 255 255 / 0.05), 0 16px 48px -12px rgb(0 0 0 / 0.7);
+  --stage: #070a08; --stage-2: #0e130f; --glow: rgb(220 191 92 / 0.14); --accent-ink: var(--wheat);
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-glass: var(--glass);
+  --color-scrim: var(--scrim);
   --color-bg-elev: var(--surface);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
@@ -94,6 +109,7 @@
   --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
   --radius-card: var(--radius);
   --shadow-card: var(--shadow);
+  --shadow-lg: var(--shadow-lg);
 }
 
 html { background: var(--bg); color-scheme: light; }
@@ -118,3 +134,17 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); -
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
+
+/* Thin, theme-aware scrollbars (desktop webviews show chunky defaults otherwise). */
+* { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+/* Number inputs: no spinner arrows; the field is typed into. */
+input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+input::placeholder, textarea::placeholder { color: var(--fg-subtle); opacity: 1; }
+select { color-scheme: inherit; }
+/* MapLibre controls follow the theme. */
+.maplibregl-ctrl-group { background: var(--glass) !important; border: 1px solid var(--line); box-shadow: var(--shadow) !important; border-radius: 10px !important; backdrop-filter: blur(8px); }
+.maplibregl-ctrl-group button + button { border-top-color: var(--line) !important; }
+:root[data-theme="dark"] .maplibregl-ctrl-icon { filter: invert(1) hue-rotate(180deg); }
+.maplibregl-ctrl-attrib { background: var(--glass) !important; color: var(--fg-muted); border-radius: 8px 0 0 0; }
+.maplibregl-ctrl-attrib a { color: var(--fg-muted) !important; }

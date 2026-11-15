@@ -19,7 +19,7 @@ export function Tabs<T extends string>({ tabs, value, onChange, label, idPrefix 
     refs.current[tabs[n].id]?.focus();
   };
   return (
-    <div role="tablist" aria-label={label} className="-mx-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex gap-1 overflow-x-auto px-1 pb-1">
+    <div role="tablist" aria-label={label} className="flex flex-wrap gap-0.5 rounded-[18px] border border-line bg-surface-2 p-1">
       {tabs.map((tab, i) => {
         const on = tab.id === value;
         return (
@@ -29,8 +29,8 @@ export function Tabs<T extends string>({ tabs, value, onChange, label, idPrefix 
             data-tour={`tab-${tab.id}`}
             onClick={() => onChange(tab.id)} onKeyDown={(e) => move(e, i)}
             className={cn(
-              "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
-              on ? "bg-primary text-primary-fg" : "text-fg-muted hover:bg-surface-2 hover:text-fg",
+              "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium transition-all",
+              on ? "bg-surface text-fg shadow-[var(--shadow)] [&>svg]:text-primary" : "text-fg-muted hover:text-fg",
             )}
           >{tab.icon}{tab.label}</button>
         );

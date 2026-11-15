@@ -90,7 +90,7 @@ export function ScoreCard() {
   if (!score) return <p className="text-sm text-fg-muted">{t("explain.score_computing")}</p>;
   const tone = score.score >= 70 ? "text-ok" : score.score >= 45 ? "text-warn" : "text-danger";
   return (
-    <section aria-label={t("explain.score_title")} className="grid gap-5 md:grid-cols-2" data-tour="score-card">
+    <section aria-label={t("explain.score_title")} className="grid gap-5 @2xl:grid-cols-2" data-tour="score-card">
       <div>
         <div className="flex items-end gap-4">
           <span className={cn("display num text-7xl", tone)}>{score.score}</span>

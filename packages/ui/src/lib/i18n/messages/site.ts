@@ -95,8 +95,9 @@ export const site = {
     // download
     dlTitle: "FieldShift Desktop",
     dlSub: "The full workspace for your farm: all your fields, every analysis, offline-friendly, with your data on your computer.",
-    dlMac: "Download for macOS", dlWin: "Download for Windows",
-    dlNote: "Desktop downloads open soon. Meanwhile the free map works fully in your browser.",
+    dlMac: "Download for Mac (Apple chip)", dlWin: "Download for Windows",
+    dlMacIntel: "Mac with Intel processor", dlVersion: "Version {v}",
+    dlNote: "First launch on a Mac: if macOS says it cannot check the app, open System Settings → Privacy & Security and click “Open Anyway”. On Windows, click “More info” → “Run anyway”.",
     // faq
     faqTitle: "Questions, answered",
     q1: "Where does the data come from?", a1: "Weather comes from NASA POWER (daily, 2001–2025), soil from ISRIC SoilGrids, satellite vegetation from NASA MODIS through GIBS, and climate projections from NASA NEX-GDDP-CMIP6. Each number in the app shows its source and period.",
@@ -212,8 +213,9 @@ export const site = {
     cmpYes: "Inclus", cmpNo: "Neinclus", cmpFree1: "1", cmpProN: "Fără limită", cmpAdvN: "25 de ferme",
     dlTitle: "FieldShift Desktop",
     dlSub: "Spațiul de lucru complet pentru ferma ta: toate terenurile, toate analizele, cu datele tale pe calculatorul tău.",
-    dlMac: "Descarcă pentru macOS", dlWin: "Descarcă pentru Windows",
-    dlNote: "Descărcările se deschid în curând. Între timp, harta gratuită merge complet în browser.",
+    dlMac: "Descarcă pentru Mac (cip Apple)", dlWin: "Descarcă pentru Windows",
+    dlMacIntel: "Mac cu procesor Intel", dlVersion: "Versiunea {v}",
+    dlNote: "Prima pornire pe Mac: dacă macOS spune că nu poate verifica aplicația, deschide Setări sistem → Confidențialitate și securitate și apasă „Deschide oricum”. Pe Windows: „Mai multe informații” → „Rulează oricum”.",
     faqTitle: "Întrebări frecvente",
     q1: "De unde vin datele?", a1: "Vremea vine de la NASA POWER (zilnic, 2001–2025), solul din ISRIC SoilGrids, vegetația din satelit de la NASA MODIS prin GIBS, iar proiecțiile climatice de la NASA NEX-GDDP-CMIP6. Fiecare cifră din aplicație își arată sursa și perioada.",
     q2: "Harta e cu adevărat gratuită?", a2: "Da. Poți alege terenul, citi istoricul lui climatic și vedea cum ar putea fi afectată o rotație tipică, fără cont. Planul gratuit păstrează un singur teren salvat.",

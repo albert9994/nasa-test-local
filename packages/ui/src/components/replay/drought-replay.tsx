@@ -173,7 +173,7 @@ function Panel({ panel, year, days, day, tmaxDomain }: { panel: PanelData; year:
           {t("replay.farm_income", { amount: f.money(net) })}
         </div>
       </header>
-      <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-2 @xl:grid-cols-2 @5xl:grid-cols-3">
         {seasons.map((s, i) => (
           <CropCard key={`${s.crop}-${i}`} season={s} year={year} days={days} day={day} tmaxDomain={tmaxDomain} />
         ))}

@@ -23,6 +23,10 @@ export interface LandPickerProps {
   initialView?: MapView;
   onViewChange?(v: MapView): void;
   className?: string;
+  /** Fields the farmer already has, drawn as dashed outlines for context (desktop "add field"). */
+  existing?: { id: string; name: string; ring: LngLat[] }[];
+  /** Hide the place search (when the host shows its own). */
+  hideSearch?: boolean;
 }
 
 let workerSet = false;
@@ -64,7 +68,7 @@ const parcelsFC = (ps: Parcel[]): FC => ({ type: "FeatureCollection", features: 
 
 type ParcelStatus = "zoom" | "loading" | "ok" | "none" | "error";
 
-export default function LandPickerInner({ land, onLandChange, initialView, onViewChange, className }: LandPickerProps) {
+export default function LandPickerInner({ land, onLandChange, initialView, onViewChange, className, existing, hideSearch }: LandPickerProps) {
   const t = useT();
   ensureWorker();
   const ref = useRef<MapRef>(null);
@@ -223,6 +227,12 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
           <Layer id="parcels-fill" type="fill" minzoom={PARCEL_MIN_ZOOM - 0.5} layout={{ visibility: mode === "parcel" ? "visible" : "none" }} paint={{ "fill-color": "#ffffff", "fill-opacity": 0.08 }} />
           <Layer id="parcels-line" type="line" minzoom={PARCEL_MIN_ZOOM - 0.5} layout={{ visibility: mode === "parcel" ? "visible" : "none" }} paint={{ "line-color": "#ffffff", "line-width": 1.4, "line-opacity": 0.85 }} />
         </Source>
+        {existing && existing.length > 0 && (
+          <Source id="existing" type="geojson" data={{ type: "FeatureCollection", features: existing.map((f) => ({ type: "Feature", properties: { name: f.name }, geometry: { type: "Polygon", coordinates: [closeRing(f.ring)] } })) } as unknown as FC}>
+            <Layer id="existing-fill" type="fill" paint={{ "fill-color": "#7cb8f0", "fill-opacity": 0.22 }} />
+            <Layer id="existing-line" type="line" paint={{ "line-color": "#cfe6ff", "line-width": 1.6, "line-dasharray": [2, 1.5] }} />
+          </Source>
+        )}
         <Source id="hover" type="geojson" data={polyFC(hover ? hover.ring : null)}>
           <Layer id="hover-fill" type="fill" paint={{ "fill-color": "#ffffff", "fill-opacity": 0.28 }} />
         </Source>
@@ -244,7 +254,7 @@ export default function LandPickerInner({ land, onLandChange, initialView, onVie
 
       {/* top-left controls */}
       <div className="pointer-events-none absolute inset-x-3 top-3 flex max-w-[26rem] flex-col gap-2 sm:left-4 sm:right-auto sm:top-4 sm:w-[26rem]">
-        <div data-tour="search" className="pointer-events-auto"><SearchBox onPick={onPlace} /></div>
+        {!hideSearch && <div data-tour="search" className="pointer-events-auto"><SearchBox onPick={onPlace} /></div>}
         <div className="pointer-events-auto flex flex-col gap-2" data-tour="modes">
           <div role="group" aria-label={t("mapTool.modeLabel")} className="grid grid-cols-3 gap-1 rounded-full border border-line bg-surface p-1 shadow-[var(--shadow)]">
             {modes.map(([m, k, Icon]) => (

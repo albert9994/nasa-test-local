@@ -218,10 +218,11 @@ export function PlanComparison() {
 }
 
 // ---------- download ----------
+/** Installers are served by the website itself (scripts/fetch-installers.mjs copies them from the GitHub release). */
+export const DESKTOP_VERSION = "2.1.0";
+const DL = { mac: "/downloads/FieldShift-mac-apple-silicon.dmg", macIntel: "/downloads/FieldShift-mac-intel.dmg", win: "/downloads/FieldShift-windows-setup.exe" };
 export function DesktopDownload() {
   const t = useT();
-  const { Link } = useSiteEnv();
-  const p = useLocalePath();
   return (
     <section id="download" className="scroll-mt-16 px-4 py-20 sm:px-6 sm:py-28">
       <Reveal className="grain relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-line bg-[var(--stage)] p-8 sm:p-14">
@@ -234,9 +235,14 @@ export function DesktopDownload() {
           </div>
           <div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <Link href={`${p()}#download`} className={cn(btn("primary", "lg"), "flex-1")}><Download className="size-4" />{t("site.dlMac")}</Link>
-              <Link href={`${p()}#download`} className={cn(btn("outline", "lg"), "flex-1")}><Monitor className="size-4" />{t("site.dlWin")}</Link>
+              <a href={DL.mac} download className={cn(btn("primary", "lg"), "flex-1")}><Download className="size-4" />{t("site.dlMac")}</a>
+              <a href={DL.win} download className={cn(btn("outline", "lg"), "flex-1")}><Monitor className="size-4" />{t("site.dlWin")}</a>
             </div>
+            <p className="mt-3 text-sm text-fg-muted">
+              <a href={DL.macIntel} download className="underline underline-offset-4 hover:text-fg">{t("site.dlMacIntel")}</a>
+              <span className="mx-2 text-fg-subtle">·</span>
+              <span>{t("site.dlVersion", { v: DESKTOP_VERSION })}</span>
+            </p>
             <p className="mt-4 text-sm text-fg-muted">{t("site.dlNote")}</p>
           </div>
         </div>

@@ -72,7 +72,7 @@ export function shareColor(share: number, tolerance: number): string {
     return `color-mix(in oklab, var(--ok) ${k}%, var(--surface))`;
   }
   const k = Math.min(1, (share - tol) / Math.max(0.01, 0.6 - tol));
-  return `color-mix(in oklab, var(--danger) ${Math.round(35 + k * 60)}%, var(--warn-soft))`;
+  return `color-mix(in oklab, var(--risk-hi) ${Math.round(30 + k * 62)}%, var(--surface))`;
 }
 
 /** Average crop costs per hectare over the rotation (opts > farm > crop defaults). */
