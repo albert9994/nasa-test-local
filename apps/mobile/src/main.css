@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@source "../../../packages/ui/src";
+@import "../../../packages/ui/src/styles/theme.css";
+
+:root {
+  --font-geist-sans: "Geist Variable";
+  --font-geist-mono: "Geist Mono Variable";
+}
+html, body, #root { height: 100%; }
+body {
+  overflow: hidden;
+  overscroll-behavior: none;              /* no rubber-band of the whole page; inner scrollers still bounce */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: 100%;
+  user-select: none; -webkit-user-select: none;
+}
+input, textarea, select, [contenteditable], .selectable { user-select: text; -webkit-user-select: text; }
+/* iOS zooms into inputs under 16px: keep form controls at 16px on phones. */
+input, select, textarea { font-size: 16px !important; }
+button { touch-action: manipulation; }
