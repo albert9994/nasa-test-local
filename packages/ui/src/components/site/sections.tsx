@@ -1,5 +1,6 @@
 "use client";
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 import {
   Bell, Bot, Check, ChevronDown, Download, FileText, Gauge, Layers, Laptop, Minus, Monitor, MousePointerClick, Pentagon, Satellite, Sprout, ThermometerSun,
   Database, Globe, Mountain, CloudRain, Droplets, type LucideIcon,
@@ -8,20 +9,32 @@ import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useLocalePath, useSiteEnv } from "./env";
 import { btn } from "./nav";
+import { ProductPreview } from "./product-preview";
+
+/** Fades and lifts its children in once they scroll into view. */
+export function Reveal({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+  return (
+    <motion.div className={className} initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-12% 0px" }} transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}>
+      {children}
+    </motion.div>
+  );
+}
 
 export function Section({ id, className, children, tone }: { id?: string; className?: string; children: ReactNode; tone?: "alt" }) {
   return (
     <section id={id} className={cn("scroll-mt-16", tone === "alt" && "border-y border-line bg-surface", className)}>
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">{children}</div>
+      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-32">{children}</div>
     </section>
   );
 }
-function Heading({ title, sub, center }: { title: string; sub?: string; center?: boolean }) {
+function Heading({ kicker, title, sub, center }: { kicker?: string; title: string; sub?: string; center?: boolean }) {
   return (
-    <div className={cn("max-w-2xl", center && "mx-auto text-center")}>
-      <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h2>
-      {sub && <p className="mt-4 text-pretty text-lg text-fg-muted">{sub}</p>}
-    </div>
+    <Reveal className={cn("max-w-3xl", center && "mx-auto text-center")}>
+      {kicker && <p className="kicker mb-4 text-[var(--accent-ink)]">{kicker}</p>}
+      <h2 className="headline text-balance text-[clamp(2.5rem,5.5vw,4.75rem)]">{title}</h2>
+      {sub && <p className={cn("mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-fg-muted", center && "mx-auto")}>{sub}</p>}
+    </Reveal>
   );
 }
 
@@ -31,20 +44,40 @@ export function HowItWorks() {
   const steps: [LucideIcon, string][] = [[Pentagon, "how1"], [Database, "how2"], [Gauge, "how3"]];
   return (
     <Section id="how">
-      <Heading title={t("site.howTitle")} sub={t("site.howSub")} />
-      <ol className="mt-12 grid gap-5 md:grid-cols-3">
+      <Heading kicker={t("site.kHow")} title={t("site.howTitle")} sub={t("site.howSub")} />
+      <ol className="mt-16 grid gap-px overflow-hidden border-y border-line md:grid-cols-3 md:border-x-0">
         {steps.map(([Icon, k], i) => (
-          <li key={k} className="relative rounded-2xl border border-line bg-surface p-6">
-            <div className="flex items-center justify-between">
-              <span className="grid size-11 place-items-center rounded-xl bg-primary-soft text-primary"><Icon className="size-5" /></span>
-              <span className="num text-sm text-fg-subtle">0{i + 1}</span>
-            </div>
-            <h3 className="mt-5 text-lg font-semibold tracking-tight">{t(`site.${k}T`)}</h3>
-            <p className="mt-2 text-[15px] leading-relaxed text-fg-muted">{t(`site.${k}B`)}</p>
+          <li key={k} className={cn("relative py-10 md:px-8 md:py-4", i > 0 && "border-t border-line md:border-l md:border-t-0", i === 0 && "md:pl-0")}>
+            <Reveal delay={i * 0.12}>
+              <span className="headline block text-[6.5rem] leading-none text-transparent [-webkit-text-stroke:1.5px_var(--line-strong)]">0{i + 1}</span>
+              <span className="mt-6 flex items-center gap-3 text-primary"><Icon className="size-5" /><span className="h-px flex-1 bg-line" /></span>
+              <h3 className="mt-5 text-xl font-semibold tracking-tight">{t(`site.${k}T`)}</h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-fg-muted">{t(`site.${k}B`)}</p>
+            </Reveal>
           </li>
         ))}
       </ol>
     </Section>
+  );
+}
+
+// ---------- showcase (the free map) ----------
+export function Showcase() {
+  const t = useT();
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
+  const rotateX = useTransform(scrollYProgress, [0, 1], [18, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
+  return (
+    <section id="showcase" className="grain relative overflow-hidden border-y border-line bg-[var(--stage)]">
+      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(50%_45%_at_50%_62%,var(--glow),transparent_70%)]" />
+      <div className="relative z-[2] mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-32">
+        <Heading center kicker={t("site.kShow")} title={t("site.showTitle")} sub={t("site.showSub")} />
+        <div ref={ref} className="mx-auto mt-14 max-w-5xl [perspective:1400px]">
+          <motion.div style={{ rotateX, scale, transformOrigin: "50% 100%" }}><ProductPreview /></motion.div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -57,10 +90,11 @@ export function Features() {
   const t = useT();
   return (
     <Section id="product" tone="alt">
-      <Heading title={t("site.featTitle")} sub={t("site.featSub")} />
-      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {FEATURES.map(([Icon, k, tag]) => (
-          <div key={k} className="flex flex-col rounded-2xl border border-line bg-bg p-5">
+      <Heading kicker={t("site.kFeat")} title={t("site.featTitle")} sub={t("site.featSub")} />
+      <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {FEATURES.map(([Icon, k, tag], i) => (
+          <Reveal key={k} delay={(i % 4) * 0.07} className="h-full">
+          <div className="group flex h-full flex-col rounded-2xl border border-line bg-bg p-6 transition-[border-color,transform,box-shadow] duration-500 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_24px_50px_-28px_var(--glow)]">
             <div className="flex items-start justify-between">
               <span className="grid size-10 place-items-center rounded-lg bg-surface text-primary ring-1 ring-line"><Icon className="size-5" /></span>
               <span className={cn("rounded-full px-2.5 py-0.5 text-[11px] font-medium", tag === "tagFree" ? "bg-ok-soft text-ok" : tag === "tagPro" ? "bg-data-soft text-data" : "bg-surface-2 text-fg-muted")}>{t(`site.${tag}`)}</span>
@@ -68,6 +102,7 @@ export function Features() {
             <h3 className="mt-4 font-semibold tracking-tight">{t(`site.${k}T`)}</h3>
             <p className="mt-1.5 text-sm leading-relaxed text-fg-muted">{t(`site.${k}B`)}</p>
           </div>
+          </Reveal>
         ))}
       </div>
     </Section>
@@ -83,8 +118,8 @@ export function DataSources() {
   const t = useT();
   return (
     <Section id="data">
-      <Heading title={t("site.dataTitle")} sub={t("site.dataSub")} />
-      <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
+      <Heading kicker={t("site.kData")} title={t("site.dataTitle")} sub={t("site.dataSub")} />
+      <div className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
         {DATA.map(([Icon, k, st]) => (
           <div key={k} className="flex gap-4 bg-surface p-5">
             <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-data-soft text-data"><Icon className="size-[18px]" /></span>
@@ -144,7 +179,7 @@ export function PricingSection() {
   const t = useT();
   return (
     <Section id="pricing" tone="alt">
-      <Heading center title={t("site.priceTitle")} sub={t("site.priceSub")} />
+      <Heading center kicker={t("site.kPrice")} title={t("site.priceTitle")} sub={t("site.priceSub")} />
       <div className="mt-14"><PricingTiers /></div>
     </Section>
   );
@@ -189,29 +224,30 @@ const DL = { mac: "/downloads/FieldShift-mac-apple-silicon.dmg", macIntel: "/dow
 export function DesktopDownload() {
   const t = useT();
   return (
-    <Section id="download">
-      <div className="overflow-hidden rounded-3xl bg-primary p-8 text-primary-fg sm:p-12">
-        <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
+    <section id="download" className="scroll-mt-16 px-4 py-20 sm:px-6 sm:py-28">
+      <Reveal className="grain relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-line bg-[var(--stage)] p-8 sm:p-14">
+        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(55%_80%_at_85%_20%,var(--glow),transparent_70%)]" />
+        <div className="relative z-[2] grid items-center gap-10 lg:grid-cols-[1.25fr_1fr]">
           <div>
-            <span className="grid size-12 place-items-center rounded-xl bg-white/10"><Laptop className="size-6" /></span>
-            <h2 className="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl">{t("site.dlTitle")}</h2>
-            <p className="mt-4 max-w-xl text-lg text-primary-fg/80">{t("site.dlSub")}</p>
+            <span className="grid size-12 place-items-center rounded-xl border border-line bg-surface text-primary"><Laptop className="size-6" /></span>
+            <h2 className="headline mt-7 text-balance text-[clamp(2.4rem,5vw,4.25rem)]">{t("site.dlTitle")}</h2>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-fg-muted">{t("site.dlSub")}</p>
           </div>
           <div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <a href={DL.mac} download className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-base font-medium text-primary hover:bg-primary-soft"><Download className="size-4" />{t("site.dlMac")}</a>
-              <a href={DL.win} download className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/40 px-6 text-base font-medium hover:bg-white/10"><Monitor className="size-4" />{t("site.dlWin")}</a>
+              <a href={DL.mac} download className={cn(btn("primary", "lg"), "flex-1")}><Download className="size-4" />{t("site.dlMac")}</a>
+              <a href={DL.win} download className={cn(btn("outline", "lg"), "flex-1")}><Monitor className="size-4" />{t("site.dlWin")}</a>
             </div>
-            <p className="mt-3 text-sm text-primary-fg/80">
-              <a href={DL.macIntel} download className="underline underline-offset-4 hover:text-primary-fg">{t("site.dlMacIntel")}</a>
-              <span className="mx-2 text-primary-fg/50">·</span>
+            <p className="mt-3 text-sm text-fg-muted">
+              <a href={DL.macIntel} download className="underline underline-offset-4 hover:text-fg">{t("site.dlMacIntel")}</a>
+              <span className="mx-2 text-fg-subtle">·</span>
               <span>{t("site.dlVersion", { v: DESKTOP_VERSION })}</span>
             </p>
-            <p className="mt-4 text-sm text-primary-fg/70">{t("site.dlNote")}</p>
+            <p className="mt-4 text-sm text-fg-muted">{t("site.dlNote")}</p>
           </div>
         </div>
-      </div>
-    </Section>
+      </Reveal>
+    </section>
   );
 }
 
@@ -220,7 +256,7 @@ export function Faq() {
   const t = useT();
   return (
     <Section id="faq" tone="alt">
-      <Heading title={t("site.faqTitle")} />
+      <Heading kicker={t("site.kFaq")} title={t("site.faqTitle")} />
       <div className="mt-10 max-w-3xl divide-y divide-line rounded-2xl border border-line bg-bg">
         {Array.from({ length: 8 }, (_, i) => i + 1).map((i) => (
           <details key={i} className="group px-6 py-1">
@@ -240,12 +276,13 @@ export function FinalCta() {
   const { Link } = useSiteEnv();
   const p = useLocalePath();
   return (
-    <Section>
-      <div className="text-center">
-        <h2 className="mx-auto max-w-2xl text-balance text-3xl font-semibold tracking-tight sm:text-4xl">{t("site.ctaTitle")}</h2>
-        <p className="mt-4 text-lg text-fg-muted">{t("site.ctaBody")}</p>
-        <Link href={p("/map")} className={cn(btn("primary", "lg"), "mt-8")}>{t("site.heroCta")}</Link>
-      </div>
-    </Section>
+    <section className="grain relative overflow-hidden border-t border-line bg-[var(--stage)]">
+      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(60%_70%_at_50%_100%,var(--glow),transparent_70%)]" />
+      <Reveal className="relative z-[2] mx-auto max-w-5xl px-4 py-28 text-center sm:px-6 sm:py-40">
+        <h2 className="headline mx-auto text-balance text-[clamp(2.8rem,7.5vw,6.5rem)]">{t("site.ctaTitle")}</h2>
+        <p className="mt-6 text-lg text-fg-muted">{t("site.ctaBody")}</p>
+        <Link href={p("/map")} className={cn(btn("primary", "lg"), "mt-10")}>{t("site.heroCta")}</Link>
+      </Reveal>
+    </section>
   );
 }
