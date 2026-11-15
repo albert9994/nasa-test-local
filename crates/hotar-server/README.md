@@ -7,10 +7,24 @@ configured, every endpoint still works and `/api/explain` serves the determinist
 ## Run locally
 
 ```bash
-cp .env.example .env        # fill LLM_* (optional); never commit .env
-set -a; . ./.env; set +a
-cargo run -p hotar-server   # http://localhost:8787
+# LLM settings: ~/.hotar/ai.env (also used by the desktop app) or ./.env; both are read at start-up,
+# variables already set in the shell win. Never commit them.
+pnpm ai                     # = cargo run --release -p hotar-server → http://localhost:8787
 ```
+
+Example `~/.hotar/ai.env` for Meta's Muse Spark (OpenAI-compatible):
+
+```bash
+LLM_PROVIDER=openai
+LLM_API_URL=https://api.meta.ai/v1
+LLM_API_KEY=LLM|…
+LLM_MODEL=muse-spark-1.3
+LLM_REASONING_EFFORT=minimal
+HOTAR_RATE_LIMIT_PER_HOUR=1000
+```
+
+The **desktop app** embeds this server: at launch it reads the same file and, when an LLM is configured, serves the API
+on `127.0.0.1:8788` (or a free port) for its own UI (`apps/desktop/src-tauri/src/ai.rs`). Nothing else to run.
 
 Web (Next.js) and desktop (Tauri) call it through the **public** `NEXT_PUBLIC_API_URL`
 (e.g. `NEXT_PUBLIC_API_URL=http://localhost:8787`). Without it the UI uses its client-side templates.
@@ -26,12 +40,15 @@ The LLM key only ever lives in the server environment; it is never sent to the b
 | `LLM_API_URL` | none (`https://api.anthropic.com/v1` for anthropic) | base URL, e.g. `https://api.openai.com/v1` |
 | `LLM_API_KEY` | none | secret (Bearer for openai, `x-api-key` for anthropic) |
 | `LLM_MODEL` | none | model name |
+| `LLM_REASONING_EFFORT` | none | reasoning models only (`openai` format): sent as `reasoning_effort`, e.g. `minimal` for Meta `muse-spark-1.3` |
+| `LLM_REASONING_TOKENS` | `1500` | extra `max_tokens` for the hidden reasoning when `LLM_REASONING_EFFORT` is set |
+| `LLM_TIMEOUT_SECS` | `90` | max duration of one model call, streamed body included |
 | `HOTAR_PROMPTS_DIR` | `prompts` | system prompts (`explain_short`, `explain_plan`, `chat`, `judge`, `score_adjust`); missing files fall back to built-in copies |
 | `HOTAR_RATE_LIMIT_PER_HOUR` | `20` | LLM calls per IP per hour (cache hits and template answers are free) |
 | `HOTAR_TRUST_PROXY` | off | `1` = take the client IP from `X-Forwarded-For` (set only behind a trusted proxy) |
 
 If `LLM_API_URL`, `LLM_API_KEY` or `LLM_MODEL` is missing the server runs without a model (`NoLlm`).
-Timeouts: first byte 8 s, total 30 s, one retry on network errors, 429 and 5xx. Temperature 0.2.
+Timeouts: first byte 8 s, total 90 s (`LLM_TIMEOUT_SECS`), one retry on network errors, 429 and 5xx. Temperature 0.2.
 
 ## Endpoints
 

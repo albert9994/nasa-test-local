@@ -139,6 +139,8 @@ fn state_with(url: &str, provider: Provider) -> AppState {
         url: url.to_string(),
         key: "test-key".into(),
         model: "test-model".into(),
+        reasoning_effort: None,
+        reasoning_tokens: 0,
     })
     .unwrap();
     AppState::new(vec![format!("{root}/mock/farms").into()]).with_llm(Arc::new(llm))

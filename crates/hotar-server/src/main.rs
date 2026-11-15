@@ -9,6 +9,10 @@ async fn main() {
         .and_then(|p| p.parse().ok())
         .unwrap_or(8787);
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
+    // ./.env and ~/.hotar/ai.env (LLM_* settings); variables already set in the shell win.
+    for f in hotar_server::envfile::load_local_env() {
+        eprintln!("config: {}", f.display());
+    }
     let state = AppState::from_env();
     eprintln!(
         "hotar-server listening on http://{addr} (data: {})",

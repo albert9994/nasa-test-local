@@ -9,7 +9,7 @@ import { useCurrency, useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useFarm } from "@/lib/store/farm";
 import type { FactSheet } from "@/lib/engine/types";
-import { API_URL, RateLimitError, streamExplain, type ChatTurn } from "@/components/explain/api";
+import { getApiUrl, RateLimitError, streamExplain, type ChatTurn } from "@/components/explain/api";
 import { RichText } from "@/components/explain/rich-text";
 import { buildTemplate, type Lang } from "@/components/explain/templates";
 import { useFactSheet } from "@/components/explain/use-fact-sheet";
@@ -113,7 +113,7 @@ export function Assistant() {
     setMsgs(fid, (m) => [...m, { id: nextId++, role: "user", text: question }, { id, role: "assistant", text: "", streaming: true }]);
     const patch = (p: Partial<Msg>) => setMsgs(fid, (m) => m.map((x) => (x.id === id ? { ...x, ...p } : x)));
 
-    if (!API_URL) { // no server configured: deterministic summary of the same numbers
+    if (!getApiUrl()) { // no server configured: deterministic summary of the same numbers
       patch({ text: buildTemplate(fact, lang, useCurrency.getState().currency), streaming: false, note: "offline" });
       return;
     }

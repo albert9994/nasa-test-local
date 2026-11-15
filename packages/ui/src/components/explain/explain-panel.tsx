@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useCurrency, useT } from "@/lib/i18n";
 import { useAnalysis } from "@/lib/store/analysis";
-import { API_URL, RateLimitError, streamExplain } from "./api";
+import { getApiUrl, RateLimitError, streamExplain } from "./api";
 import { ChatBox } from "./chat-box";
 import { RichText } from "./rich-text";
 import { ScoreCard } from "./score-card";
@@ -110,7 +110,7 @@ export function ExplainPanel() {
         {fact && text ? <div className="mt-4"><RichText text={text} fact={fact} lang={lang} caret={typing} /></div> : null}
         {note && !busy ? <p role="note" data-testid="explain-note" className="mt-2 text-xs text-fg-muted">{t(note === "replaced" ? "explain.note_replaced" : "explain.note_rate")}</p> : null}
         {!fact ? <p className="mt-3 text-sm text-fg-muted">{t("explain.pick_farm")}</p> : null}
-        {fact && source === "ai" && !busy && API_URL ? <ChatBox fact={fact} lang={lang} /> : null}
+        {fact && source === "ai" && !busy && getApiUrl() ? <ChatBox fact={fact} lang={lang} /> : null}
       </div>
     </Card>
   );

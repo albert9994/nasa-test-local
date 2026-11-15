@@ -3,6 +3,7 @@
 //! Weather is never synthesized: an unknown farm is a 404.
 
 pub mod advisor;
+pub mod envfile;
 pub mod llm;
 pub mod ratelimit;
 
@@ -858,4 +859,23 @@ pub fn app(state: AppState) -> Router {
         .route("/api/explain", post(explain))
         .layer(cors)
         .with_state(state)
+}
+
+/// Binds a loopback listener for an embedded server (the desktop app): `127.0.0.1:<preferred>`, or any free port when that
+/// one is taken. Synchronous so the caller learns the address before the UI starts.
+pub fn bind_loopback(preferred: u16) -> std::io::Result<std::net::TcpListener> {
+    let l = std::net::TcpListener::bind(("127.0.0.1", preferred))
+        .or_else(|_| std::net::TcpListener::bind(("127.0.0.1", 0)))?;
+    l.set_nonblocking(true)?;
+    Ok(l)
+}
+
+/// Serves the API on a listener from [`bind_loopback`]. Must run inside a Tokio runtime (Tauri's async runtime is one).
+pub async fn serve_std(listener: std::net::TcpListener, state: AppState) -> std::io::Result<()> {
+    let l = tokio::net::TcpListener::from_std(listener)?;
+    axum::serve(
+        l,
+        app(state).into_make_service_with_connect_info::<std::net::SocketAddr>(),
+    )
+    .await
 }

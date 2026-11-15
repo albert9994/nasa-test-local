@@ -6,7 +6,8 @@
     "build": "pnpm -r --if-present run build",
     "typecheck": "pnpm -r --if-present run typecheck",
     "test": "pnpm -r --if-present run test",
-    "wasm": "wasm-pack build crates/hotar-wasm --target web --out-dir ../../packages/engine-wasm"
+    "wasm": "wasm-pack build crates/hotar-wasm --target web --out-dir ../../packages/engine-wasm",
+    "ai": "cargo run --release -p hotar-server"
   },
   "packageManager": "pnpm@11.22.0"
 }

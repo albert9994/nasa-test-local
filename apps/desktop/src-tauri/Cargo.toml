@@ -29,9 +29,14 @@ serde_json = "1"
 # On by default; `--no-default-features` builds the shell without it (the UI then keeps the TypeScript engine).
 hotar-core = { path = "../../../crates/hotar-core", optional = true }
 
+# Local AI advisor: the Hotar API (crates/hotar-server) runs inside the app on 127.0.0.1 when an LLM is configured in
+# ~/.hotar/ai.env (or the LLM_* environment variables). The key stays on this computer; it is never compiled in.
+hotar-server = { path = "../../../crates/hotar-server", optional = true }
+
 [features]
-default = ["native-engine"]
+default = ["native-engine", "ai-server"]
 native-engine = ["dep:hotar-core"]
+ai-server = ["dep:hotar-server"]
 
 [profile.release]
 opt-level = "s"
