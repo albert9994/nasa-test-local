@@ -20,8 +20,17 @@ pub type TokenStream = Pin<Box<dyn Stream<Item = Result<String, LlmError>> + Sen
 
 /// Max wait for the response headers / first byte.
 pub const FIRST_BYTE_TIMEOUT: Duration = Duration::from_secs(8);
-/// Max total duration of one request (including the streamed body).
-pub const TOTAL_TIMEOUT: Duration = Duration::from_secs(30);
+/// Default max total duration of one request (including the streamed body); `LLM_TIMEOUT_SECS` overrides it.
+/// Long answers from reasoning models (the plan mode) take about 30 s.
+pub const TOTAL_TIMEOUT: Duration = Duration::from_secs(90);
+
+fn total_timeout() -> Duration {
+    std::env::var("LLM_TIMEOUT_SECS")
+        .ok()
+        .and_then(|v| v.trim().parse::<u64>().ok())
+        .filter(|s| *s > 0)
+        .map_or(TOTAL_TIMEOUT, Duration::from_secs)
+}
 const RETRIES: usize = 1;
 
 #[derive(Debug, thiserror::Error)]
@@ -117,7 +126,16 @@ pub struct LlmConfig {
     pub url: String,
     pub key: String,
     pub model: String,
+    /// OpenAI-style `reasoning_effort` for reasoning models (e.g. Meta `muse-spark-1.3`: minimal | low | medium | high).
+    /// Hidden reasoning tokens count against `max_tokens`, so short answers need a low effort. Not sent when unset.
+    pub reasoning_effort: Option<String>,
+    /// Extra `max_tokens` for the hidden reasoning when `reasoning_effort` is set, on top of each call's answer budget
+    /// (`LLM_REASONING_TOKENS`, default [`DEFAULT_REASONING_TOKENS`]).
+    pub reasoning_tokens: u32,
 }
+
+/// Default reasoning headroom; measured on `muse-spark-1.3` at `minimal` with a full fact sheet.
+pub const DEFAULT_REASONING_TOKENS: u32 = 1500;
 
 impl std::fmt::Debug for LlmConfig {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -126,12 +144,15 @@ impl std::fmt::Debug for LlmConfig {
             .field("url", &self.url)
             .field("key", &"<redacted>")
             .field("model", &self.model)
+            .field("reasoning_effort", &self.reasoning_effort)
+            .field("reasoning_tokens", &self.reasoning_tokens)
             .finish()
     }
 }
 
 impl LlmConfig {
-    /// Reads `LLM_PROVIDER` (openai | anthropic), `LLM_API_URL`, `LLM_API_KEY`, `LLM_MODEL`.
+    /// Reads `LLM_PROVIDER` (openai | anthropic), `LLM_API_URL`, `LLM_API_KEY`, `LLM_MODEL` and the optional
+    /// `LLM_REASONING_EFFORT` / `LLM_REASONING_TOKENS`.
     /// Returns `None` when anything required is missing (the server then serves templates).
     pub fn from_env() -> Option<Self> {
         let get = |k: &str| std::env::var(k).ok().map(|v| v.trim().to_string());
@@ -144,11 +165,17 @@ impl LlmConfig {
         })?;
         let key = get("LLM_API_KEY").filter(|v| !v.is_empty())?;
         let model = get("LLM_MODEL").filter(|v| !v.is_empty())?;
+        let reasoning_effort = get("LLM_REASONING_EFFORT").filter(|v| !v.is_empty());
+        let reasoning_tokens = get("LLM_REASONING_TOKENS")
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(DEFAULT_REASONING_TOKENS);
         Some(Self {
             provider,
             url,
             key,
             model,
+            reasoning_effort,
+            reasoning_tokens,
         })
     }
 }
@@ -163,7 +190,7 @@ impl HttpLlm {
     pub fn new(cfg: LlmConfig) -> Result<Self, LlmError> {
         let http = reqwest::Client::builder()
             .connect_timeout(Duration::from_secs(5))
-            .timeout(TOTAL_TIMEOUT)
+            .timeout(total_timeout())
             .build()
             .map_err(|e| LlmError::Unavailable(e.to_string()))?;
         Ok(Self { cfg, http })
@@ -187,13 +214,21 @@ impl HttpLlm {
 
     fn body(&self, messages: &[ChatMessage], opts: ChatOpts, stream: bool) -> Value {
         match self.cfg.provider {
-            Provider::OpenAi => json!({
-                "model": self.cfg.model,
-                "messages": messages.iter().map(|m| json!({"role": m.role, "content": m.content})).collect::<Vec<_>>(),
-                "temperature": opts.temperature,
-                "max_tokens": opts.max_tokens,
-                "stream": stream,
-            }),
+            Provider::OpenAi => {
+                let mut b = json!({
+                    "model": self.cfg.model,
+                    "messages": messages.iter().map(|m| json!({"role": m.role, "content": m.content})).collect::<Vec<_>>(),
+                    "temperature": opts.temperature,
+                    "max_tokens": opts.max_tokens,
+                    "stream": stream,
+                });
+                if let Some(e) = &self.cfg.reasoning_effort {
+                    b["reasoning_effort"] = json!(e);
+                    b["max_tokens"] =
+                        json!(opts.max_tokens.saturating_add(self.cfg.reasoning_tokens));
+                }
+                b
+            }
             Provider::Anthropic => {
                 let system: Vec<&str> = messages
                     .iter()
@@ -380,7 +415,31 @@ mod tests {
             url: "http://x".into(),
             key: "sk-secret".into(),
             model: "m".into(),
+            reasoning_effort: None,
+            reasoning_tokens: 0,
         };
         assert!(!format!("{c:?}").contains("sk-secret"));
+    }
+
+    #[test]
+    fn reasoning_effort_only_when_set() {
+        let mk = |e: Option<&str>| {
+            HttpLlm::new(LlmConfig {
+                provider: Provider::OpenAi,
+                url: "http://x".into(),
+                key: "k".into(),
+                model: "m".into(),
+                reasoning_effort: e.map(str::to_string),
+                reasoning_tokens: 1000,
+            })
+            .unwrap()
+        };
+        let msgs = [ChatMessage::new("user", "hi")];
+        let with = mk(Some("minimal")).body(&msgs, ChatOpts::default(), false);
+        assert_eq!(with["reasoning_effort"], "minimal");
+        assert_eq!(with["max_tokens"], ChatOpts::default().max_tokens + 1000);
+        let without = mk(None).body(&msgs, ChatOpts::default(), false);
+        assert!(without.get("reasoning_effort").is_none());
+        assert_eq!(without["max_tokens"], ChatOpts::default().max_tokens);
     }
 }

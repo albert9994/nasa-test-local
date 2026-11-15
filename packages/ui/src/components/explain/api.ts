@@ -1,10 +1,13 @@
 // Network side of O7. The server URL comes from lib/platform/api-url.ts; the LLM key lives on the server.
 import type { FactSheet, ScoreResult } from "@/lib/engine/types";
-import { API_URL, apiUrl } from "@/lib/platform/api-url";
+import { apiUrl, getApiUrl } from "@/lib/platform/api-url";
 import type { Lang } from "./templates";
 
-export { API_URL };
-export const TIMEOUT_MS = 8000;
+export { getApiUrl };
+/** Max wait for the first streamed byte. Reasoning models (e.g. Muse Spark) think for a few seconds before writing. */
+export const TIMEOUT_MS = 20000;
+/** /api/score waits for the model's score adjustment (one non-streamed call). */
+export const SCORE_TIMEOUT_MS = 30000;
 
 export interface ChatTurn { role: "user" | "assistant"; content: string }
 export interface ExplainRequest { factSheet: FactSheet; lang: Lang; mode: "short" | "plan" | "chat"; question?: string; /** chat only: earlier turns, oldest first (the server keeps the last 6) */ history?: ChatTurn[] }
@@ -91,7 +94,7 @@ export async function fetchScore(body: unknown): Promise<ScoreResult | null> {
   const url = apiUrl("/api/score");
   if (!url) return null;
   const ctl = new AbortController();
-  const t = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+  const t = setTimeout(() => ctl.abort(), SCORE_TIMEOUT_MS);
   try {
     const res = await fetch(url, {
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctl.signal,

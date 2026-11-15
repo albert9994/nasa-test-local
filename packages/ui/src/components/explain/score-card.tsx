@@ -58,6 +58,7 @@ export function useScore(): { score: ScoreResult | null; source: "server" | "cli
   const rotation = useApp((s) => s.rotation);
   const opts = useApp((s) => s.opts);
   const farmId = useApp((s) => s.farmId);
+  const pack = useApp((s) => s.pack);
   const { rotation: label } = useNames();
   const text = label(rotation);
   const local = useMemo(
@@ -69,9 +70,12 @@ export function useScore(): { score: ScoreResult | null; source: "server" | "cli
     setRemote(null);
     if (!local) return;
     let alive = true;
-    fetchScore({ farmId, rotation, opts }).then((r) => { if (alive) setRemote(r); });
+    // Built-in farms are known to the server by id; a field the user drew is not, so retry with its data pack inline.
+    fetchScore({ farmId, rotation, opts })
+      .then((r) => (r || !pack ? r : fetchScore({ pack, rotation, opts })))
+      .then((r) => { if (alive) setRemote(r); });
     return () => { alive = false; };
-  }, [local, farmId, rotation, opts]);
+  }, [local, farmId, pack, rotation, opts]);
   if (remote) return { score: remote, source: "server" };
   return local ? { score: local, source: "client" } : { score: null, source: null };
 }
