@@ -218,9 +218,12 @@ export function PlanComparison() {
 }
 
 // ---------- download ----------
-/** Installers are served by the website itself (scripts/fetch-installers.mjs copies them from the GitHub release). */
-export const DESKTOP_VERSION = "2.1.0";
-const DL = { mac: "/downloads/Hotar-mac-apple-silicon.dmg", macIntel: "/downloads/Hotar-mac-intel.dmg", win: "/downloads/Hotar-windows-setup.exe" };
+/** Installers live on GitHub Releases. `.github/workflows/desktop.yml` attaches version-free copies to every tagged
+ *  release and marks it latest, so these links always download the newest build. */
+export const DESKTOP_VERSION = "2.2.0";
+export const RELEASES_URL = "https://github.com/albert9994/nasa-test-local/releases";
+const latest = (file: string) => `${RELEASES_URL}/latest/download/${file}`;
+const DL = { mac: latest("Hotar-mac-apple-silicon.dmg"), macIntel: latest("Hotar-mac-intel.dmg"), win: latest("Hotar-windows-setup.exe") };
 export function DesktopDownload() {
   const t = useT();
   return (
@@ -235,13 +238,13 @@ export function DesktopDownload() {
           </div>
           <div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <a href={DL.mac} download className={cn(btn("primary", "lg"), "flex-1")}><Download className="size-4" />{t("site.dlMac")}</a>
-              <a href={DL.win} download className={cn(btn("outline", "lg"), "flex-1")}><Monitor className="size-4" />{t("site.dlWin")}</a>
+              <a href={DL.mac} className={cn(btn("primary", "lg"), "flex-1")}><Download className="size-4" />{t("site.dlMac")}</a>
+              <a href={DL.win} className={cn(btn("outline", "lg"), "flex-1")}><Monitor className="size-4" />{t("site.dlWin")}</a>
             </div>
             <p className="mt-3 text-sm text-fg-muted">
-              <a href={DL.macIntel} download className="underline underline-offset-4 hover:text-fg">{t("site.dlMacIntel")}</a>
+              <a href={DL.macIntel} className="underline underline-offset-4 hover:text-fg">{t("site.dlMacIntel")}</a>
               <span className="mx-2 text-fg-subtle">·</span>
-              <span>{t("site.dlVersion", { v: DESKTOP_VERSION })}</span>
+              <a href={RELEASES_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-fg">{t("site.dlVersion", { v: DESKTOP_VERSION })}</a>
             </p>
             <p className="mt-4 text-sm text-fg-muted">{t("site.dlNote")}</p>
           </div>
