@@ -52,7 +52,7 @@ Timeouts: first byte 8 s, total 90 s (`LLM_TIMEOUT_SECS`), one retry on network 
 
 ## Endpoints
 
-`GET /api/health`, `POST /api/simulate`, `/api/stress`, `/api/optimize` (see `docs/team/02_CONTRACTS.md`), plus:
+`GET /api/health`, `POST /api/simulate`, `/api/stress`, `/api/optimize` (see `docs/CONTRACTS.md`), plus:
 
 ### `POST /api/explain` (SSE, C9/C10)
 Body: `{ factSheet | farmId | pack(+rotation, opts, picks), lang: "ro"|"en", mode: "short"|"plan"|"chat", question?, history? }`.

@@ -1,15 +1,10 @@
-## Ce face PR-ul
-<!-- 1–3 rânduri. ID-ul task-ului în titlu: "A7: season simulator" -->
+## What this PR does
+<!-- 1-3 lines -->
 
-Closes #
+## How I checked it
+- [ ] Runs locally (`cargo test` / `pnpm dev` / the data script)
+- [ ] Opened the app and tried the affected flow
+- [ ] Works at phone width (375 px) if it changes UI
 
-## Cum am verificat
-- [ ] Rulează local (`cargo test` / `pnpm dev` / scriptul de date)
-- [ ] Am deschis aplicația și am încercat fluxul atins
-- [ ] Merge pe telefon (375 px) dacă e UI
-
-## Deblochează pe cineva?
-<!-- ex.: "→ I3, O3 pot trece pe motorul real" -->
-
-## Notă pentru reviewer
-<!-- ce să se uite cu atenție, capturi de ecran pentru UI -->
+## Notes for the reviewer
+<!-- what to look at closely; screenshots for UI -->

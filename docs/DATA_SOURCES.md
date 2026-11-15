@@ -24,12 +24,29 @@ sampled at that point, climate projections at its 0.25 deg cell.
 | Costs and prices per farm | **illustrative** | Rounded reference values (ISU Ag Decision Maker, K-State budgets, MADR/IEA, Euronext/NASS) | per crop | 2024-2025 level | `pipeline/presets.json` |
 | Price/cost risk parameters (`quant_params.json`) | **illustrative** | Literature-style defaults; the price series inside `calibrate.py` are hand-entered, not downloaded | per crop | n/a | `pipeline/quant/calibrate.py` |
 | Yield correlations, validation summary | **real** (derived) | Detrended county-yield anomalies vs POWER rain/Tmax and MODIS peak NDVI | per farm/crop | 2001-2025 | `pipeline/validate.py` |
-| Map imagery | **real** (display only) | NASA GIBS | 250-500 m | 2000-now | app |
+| Satellite map layers (MODIS NDVI, true colour, land surface temperature; VIIRS true colour; SMAP L4 soil moisture) | **real** (display only) | NASA EOSDIS GIBS (WMTS) | 250 m - 9 km, daily | 2000-now | app (`packages/ui/src/lib/geo/gibs.ts`) |
+| NDVI / NDMI time series (30 m) | **real** | NASA/USGS HLS v2.0 (Harmonized Landsat Sentinel-2: Landsat 8/9 + **Copernicus Sentinel-2, ESA**), via Microsoft Planetary Computer | 30 m, 2-3 day revisit | 2013-now | `pipeline/prithvi/ndvi_series.py` |
+| Crop map (beta) | **illustrative** (model output) | Prithvi-EO-2.0-100M-TL (IBM + NASA, Apache-2.0) embeddings of HLS; probe trained on USDA CDL (Iowa), k-means named by ESA WorldCereal 2021 (Bărăgan) | 480 m patches | 2021 | `pipeline/prithvi/embed_and_classify.py` |
+| Crop labels for the crop map | **real** | USDA NASS Cropland Data Layer (Planetary Computer); ESA WorldCereal 2021 v100 (CC-BY-4.0, Zenodo 7875105) | 30 m; 10 m | 2021 | `pipeline/prithvi/` |
+| Base map | **real** (display only) | Esri World Imagery (Esri, Maxar, Earthstar Geographics), attribution shown on the map | sub-metre to 15 m | current | app |
 
-Removed because they were synthetic: SMAP, ECOSTRESS ESI, GRACE, IMERG and HLS constants, the
-synthetic parcels, the `appeears.json` layers, hash-generated NDVI, and the Python crop model that
-used to produce the old `validation/summary.json` skill numbers. A later task adds real
-satellite layers (SMAP, ECOSTRESS, HLS) server-side.
+Earlier synthetic placeholders (constant SMAP, ECOSTRESS, GRACE, IMERG and HLS values, synthetic parcels, hash-generated
+NDVI and an old Python crop model) were removed; the satellite layers above replace them with real data.
+
+### Live data used by the apps (fetched at run time, nothing stored on a server)
+
+| Data | Provider | Used for |
+|---|---|---|
+| Daily weather for any selected field (2001-2025) | NASA POWER API (`community=AG`) | field snapshot and custom-field data packs (`packages/ui/src/lib/data/live.ts`) |
+| Soil for any selected field | ISRIC SoilGrids 2.0 (CC-BY-4.0) | custom-field data packs |
+| 7-day forecast | Open-Meteo (CC-BY-4.0) | weather alerts (`packages/ui/src/lib/data/forecast.ts`) |
+| Farmland parcels, place search, place names | OpenStreetMap contributors (ODbL) via Overpass API and Nominatim | land selection on the map |
+
+## Space Agency Partner data
+
+- **ESA, Copernicus Sentinel-2**: half of the HLS v2.0 time series (HLS S30 product) behind the 30 m NDVI series and the
+  Prithvi crop map. Contains modified Copernicus Sentinel data.
+- **ESA WorldCereal 2021**: crop-type labels used to name the crop-map clusters for the Romanian farm.
 
 ## Methods
 
@@ -112,3 +129,16 @@ clients: use at most ~6 workers, and the script backs off on resets.
 5. SRTM: Farr, T. G. et al. (2007), Reviews of Geophysics 45, RG2004.
 6. INS TEMPO-Online, Institutul National de Statistica, http://statistici.insse.ro:8077/tempo-online/.
 7. Crop water physics (used by the engine, not by this pipeline): Allen et al. (1998) FAO-56; Saxton and Rawls (2006) SSSAJ 70(5).
+8. HLS v2.0: Masek, J. et al. (2021), NASA EOSDIS LP DAAC, https://doi.org/10.5067/HLS/HLSL30.002 and https://doi.org/10.5067/HLS/HLSS30.002.
+9. Prithvi-EO-2.0: Szwarcman, D. et al. (2024), arXiv:2412.02732; weights on Hugging Face (`ibm-nasa-geospatial`), Apache-2.0.
+10. ESA WorldCereal: Van Tricht, K. et al. (2023), Earth System Science Data 15, 5491-5515.
+11. USDA NASS Cropland Data Layer, https://www.nass.usda.gov/Research_and_Science/Cropland/.
+12. NASA GIBS: Global Imagery Browse Services, NASA EOSDIS, https://www.earthdata.nasa.gov/gibs.
+
+## Software and other credits
+
+Open-source software (each under its own licence): Rust with serde, rayon, Rhai, Axum, Tokio, reqwest, wasm-bindgen;
+Tauri 2; Next.js and React; Tailwind CSS; MapLibre GL and react-map-gl; Apache ECharts; three.js with react-three-fiber;
+Motion; Zustand; Zod; Comlink; Radix UI; Lucide icons; Geist fonts (SIL OFL); OpenNext for Cloudflare. Python: requests,
+NumPy, netCDF4, tifffile, PyTorch, Hugging Face Hub. Crop icons in `apps/web/public/icons` and the Hotar logo were drawn
+for this project. No NASA logos or insignia are used.

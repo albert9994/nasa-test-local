@@ -1,4 +1,4 @@
-// Shapes from docs/team/02_CONTRACTS.md (C1, C2, C3, C10, C12).
+// Shapes from docs/CONTRACTS.md (C1, C2, C3, C10, C12).
 // The UI only talks to the `Engine` interface, so the mock (today), the Rust WASM build (A6/A8)
 // and the server (C9, plan B) are interchangeable.
 

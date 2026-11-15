@@ -203,8 +203,8 @@ def test_catalog_lists_every_farm_and_status() -> None:
 
 
 def test_prompts_and_docs_exist() -> None:
-    for fname in ("explain_short.md", "explain_plan.md", "chat.md", "fallback_short.md",
-                  "fallback_plan.md", "samples.json"):
+    # the system prompts the server embeds (crates/hotar-server/src/advisor.rs)
+    for fname in ("explain_short.md", "explain_plan.md", "chat.md", "judge.md", "score_adjust.md"):
         assert (REPO_ROOT / "prompts" / fname).exists()
-    for doc in ("STORY.md", "DATA_SOURCES.md", "DECK.md"):
+    for doc in ("DATA_SOURCES.md", "SCIENCE.md", "CONTRACTS.md"):
         assert (REPO_ROOT / "docs" / doc).exists()
