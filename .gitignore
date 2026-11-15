@@ -246,3 +246,4 @@ pipeline/cache/
 pipeline/raw/
 # --- editors ---
 .idea/
+modal
